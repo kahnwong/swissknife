@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/kahnwong/swissknife/cmd/networking"
+	"github.com/kahnwong/swissknife/cmd/ssh"
 	"github.com/spf13/cobra"
 )
 
@@ -24,4 +25,5 @@ func Execute() {
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.AddCommand(networking.Cmd)
+	rootCmd.AddCommand(ssh.Cmd)
 }
