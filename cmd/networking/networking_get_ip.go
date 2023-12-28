@@ -1,4 +1,4 @@
-package cmd
+package networking
 
 import (
 	"encoding/json"
@@ -72,5 +72,5 @@ var getIPCmd = &cobra.Command{
 }
 
 func init() {
-	networkingCmd.AddCommand(getIPCmd)
+	Cmd.AddCommand(getIPCmd)
 }

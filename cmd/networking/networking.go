@@ -1,4 +1,4 @@
-package cmd
+package networking
 
 import (
 	"fmt"
@@ -6,15 +6,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var networkingCmd = &cobra.Command{
+var Cmd = &cobra.Command{
 	Use:   "networking",
 	Short: "Networking tools",
 	Long:  `Networking tools`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Please specify subcommand")
 	},
-}
-
-func init() {
-	rootCmd.AddCommand(networkingCmd)
 }
