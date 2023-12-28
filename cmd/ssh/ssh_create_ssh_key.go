@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"golang.org/x/crypto/ssh"
 
@@ -32,6 +33,18 @@ func writeStringToFile(filePath, data string, permission os.FileMode) {
 		fmt.Println("Error setting file permissions:", err)
 		return
 	}
+}
+
+func returnKeyPath(fileName string) string {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	keyPath := filepath.Join(currentDir, fileName)
+	keyPath = keyPath + ".pem"
+
+	return keyPath
 }
 
 // main
@@ -67,11 +80,17 @@ var createSSHKey = &cobra.Command{
 	Short: "Create SSH key",
 	Long:  `Create SSH key`,
 	Run: func(cmd *cobra.Command, args []string) {
+		//init
+		if len(args) == 0 {
+			fmt.Println("Please specify key name")
+			os.Exit(1)
+		}
+
+		// main
 		color.Green("SSH: create-ssh-key")
 
-		fileName := "foo"
-		createSSHKeyEDSA(fileName)
-		fmt.Printf("\tSSH key created at: %s\n", fileName)
+		createSSHKeyEDSA(args[0])
+		fmt.Printf("\tSSH key created at: %s\n", returnKeyPath(args[0]))
 	},
 }
 
