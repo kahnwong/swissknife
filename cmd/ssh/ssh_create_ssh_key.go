@@ -1,19 +1,22 @@
 package ssh
 
 import (
+	"crypto"
 	"crypto/ed25519"
-	"crypto/rand"
 	"encoding/base64"
+	"encoding/pem"
 	"fmt"
 	"log"
 	"os"
+
+	"golang.org/x/crypto/ssh"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
 // helpers
-func writeStringToFile(filePath, data string) {
+func writeStringToFile(filePath, data string, permission os.FileMode) {
 	file, err := os.Create(filePath)
 	if err != nil {
 		log.Fatal(err)
@@ -23,34 +26,40 @@ func writeStringToFile(filePath, data string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
 
-func writePrivateKey(privateKey ed25519.PrivateKey) {
-	privateKeyStr := fmt.Sprintf("-----BEGIN OPENSSH PRIVATE KEY-----\n%s\n-----END OPENSSH PRIVATE KEY-----\n", base64.StdEncoding.EncodeToString(privateKey))
-
-	writeStringToFile("key.pem", privateKeyStr)
-}
-
-func writePublicKey(publicKey ed25519.PublicKey) {
-	publicKeyStr := fmt.Sprintf("ssh-ed25519 %s", base64.StdEncoding.EncodeToString(publicKey))
-
-	writeStringToFile("key.pub", publicKeyStr)
+	err = file.Chmod(permission)
+	if err != nil {
+		fmt.Println("Error setting file permissions:", err)
+		return
+	}
 }
 
 // main
-func createSSHKeyEDSA() string {
+func createSSHKeyEDSA(fileName string) {
 	// Generate a new Ed25519 private key
-	publicKey, privateKey, err := ed25519.GenerateKey(rand.Reader)
+	//// If rand is nil, crypto/rand.Reader will be used
+	pub, priv, err := ed25519.GenerateKey(nil)
 	if err != nil {
-		fmt.Println("Error generating private key:", err)
-		os.Exit(1)
+		panic(err)
+	}
+	p, err := ssh.MarshalPrivateKey(crypto.PrivateKey(priv), "")
+	if err != nil {
+		panic(err)
 	}
 
-	// Write key
-	writePrivateKey(privateKey)
-	writePublicKey(publicKey)
+	// private key
+	privateKeyPem := pem.EncodeToMemory(p)
+	privateKeyString := string(privateKeyPem)
 
-	return "foo"
+	writeStringToFile(fmt.Sprintf("%s.pem", fileName), privateKeyString, 0600)
+
+	// public key
+	publicKey, err := ssh.NewPublicKey(pub)
+	if err != nil {
+		panic(err)
+	}
+	publicKeyString := "ssh-ed25519" + " " + base64.StdEncoding.EncodeToString(publicKey.Marshal())
+	writeStringToFile(fmt.Sprintf("%s.pub", fileName), publicKeyString, 0644)
 }
 
 var createSSHKey = &cobra.Command{
@@ -60,7 +69,9 @@ var createSSHKey = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		color.Green("SSH: create-ssh-key")
 
-		fmt.Printf("\tSSH key created at: %s\n", createSSHKeyEDSA())
+		fileName := "foo"
+		createSSHKeyEDSA(fileName)
+		fmt.Printf("\tSSH key created at: %s\n", fileName)
 	},
 }
 
