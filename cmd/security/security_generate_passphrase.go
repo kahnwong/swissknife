@@ -7,7 +7,6 @@ import (
 
 	"github.com/kahnwong/swissknife/cmd/utils"
 
-	"github.com/fatih/color"
 	"github.com/sethvargo/go-diceware/diceware"
 	"github.com/spf13/cobra"
 )
@@ -30,8 +29,6 @@ var generatePassphraseCmd = &cobra.Command{
 	Long:  `Generate passphrase. Result is copied to clipboard.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// main
-		color.Green("Security: generate passphrase")
-
 		passphrase := generatePassphrase()
 		utils.CopyToClipboard(passphrase)
 		fmt.Printf("%s\n", passphrase)

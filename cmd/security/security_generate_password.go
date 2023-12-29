@@ -6,7 +6,6 @@ import (
 
 	"github.com/sethvargo/go-password/password"
 
-	"github.com/fatih/color"
 	"github.com/kahnwong/swissknife/cmd/utils"
 	"github.com/spf13/cobra"
 )
@@ -28,8 +27,6 @@ var generatePasswordCmd = &cobra.Command{
 	Long:  `Generate password. Result is copied to clipboard.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// main
-		color.Green("Security: generate password")
-
 		password := generatePassword()
 		utils.CopyToClipboard(password)
 		fmt.Printf("%s\n", password)

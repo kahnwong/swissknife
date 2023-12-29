@@ -12,7 +12,6 @@ import (
 
 	"golang.org/x/crypto/ssh"
 
-	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -87,10 +86,8 @@ var generateSSHKeyCmd = &cobra.Command{
 		}
 
 		// main
-		color.Green("SSH: generate-ssh-key")
-
 		generateSSHKeyEDSA(args[0])
-		fmt.Printf("\tSSH key created at: %s\n", returnKeyPath(args[0]))
+		fmt.Printf("SSH key created at: %s\n", returnKeyPath(args[0]))
 	},
 }
 
