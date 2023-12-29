@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/fatih/color v1.15.0
+	github.com/sethvargo/go-password v0.2.0
 	github.com/spf13/cobra v1.7.0
 	golang.org/x/crypto v0.17.0
 )
