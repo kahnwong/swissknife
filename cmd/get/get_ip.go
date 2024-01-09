@@ -1,4 +1,4 @@
-package networking
+package get
 
 import (
 	"encoding/json"
@@ -60,7 +60,7 @@ func getPublicIP() string {
 }
 
 var getIPCmd = &cobra.Command{
-	Use:   "get-ip",
+	Use:   "ip",
 	Short: "Get IP information",
 	Long:  `Get IP information`,
 	Run: func(cmd *cobra.Command, args []string) {

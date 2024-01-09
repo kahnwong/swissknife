@@ -1,4 +1,4 @@
-package networking
+package get
 
 import (
 	"fmt"
@@ -7,9 +7,9 @@ import (
 )
 
 var Cmd = &cobra.Command{
-	Use:   "networking",
-	Short: "Networking tools",
-	Long:  `Networking tools`,
+	Use:   "get",
+	Short: "Obtain information",
+	Long:  `Obtain information`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Please specify subcommand")
 	},
