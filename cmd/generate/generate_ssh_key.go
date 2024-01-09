@@ -1,4 +1,4 @@
-package security
+package generate
 
 import (
 	"crypto"
@@ -75,7 +75,7 @@ func generateSSHKeyEDSA(fileName string) {
 }
 
 var generateSSHKeyCmd = &cobra.Command{
-	Use:   "generate-ssh-key",
+	Use:   "ssh-key",
 	Short: "Create SSH key",
 	Long:  `Create SSH key`,
 	Run: func(cmd *cobra.Command, args []string) {

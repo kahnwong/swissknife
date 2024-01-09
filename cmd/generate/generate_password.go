@@ -1,4 +1,4 @@
-package security
+package generate
 
 import (
 	"fmt"
@@ -22,7 +22,7 @@ func generatePassword() string {
 }
 
 var generatePasswordCmd = &cobra.Command{
-	Use:   "generate-password",
+	Use:   "password",
 	Short: "Generate password",
 	Long:  `Generate password. Result is copied to clipboard.`,
 	Run: func(cmd *cobra.Command, args []string) {

@@ -1,4 +1,4 @@
-package security
+package generate
 
 import (
 	"fmt"
@@ -7,9 +7,9 @@ import (
 )
 
 var Cmd = &cobra.Command{
-	Use:   "security",
-	Short: "Security tools",
-	Long:  `Security tools`,
+	Use:   "generate",
+	Short: "Generate stuff",
+	Long:  `Generate stuff`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Please specify subcommand")
 	},
