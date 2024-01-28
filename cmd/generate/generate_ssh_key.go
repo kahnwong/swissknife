@@ -71,7 +71,7 @@ func generateSSHKeyEDSA(fileName string) {
 		panic(err)
 	}
 	publicKeyString := "ssh-ed25519" + " " + base64.StdEncoding.EncodeToString(publicKey.Marshal())
-	writeStringToFile(fmt.Sprintf("%s.public", fileName), publicKeyString, 0644)
+	writeStringToFile(fmt.Sprintf("%s.pub", fileName), publicKeyString, 0644)
 }
 
 var generateSSHKeyCmd = &cobra.Command{
