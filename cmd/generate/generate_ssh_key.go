@@ -47,16 +47,16 @@ func returnKeyPath(fileName string) string {
 }
 
 // main
-func generateSSHKeyEDSA(fileName string) {
+func generateSSHKeyEDSA(fileName string) error {
 	// Generate a new Ed25519 private key
 	//// If rand is nil, crypto/rand.Reader will be used
 	public, private, err := ed25519.GenerateKey(nil)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	p, err := ssh.MarshalPrivateKey(crypto.PrivateKey(private), "")
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	// private key
@@ -68,10 +68,12 @@ func generateSSHKeyEDSA(fileName string) {
 	// public key
 	publicKey, err := ssh.NewPublicKey(public)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	publicKeyString := "ssh-ed25519" + " " + base64.StdEncoding.EncodeToString(publicKey.Marshal())
 	writeStringToFile(fmt.Sprintf("%s.pub", fileName), publicKeyString, 0644)
+
+	return nil
 }
 
 var generateSSHKeyCmd = &cobra.Command{
@@ -86,7 +88,10 @@ var generateSSHKeyCmd = &cobra.Command{
 		}
 
 		// main
-		generateSSHKeyEDSA(args[0])
+		err := generateSSHKeyEDSA(args[0])
+		if err != nil {
+			fmt.Print(err)
+		}
 		fmt.Printf("SSH key created at: %s\n", returnKeyPath(args[0]))
 	},
 }

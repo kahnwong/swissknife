@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"net/http"
 	"strings"
@@ -12,10 +11,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func getLocalIP() string {
+func getLocalIP() (string, error) {
 	conn, err := net.Dial("udp", "8.8.8.8:80")
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
 	localAddr := conn.LocalAddr().(*net.UDPAddr)
@@ -30,19 +29,19 @@ func getLocalIP() string {
 		fmt.Println("Invalid address format")
 	}
 
-	return fmt.Sprintf("%v", localIP)
+	return fmt.Sprintf("%v", localIP), nil
 }
 
-func getPublicIP() string {
+func getPublicIP() (string, error) {
 	// make request
 	resp, err := http.Get("https://httpbin.org/ip")
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
 	// parse
@@ -53,10 +52,10 @@ func getPublicIP() string {
 	var jsonResponse Response
 	err = json.Unmarshal(body, &jsonResponse)
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
-	return jsonResponse.Origin
+	return jsonResponse.Origin, nil
 }
 
 var getIPCmd = &cobra.Command{
@@ -64,8 +63,17 @@ var getIPCmd = &cobra.Command{
 	Short: "Get IP information",
 	Long:  `Get IP information`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Local IP   : %s\n", getLocalIP())
-		fmt.Printf("Public IP  : %s\n", getPublicIP())
+		localIP, err := getLocalIP()
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Printf("Local IP   : %s\n", localIP)
+
+		publicIP, err := getPublicIP()
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Printf("Public IP  : %s\n", publicIP)
 	},
 }
 
