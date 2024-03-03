@@ -16,7 +16,7 @@ import (
 )
 
 // helpers
-func writeStringToFile(filePath, data string, permission os.FileMode) {
+func writeStringToFile(filePath string, data string, permission os.FileMode) {
 	file, err := os.Create(filePath)
 	if err != nil {
 		log.Fatal(err)
