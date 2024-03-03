@@ -33,7 +33,7 @@ var generatePassphraseCmd = &cobra.Command{
 		if err != nil {
 			slog.Error("Error generating passphrase")
 		}
-		utils.CopyToClipboard(passphrase)
+		utils.WriteToClipboard(passphrase)
 		fmt.Printf("%s\n", passphrase)
 	},
 }

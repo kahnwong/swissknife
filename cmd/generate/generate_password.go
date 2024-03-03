@@ -31,7 +31,7 @@ var generatePasswordCmd = &cobra.Command{
 		if err != nil {
 			slog.Error("Error generating password")
 		}
-		utils.CopyToClipboard(password)
+		utils.WriteToClipboard(password)
 		fmt.Printf("%s\n", password)
 	},
 }

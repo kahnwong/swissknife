@@ -3,9 +3,9 @@ package generate
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/kahnwong/swissknife/cmd/utils"
-
 	qrcode "github.com/skip2/go-qrcode"
 	"github.com/spf13/cobra"
 )
@@ -26,7 +26,7 @@ func generateQRCode(url string) (string, error) {
 	}
 
 	// copy to clipboard
-	utils.CopyToClipboardImage(png)
+	utils.WriteToClipboardImage(png)
 
 	// for stdout
 	//content := q.ToString(false)
@@ -38,16 +38,30 @@ func generateQRCode(url string) (string, error) {
 var generateQRCodeCmd = &cobra.Command{
 	Use:   "qrcode",
 	Short: "Generate QR code",
-	Long:  `Generate QR code from URL and copy resulting image to clipboard.`,
+	Long:  `Generate QR code from URL (either as an arg or from clipboard) and copy resulting image to clipboard.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		//init
+		// set URL
+		var url string
 		if len(args) == 0 {
-			fmt.Println("Please specify URL")
-			os.Exit(1)
+			urlFromClipboard := utils.ReadFromClipboard()
+			if urlFromClipboard != "" {
+				if strings.HasPrefix(urlFromClipboard, "https://") {
+					url = urlFromClipboard
+				}
+			}
 		}
+		if url == "" {
+			if len(args) == 0 {
+				fmt.Println("Please specify URL")
+				os.Exit(1)
+			} else if len(args) == 1 {
+				url = args[0]
+			}
+		}
+		fmt.Println(url)
 
 		// main
-		qrcodeStr, err := generateQRCode(args[0])
+		qrcodeStr, err := generateQRCode(url)
 		if err != nil {
 			fmt.Print(err)
 		}
