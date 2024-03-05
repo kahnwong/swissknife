@@ -19,3 +19,7 @@ darwin-arm64: $(SRC)
 
 linux-amd64: $(SRC)
 	GOOS=linux GOARCH=amd64 go build -o build/$(EXECUTABLE_NAME)-linux-amd64 $(SRC)
+
+# --------
+test:
+	go test ./...
