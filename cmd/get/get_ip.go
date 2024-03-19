@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/fatih/color"
+
 	"github.com/spf13/cobra"
 )
 
@@ -63,17 +65,19 @@ var getIPCmd = &cobra.Command{
 	Short: "Get IP information",
 	Long:  `Get IP information`,
 	Run: func(cmd *cobra.Command, args []string) {
+		green := color.New(color.FgGreen).SprintFunc()
+
 		localIP, err := getLocalIP()
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Printf("Local IP   : %s\n", localIP)
+		fmt.Printf("Local IP   : %s\n", green(localIP))
 
 		publicIP, err := getPublicIP()
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Printf("Public IP  : %s\n", publicIP)
+		fmt.Printf("Public IP  : %s\n", green(publicIP))
 	},
 }
 
