@@ -34,30 +34,32 @@ func getLocalIP() (string, error) {
 	return fmt.Sprintf("%v", localIP), nil
 }
 
-func getPublicIP() (string, error) {
+type PublicIPResponse struct {
+	Ip      string `json:"ip"`
+	Country string `json:"country"`
+}
+
+func getPublicIP() (PublicIPResponse, error) {
 	// make request
-	resp, err := http.Get("https://httpbin.org/ip")
+	resp, err := http.Get("https://api.country.is")
 	if err != nil {
-		return "", err
+		return PublicIPResponse{}, err
 	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", err
+		return PublicIPResponse{}, err
 	}
 
 	// parse
-	type Response struct {
-		Origin string `json:"origin"`
-	}
 
-	var jsonResponse Response
+	var jsonResponse PublicIPResponse
 	err = json.Unmarshal(body, &jsonResponse)
 	if err != nil {
-		return "", err
+		return PublicIPResponse{}, err
 	}
 
-	return jsonResponse.Origin, nil
+	return jsonResponse, nil
 }
 
 var getIPCmd = &cobra.Command{
@@ -78,7 +80,7 @@ var getIPCmd = &cobra.Command{
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			fmt.Printf("Public IP  : %s\n", green(publicIP))
+			fmt.Printf("Public IP  : %s (%s)\n", green(publicIP.Ip), publicIP.Country)
 		}
 	},
 }
