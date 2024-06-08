@@ -3,6 +3,8 @@ package misc
 import (
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/charmbracelet/bubbles/help"
@@ -12,9 +14,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const timeout = time.Second * 5
-
 type model struct {
+	timeout  time.Duration
 	timer    timer.Model
 	keymap   keymap
 	help     help.Model
@@ -56,7 +57,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			return m, tea.Quit
 		case key.Matches(msg, m.keymap.reset):
-			m.timer.Timeout = timeout
+			m.timer.Timeout = m.timeout
 		case key.Matches(msg, m.keymap.start, m.keymap.stop):
 			return m, m.timer.Toggle()
 		}
@@ -91,9 +92,10 @@ func (m model) View() string {
 	return s
 }
 
-func createTimer() model {
+func createTimer(timeout time.Duration) model {
 	m := model{
-		timer: timer.NewWithInterval(timeout, time.Millisecond),
+		timeout: timeout,
+		timer:   timer.NewWithInterval(timeout, time.Millisecond),
 		keymap: keymap{
 			start: key.NewBinding(
 				key.WithKeys("s"),
@@ -123,8 +125,14 @@ var TimerCmd = &cobra.Command{
 	Use:   "timer",
 	Short: "Create a timer",
 	Run: func(cmd *cobra.Command, args []string) {
+		// [TODO] validate args
+		timeoutFloat64, err := strconv.ParseFloat(strings.TrimSpace(args[0]), 64)
+		if err != nil {
+			fmt.Println("Error converting string to int:", err)
+		}
+		timeout := time.Duration(timeoutFloat64 * float64(time.Second))
 
-		if _, err := tea.NewProgram(createTimer()).Run(); err != nil {
+		if _, err := tea.NewProgram(createTimer(timeout)).Run(); err != nil {
 			fmt.Println("Uh oh, we encountered an error:", err)
 			os.Exit(1)
 		}
