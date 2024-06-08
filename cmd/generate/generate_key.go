@@ -22,7 +22,7 @@ func generateRandomBytes(n int) ([]byte, error) {
 	return b, nil
 }
 
-func generateRandomString(s int) (string, error) {
+func generateKey(s int) (string, error) {
 	b, err := generateRandomBytes(s)
 	return base64.URLEncoding.EncodeToString(b), err
 }
@@ -33,7 +33,7 @@ var generateKeyCmd = &cobra.Command{
 	Long:  `Generate key. Re-implementation of "openssl rand -base64 48"". Result is copied to clipboard.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// main
-		key, err := generateRandomString(48)
+		key, err := generateKey(48)
 		if err != nil {
 			slog.Error("Error generating key")
 		}

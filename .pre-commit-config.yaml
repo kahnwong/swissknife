@@ -32,6 +32,6 @@ repos:
       # - id: no-go-testing
       - id: golangci-lint
       # - id: go-critic
-      # - id: go-unit-tests
+      - id: go-unit-tests
       - id: go-build
       - id: go-mod-tidy
