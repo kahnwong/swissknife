@@ -1,7 +1,10 @@
+// modified from <https://github.com/maaslalani/pom/blob/main/main.go>
 package misc
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -118,9 +121,21 @@ var TimerCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		m := NewModel()
 
-		m.duration = time.Duration(5 * float64(time.Second))
+		// check if input exists
+		if len(args) == 0 {
+			fmt.Println("Please provide a duration")
+			os.Exit(1)
+		}
 
-		_, err := tea.NewProgram(&m).Run()
+		// parse input
+		duration, err := time.ParseDuration(args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
+		m.duration = duration
+
+		// timer
+		_, err = tea.NewProgram(&m).Run()
 		if err != nil {
 			log.Fatal(err)
 		}
