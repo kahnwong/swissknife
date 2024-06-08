@@ -32,15 +32,10 @@ const (
 )
 
 type Model struct {
-	quitting bool
-
+	quitting  bool
 	startTime time.Time
-
-	mode mode
-
 	focusTime time.Duration
-
-	progress progress.Model
+	progress  progress.Model
 }
 
 func (m Model) Init() tea.Cmd {
@@ -64,7 +59,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "q":
-			m.mode = Paused
 			m.startTime = time.Now()
 
 			m.quitting = true
@@ -80,12 +74,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// Update timer
 	if m.startTime.IsZero() {
 		m.startTime = time.Now()
-		m.mode = Focusing
 		cmds = append(cmds, tea.Tick(tickInterval, tickCmd))
 	}
 
 	if time.Since(m.startTime) > m.focusTime {
-		m.mode = Paused
 		m.startTime = time.Now()
 
 		m.quitting = true
@@ -104,16 +96,12 @@ func (m Model) View() string {
 
 	elapsed := time.Since(m.startTime)
 
-	var percent float64
-	switch m.mode {
-	case Focusing:
-		percent = float64(elapsed) / float64(m.focusTime)
-		s.WriteString(focusTitleStyle.String())
-		s.WriteString(elapsed.Round(time.Second).String())
-		s.WriteString("\n\n")
-		s.WriteString(m.progress.ViewAs(percent))
-		s.WriteString(helpStyle.Render("Press 'q' to quit"))
-	}
+	percent := float64(elapsed) / float64(m.focusTime)
+	s.WriteString(focusTitleStyle.String())
+	s.WriteString(elapsed.Round(time.Second).String())
+	s.WriteString("\n\n")
+	s.WriteString(m.progress.ViewAs(percent))
+	s.WriteString(helpStyle.Render("Press 'q' to quit"))
 
 	return baseTimerStyle.Render(s.String())
 }
