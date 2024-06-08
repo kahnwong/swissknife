@@ -3,7 +3,7 @@ BUILD_DIR := build
 
 .PHONY: all clean
 
-all: clean windows-amd64 darwin-amd64 darwin-arm64 linux-amd64
+all: clean windows-amd64 darwin-amd64 darwin-arm64 linux-amd64 linux-arm64
 
 clean:
 	rm -rf $(BUILD_DIR)
@@ -20,6 +20,8 @@ darwin-arm64: $(SRC)
 linux-amd64: $(SRC)
 	GOOS=linux GOARCH=amd64 go build -o build/$(EXECUTABLE_NAME)-linux-amd64 $(SRC)
 
+linux-arm64: $(SRC)
+	GOOS=linux GOARCH=arm64 go build -o build/$(EXECUTABLE_NAME)-linux-arm64 $(SRC)
 # --------
 test:
 	go test ./...
