@@ -31,7 +31,7 @@ type tickMsg time.Time
 type Model struct {
 	quitting  bool
 	startTime time.Time
-	focusTime time.Duration
+	duration  time.Duration
 	progress  progress.Model
 }
 
@@ -71,7 +71,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmds = append(cmds, tea.Tick(tickInterval, tickCmd))
 	}
 
-	if time.Since(m.startTime) > m.focusTime {
+	if time.Since(m.startTime) > m.duration {
 		m.startTime = time.Now()
 
 		m.quitting = true
@@ -89,9 +89,9 @@ func (m Model) View() string {
 	var s strings.Builder
 
 	elapsed := time.Since(m.startTime)
-	timeLeft := m.focusTime - elapsed
+	timeLeft := m.duration - elapsed
 
-	percent := float64(elapsed) / float64(m.focusTime)
+	percent := float64(elapsed) / float64(m.duration)
 	s.WriteString(focusTitleStyle.String())
 	s.WriteString("- " + timeLeft.Round(time.Second).String())
 	s.WriteString("\n\n")
@@ -118,7 +118,7 @@ var TimerCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		m := NewModel()
 
-		m.focusTime = time.Duration(5 * float64(time.Second))
+		m.duration = time.Duration(5 * float64(time.Second))
 
 		_, err := tea.NewProgram(&m).Run()
 		if err != nil {
