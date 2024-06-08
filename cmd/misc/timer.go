@@ -30,7 +30,6 @@ const (
 	Initial mode = iota
 	Focusing
 	Paused
-	Breaking
 )
 
 type Model struct {
@@ -41,7 +40,6 @@ type Model struct {
 	mode mode
 
 	focusTime time.Duration
-	breakTime time.Duration
 
 	progress progress.Model
 }
@@ -67,23 +65,17 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "q":
-			switch m.mode {
-			case Focusing:
-				m.mode = Paused
-				m.startTime = time.Now()
-				m.progress.FullColor = breakColor
+			m.mode = Paused
+			m.startTime = time.Now()
+			m.progress.FullColor = breakColor
 
-				m.quitting = true
-				return m, tea.Quit
-			}
+			m.quitting = true
+			return m, tea.Quit
 		case "ctrl+c":
 			m.quitting = true
 			return m, tea.Quit
 		default:
-			if m.mode == Paused {
-				m.mode = Breaking
-				m.startTime = time.Now()
-			}
+			m.startTime = time.Now()
 		}
 	}
 
@@ -94,16 +86,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmds = append(cmds, tea.Tick(tickInterval, tickCmd))
 	}
 
-	switch m.mode {
-	case Focusing:
-		if time.Since(m.startTime) > m.focusTime {
-			m.mode = Paused
-			m.startTime = time.Now()
-			m.progress.FullColor = breakColor
+	if time.Since(m.startTime) > m.focusTime {
+		m.mode = Paused
+		m.startTime = time.Now()
+		m.progress.FullColor = breakColor
 
-			m.quitting = true
-			return m, tea.Quit
-		}
+		m.quitting = true
+		return m, tea.Quit
 	}
 
 	return m, tea.Batch(cmds...)
@@ -149,7 +138,6 @@ var TimerCmd = &cobra.Command{
 		m := NewModel()
 
 		m.focusTime = time.Duration(5 * float64(time.Second))
-		m.breakTime = time.Duration(5 * float64(time.Second))
 
 		_, err := tea.NewProgram(&m).Run()
 		if err != nil {
