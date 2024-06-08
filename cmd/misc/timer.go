@@ -1,140 +1,177 @@
 package misc
 
 import (
-	"fmt"
-	"os"
-	"strconv"
+	"log"
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/timer"
+	"github.com/charmbracelet/bubbles/progress"
+	"github.com/charmbracelet/lipgloss"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 )
 
-type model struct {
-	timeout  time.Duration
-	timer    timer.Model
-	keymap   keymap
-	help     help.Model
+const (
+	focusColor = "#2EF8BB"
+	breakColor = "#FF5F87"
+)
+
+var (
+	focusTitleStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(focusColor)).MarginRight(1).SetString("Focus Mode")
+	breakTitleStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(breakColor)).MarginRight(1).SetString("Break Mode")
+	pausedStyle     = lipgloss.NewStyle().Foreground(lipgloss.Color(breakColor)).MarginRight(1).SetString("Continue?")
+	helpStyle       = lipgloss.NewStyle().Foreground(lipgloss.Color("240")).MarginTop(2)
+)
+
+var baseTimerStyle = lipgloss.NewStyle().Padding(1, 2)
+
+type mode int
+
+const (
+	Initial mode = iota
+	Focusing
+	Paused
+	Breaking
+)
+
+type Model struct {
 	quitting bool
+
+	startTime time.Time
+
+	mode mode
+
+	focusTime time.Duration
+	breakTime time.Duration
+
+	progress progress.Model
 }
 
-type keymap struct {
-	start key.Binding
-	stop  key.Binding
-	reset key.Binding
-	quit  key.Binding
+func (m Model) Init() tea.Cmd {
+	return tea.Tick(tickInterval, tickCmd)
 }
 
-func (m model) Init() tea.Cmd {
-	return m.timer.Init()
+const tickInterval = time.Second / 2
+
+type tickMsg time.Time
+
+func tickCmd(t time.Time) tea.Msg {
+	return tickMsg(t)
 }
 
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmds []tea.Cmd
+
 	switch msg := msg.(type) {
-	case timer.TickMsg:
-		var cmd tea.Cmd
-		m.timer, cmd = m.timer.Update(msg)
-		return m, cmd
-
-	case timer.StartStopMsg:
-		var cmd tea.Cmd
-		m.timer, cmd = m.timer.Update(msg)
-		m.keymap.stop.SetEnabled(m.timer.Running())
-		m.keymap.start.SetEnabled(!m.timer.Running())
-		return m, cmd
-
-	case timer.TimeoutMsg:
-		m.quitting = true
-		return m, tea.Quit
-
+	case tickMsg:
+		cmds = append(cmds, tea.Tick(tickInterval, tickCmd))
 	case tea.KeyMsg:
-		switch {
-		case key.Matches(msg, m.keymap.quit):
+		switch msg.String() {
+		case "q":
+			switch m.mode {
+			case Focusing:
+				m.mode = Paused
+				m.startTime = time.Now()
+				m.progress.FullColor = breakColor
+			case Paused:
+				m.mode = Breaking
+				m.startTime = time.Now()
+			case Breaking:
+				m.quitting = true
+				return m, tea.Quit
+			}
+		case "ctrl+c":
 			m.quitting = true
 			return m, tea.Quit
-		case key.Matches(msg, m.keymap.reset):
-			m.timer.Timeout = m.timeout
-		case key.Matches(msg, m.keymap.start, m.keymap.stop):
-			return m, m.timer.Toggle()
+		default:
+			if m.mode == Paused {
+				m.mode = Breaking
+				m.startTime = time.Now()
+			}
 		}
 	}
 
-	return m, nil
+	// Update timer
+	if m.startTime.IsZero() {
+		m.startTime = time.Now()
+		m.mode = Focusing
+		cmds = append(cmds, tea.Tick(tickInterval, tickCmd))
+	}
+
+	switch m.mode {
+	case Focusing:
+		if time.Since(m.startTime) > m.focusTime {
+			m.mode = Paused
+			m.startTime = time.Now()
+			m.progress.FullColor = breakColor
+		}
+	case Breaking:
+		if time.Since(m.startTime) > m.breakTime {
+			m.quitting = true
+			return m, tea.Quit
+		}
+	}
+
+	return m, tea.Batch(cmds...)
 }
 
-func (m model) helpView() string {
-	return "\n" + m.help.ShortHelpView([]key.Binding{
-		m.keymap.start,
-		m.keymap.stop,
-		m.keymap.reset,
-		m.keymap.quit,
-	})
+func (m Model) View() string {
+	if m.quitting {
+		return ""
+	}
+
+	var s strings.Builder
+
+	elapsed := time.Since(m.startTime)
+
+	var percent float64
+	switch m.mode {
+	case Focusing:
+		percent = float64(elapsed) / float64(m.focusTime)
+		s.WriteString(focusTitleStyle.String())
+		s.WriteString(elapsed.Round(time.Second).String())
+		s.WriteString("\n\n")
+		s.WriteString(m.progress.ViewAs(percent))
+		s.WriteString(helpStyle.Render("Press 'q' to skip"))
+	case Paused:
+		s.WriteString(pausedStyle.String())
+		s.WriteString("\n\nFocus time is done, time to take a break.")
+		s.WriteString(helpStyle.Render("press any key to continue.\n"))
+	case Breaking:
+		percent = float64(elapsed) / float64(m.breakTime)
+		s.WriteString(breakTitleStyle.String())
+		s.WriteString(elapsed.Round(time.Second).String())
+		s.WriteString("\n\n")
+		s.WriteString(m.progress.ViewAs(percent))
+		s.WriteString(helpStyle.Render("press 'q' to quit"))
+	}
+
+	return baseTimerStyle.Render(s.String())
 }
 
-func (m model) View() string {
-	// For a more detailed timer view you could read m.timer.Timeout to get
-	// the remaining time as a time.Duration and skip calling m.timer.View()
-	// entirely.
-	s := m.timer.View()
+func NewModel() Model {
+	progressBar := progress.New()
+	progressBar.FullColor = focusColor
+	progressBar.SetSpringOptions(1, 1)
 
-	if m.timer.Timedout() {
-		s = "All done!"
+	return Model{
+		progress: progressBar,
 	}
-	s += "\n"
-	if !m.quitting {
-		s = "Exiting in " + s
-		s += m.helpView()
-	}
-	return s
-}
-
-func createTimer(timeout time.Duration) model {
-	m := model{
-		timeout: timeout,
-		timer:   timer.NewWithInterval(timeout, time.Millisecond),
-		keymap: keymap{
-			start: key.NewBinding(
-				key.WithKeys("s"),
-				key.WithHelp("s", "start"),
-			),
-			stop: key.NewBinding(
-				key.WithKeys("s"),
-				key.WithHelp("s", "stop"),
-			),
-			reset: key.NewBinding(
-				key.WithKeys("r"),
-				key.WithHelp("r", "reset"),
-			),
-			quit: key.NewBinding(
-				key.WithKeys("q", "ctrl+c"),
-				key.WithHelp("q", "quit"),
-			),
-		},
-		help: help.New(),
-	}
-	m.keymap.start.SetEnabled(false)
-
-	return m
 }
 
 var TimerCmd = &cobra.Command{
 	Use:   "timer",
 	Short: "Create a timer",
 	Run: func(cmd *cobra.Command, args []string) {
-		// [TODO] validate args
-		timeoutFloat64, err := strconv.ParseFloat(strings.TrimSpace(args[0]), 64)
-		if err != nil {
-			fmt.Println("Error converting string to int:", err)
-		}
-		timeout := time.Duration(timeoutFloat64 * float64(time.Second))
+		m := NewModel()
 
-		if _, err := tea.NewProgram(createTimer(timeout)).Run(); err != nil {
-			fmt.Println("Uh oh, we encountered an error:", err)
-			os.Exit(1)
+		m.focusTime = time.Duration(5 * float64(time.Second))
+		m.breakTime = time.Duration(5 * float64(time.Second))
+
+		_, err := tea.NewProgram(&m).Run()
+		if err != nil {
+			log.Fatal(err)
 		}
 	},
 }
