@@ -14,7 +14,6 @@ import (
 
 const (
 	focusColor = "#2EF8BB"
-	breakColor = "#FF5F87"
 )
 
 var (
@@ -67,7 +66,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "q":
 			m.mode = Paused
 			m.startTime = time.Now()
-			m.progress.FullColor = breakColor
 
 			m.quitting = true
 			return m, tea.Quit
@@ -89,7 +87,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if time.Since(m.startTime) > m.focusTime {
 		m.mode = Paused
 		m.startTime = time.Now()
-		m.progress.FullColor = breakColor
 
 		m.quitting = true
 		return m, tea.Quit
