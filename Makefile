@@ -11,8 +11,8 @@ clean:
 windows-amd64: $(SRC)
 	GOOS=windows GOARCH=amd64 go build -o build/$(EXECUTABLE_NAME)-windows-amd64.exe $(SRC)
 
-darwin-amd64: $(SRC)
-	GOOS=darwin GOARCH=amd64 go build -o build/$(EXECUTABLE_NAME)-darwin-amd64 $(SRC)
+# darwin-amd64: $(SRC)
+# 	GOOS=darwin GOARCH=amd64 go build -o build/$(EXECUTABLE_NAME)-darwin-amd64 $(SRC)
 
 darwin-arm64: $(SRC)
 	GOOS=darwin GOARCH=arm64 go build -o build/$(EXECUTABLE_NAME)-darwin-arm64 $(SRC)
