@@ -18,9 +18,7 @@ const (
 )
 
 var (
-	focusTitleStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(focusColor)).MarginRight(1).SetString("Focus Mode")
-	breakTitleStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(breakColor)).MarginRight(1).SetString("Break Mode")
-	pausedStyle     = lipgloss.NewStyle().Foreground(lipgloss.Color(breakColor)).MarginRight(1).SetString("Continue?")
+	focusTitleStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(focusColor)).MarginRight(1).SetString("Focus Mode") // [TODO] change me
 	helpStyle       = lipgloss.NewStyle().Foreground(lipgloss.Color("240")).MarginTop(2)
 )
 
@@ -74,10 +72,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.mode = Paused
 				m.startTime = time.Now()
 				m.progress.FullColor = breakColor
-			case Paused:
-				m.mode = Breaking
-				m.startTime = time.Now()
-			case Breaking:
+
 				m.quitting = true
 				return m, tea.Quit
 			}
@@ -105,9 +100,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.mode = Paused
 			m.startTime = time.Now()
 			m.progress.FullColor = breakColor
-		}
-	case Breaking:
-		if time.Since(m.startTime) > m.breakTime {
+
 			m.quitting = true
 			return m, tea.Quit
 		}
@@ -133,18 +126,7 @@ func (m Model) View() string {
 		s.WriteString(elapsed.Round(time.Second).String())
 		s.WriteString("\n\n")
 		s.WriteString(m.progress.ViewAs(percent))
-		s.WriteString(helpStyle.Render("Press 'q' to skip"))
-	case Paused:
-		s.WriteString(pausedStyle.String())
-		s.WriteString("\n\nFocus time is done, time to take a break.")
-		s.WriteString(helpStyle.Render("press any key to continue.\n"))
-	case Breaking:
-		percent = float64(elapsed) / float64(m.breakTime)
-		s.WriteString(breakTitleStyle.String())
-		s.WriteString(elapsed.Round(time.Second).String())
-		s.WriteString("\n\n")
-		s.WriteString(m.progress.ViewAs(percent))
-		s.WriteString(helpStyle.Render("press 'q' to quit"))
+		s.WriteString(helpStyle.Render("Press 'q' to quit"))
 	}
 
 	return baseTimerStyle.Render(s.String())
