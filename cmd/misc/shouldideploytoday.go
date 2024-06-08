@@ -52,7 +52,7 @@ func ShouldIDeployToday() (ShouldIDeploy, error) {
 	return response, nil
 }
 
-var Cmd = &cobra.Command{
+var ShouldIDeployTodayCmd = &cobra.Command{
 	Use:   "shouldideploytoday",
 	Short: "Should I deploy today?",
 	Long:  `Should I deploy today?`,

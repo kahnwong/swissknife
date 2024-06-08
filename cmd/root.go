@@ -27,5 +27,6 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.AddCommand(get.Cmd)
 	rootCmd.AddCommand(generate.Cmd)
-	rootCmd.AddCommand(misc.Cmd)
+	rootCmd.AddCommand(misc.ShouldIDeployTodayCmd)
+	rootCmd.AddCommand(misc.TimerCmd)
 }
