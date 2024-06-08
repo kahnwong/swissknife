@@ -12,25 +12,21 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// init
 const (
-	focusColor = "#2EF8BB"
+	titleColor   = "#2EF8BB"
+	tickInterval = time.Second / 2
 )
 
 var (
-	focusTitleStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(focusColor)).MarginRight(1).SetString("Focus Mode") // [TODO] change me
+	focusTitleStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(titleColor)).MarginRight(1).SetString("Focus Mode") // [TODO] change me
 	helpStyle       = lipgloss.NewStyle().Foreground(lipgloss.Color("240")).MarginTop(2)
+	baseTimerStyle  = lipgloss.NewStyle().Padding(1, 2)
 )
 
-var baseTimerStyle = lipgloss.NewStyle().Padding(1, 2)
+type tickMsg time.Time
 
-type mode int
-
-const (
-	Initial mode = iota
-	Focusing
-	Paused
-)
-
+// model
 type Model struct {
 	quitting  bool
 	startTime time.Time
@@ -38,13 +34,10 @@ type Model struct {
 	progress  progress.Model
 }
 
+// bubbletea
 func (m Model) Init() tea.Cmd {
 	return tea.Tick(tickInterval, tickCmd)
 }
-
-const tickInterval = time.Second / 2
-
-type tickMsg time.Time
 
 func tickCmd(t time.Time) tea.Msg {
 	return tickMsg(t)
@@ -108,7 +101,7 @@ func (m Model) View() string {
 
 func NewModel() Model {
 	progressBar := progress.New()
-	progressBar.FullColor = focusColor
+	progressBar.FullColor = titleColor
 	progressBar.SetSpringOptions(1, 1)
 
 	return Model{
@@ -116,13 +109,14 @@ func NewModel() Model {
 	}
 }
 
+// main
 var TimerCmd = &cobra.Command{
 	Use:   "timer",
 	Short: "Create a timer",
 	Run: func(cmd *cobra.Command, args []string) {
 		m := NewModel()
 
-		m.focusTime = time.Duration(5 * float64(time.Second))
+		m.focusTime = time.Duration(1 * float64(time.Second))
 
 		_, err := tea.NewProgram(&m).Run()
 		if err != nil {
