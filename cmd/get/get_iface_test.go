@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Test_getIface(t *testing.T) {
+func TestGetIface(t *testing.T) {
 	iface, err := getIface()
 	if err != nil {
 		t.Errorf("getIface() error = %v", err)

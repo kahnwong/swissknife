@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Test_generateQRCode(t *testing.T) {
+func TestGenerateQRCode(t *testing.T) {
 	qrcode, err := generateQRCode("https://example.com")
 	if err != nil {
 		t.Fatal(err)

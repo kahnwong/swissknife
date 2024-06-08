@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func Test_getIp(t *testing.T) {
+func TestGetIp(t *testing.T) {
 	ip, err := getLocalIP()
 	if err != nil {
 		t.Errorf("getLocalIP() error = %v", err)

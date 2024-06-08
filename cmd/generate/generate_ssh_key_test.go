@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Test_generateSSHKey(t *testing.T) {
+func TestGenerateSSHKey(t *testing.T) {
 	publicKey, privateKey, err := generateSSHKeyEDSA()
 	if err != nil {
 		t.Errorf("generateSSHKeyEDSA() error = %v", err)
