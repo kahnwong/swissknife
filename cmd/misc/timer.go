@@ -89,10 +89,11 @@ func (m Model) View() string {
 	var s strings.Builder
 
 	elapsed := time.Since(m.startTime)
+	timeLeft := m.focusTime - elapsed
 
 	percent := float64(elapsed) / float64(m.focusTime)
 	s.WriteString(focusTitleStyle.String())
-	s.WriteString(elapsed.Round(time.Second).String())
+	s.WriteString("- " + timeLeft.Round(time.Second).String())
 	s.WriteString("\n\n")
 	s.WriteString(m.progress.ViewAs(percent))
 	s.WriteString(helpStyle.Render("Press 'q' to quit"))
