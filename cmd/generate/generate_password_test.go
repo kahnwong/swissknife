@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func Test_generatePassword(t *testing.T) {
+func TestGeneratePassword(t *testing.T) {
 	password, _ := generatePassword()
 
 	// length must be 32
