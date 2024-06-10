@@ -22,10 +22,10 @@ const (
 )
 
 var (
-	currentTime     = time.Now().Format("15:04PM")
-	focusTitleStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(titleColor)).MarginRight(1).SetString(currentTime)
-	helpStyle       = lipgloss.NewStyle().Foreground(lipgloss.Color("240")).MarginTop(2)
-	baseTimerStyle  = lipgloss.NewStyle().Padding(1, 2)
+	currentTime    = time.Now().Format("15:04PM")
+	startTimeStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(titleColor)).MarginRight(1).SetString(currentTime)
+	helpStyle      = lipgloss.NewStyle().Foreground(lipgloss.Color("240")).MarginTop(2)
+	baseTimerStyle = lipgloss.NewStyle().Padding(1, 2)
 )
 
 type tickMsg time.Time
@@ -95,7 +95,7 @@ func (m Model) View() string {
 	timeLeft := m.duration - elapsed
 
 	percent := float64(elapsed) / float64(m.duration)
-	s.WriteString(focusTitleStyle.String())
+	s.WriteString(startTimeStyle.String())
 	s.WriteString("- " + timeLeft.Round(time.Second).String())
 	s.WriteString("\n\n")
 	s.WriteString(m.progress.ViewAs(percent))
