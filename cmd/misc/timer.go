@@ -119,22 +119,21 @@ var TimerCmd = &cobra.Command{
 	Use:   "timer",
 	Short: "Create a timer",
 	Run: func(cmd *cobra.Command, args []string) {
-		m := NewModel()
-
 		// check if input exists
 		if len(args) == 0 {
 			fmt.Println("Please provide a duration")
 			os.Exit(1)
 		}
-
 		// parse input
 		duration, err := time.ParseDuration(args[0])
 		if err != nil {
 			log.Fatal(err)
 		}
-		m.duration = duration
 
 		// timer
+		m := NewModel()
+		m.duration = duration
+
 		_, err = tea.NewProgram(&m).Run()
 		if err != nil {
 			log.Fatal(err)
