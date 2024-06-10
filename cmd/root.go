@@ -29,4 +29,5 @@ func init() {
 	rootCmd.AddCommand(generate.Cmd)
 	rootCmd.AddCommand(misc.ShouldIDeployTodayCmd)
 	rootCmd.AddCommand(misc.TimerCmd)
+	rootCmd.AddCommand(misc.StopwatchCmd)
 }
