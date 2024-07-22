@@ -12,7 +12,8 @@ func TestGetIface(t *testing.T) {
 	} else {
 		isEn := strings.HasPrefix(iface, "en")
 		isUtun := strings.HasPrefix(iface, "utun")
-		if !(isEn || isUtun) {
+		isWlp := strings.HasPrefix(iface, "wlp")
+		if !(isEn || isUtun || isWlp) {
 			t.Errorf("getIface() does not return expected interface: %s", iface)
 		}
 	}
