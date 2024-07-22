@@ -3,7 +3,7 @@ BUILD_DIR := build
 
 .PHONY: all clean
 
-all: clean windows-amd64 darwin-amd64 darwin-arm64 linux-amd64 linux-arm64
+all: clean windows-amd64 darwin-arm64 linux-amd64 linux-arm64
 
 clean:
 	rm -rf $(BUILD_DIR)
