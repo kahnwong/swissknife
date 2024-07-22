@@ -6,7 +6,7 @@ require (
 	github.com/charmbracelet/bubbles v0.18.0
 	github.com/charmbracelet/bubbletea v0.25.0
 	github.com/charmbracelet/lipgloss v0.12.1
-	github.com/fatih/color v1.16.0
+	github.com/fatih/color v1.17.0
 	github.com/libp2p/go-netroute v0.2.1
 	github.com/sethvargo/go-diceware v0.3.0
 	github.com/sethvargo/go-password v0.3.1
