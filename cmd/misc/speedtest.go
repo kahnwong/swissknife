@@ -3,6 +3,8 @@ package misc
 import (
 	"fmt"
 
+	"github.com/fatih/color"
+
 	"github.com/showwin/speedtest-go/speedtest"
 	"github.com/spf13/cobra"
 )
@@ -13,13 +15,15 @@ var SpeedTestCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// https://github.com/showwin/speedtest-go#api-usage
 
+		green := color.New(color.FgHiGreen).SprintFunc()
+
 		var speedtestClient = speedtest.New()
 
 		serverList, _ := speedtestClient.FetchServers()
 		targets, _ := serverList.FindServer([]int{})
 
 		for _, s := range targets {
-			fmt.Printf("Server: %s\n", s.Name)
+			fmt.Printf("%s:   %s\n", green("Server"), s.Name)
 
 			err := s.PingTest(nil)
 			if err != nil {
@@ -37,9 +41,9 @@ var SpeedTestCmd = &cobra.Command{
 			}
 
 			fmt.Printf("" +
-				fmt.Sprintf("Latency: %s\n", s.Latency) +
-				fmt.Sprintf("Download: %s\n", s.DLSpeed) +
-				fmt.Sprintf("Upload: %s\n", s.ULSpeed),
+				fmt.Sprintf("%s:  %s\n", green("Latency"), s.Latency) +
+				fmt.Sprintf("%s: %s\n", green("Download"), s.DLSpeed) +
+				fmt.Sprintf("%s:   %s\n", green("Upload"), s.ULSpeed),
 			)
 
 			s.Context.Reset()
