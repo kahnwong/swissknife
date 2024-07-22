@@ -70,7 +70,7 @@ func getSystemInfo() (SystemInfo, error) {
 	return SystemInfo{
 		Username: username.Username,
 		Hostname: hostStat.Hostname,
-		Platform: hostStat.Platform,
+		Platform: fmt.Sprintf("%s %s", hostStat.Platform, hostStat.PlatformVersion),
 		CPU:      fmt.Sprintf("%s (%v)", cpuStat[0].ModelName, cpuThreads),
 		RAM:      fmt.Sprintf("%.2f / %.2f GB", convertKBtoGB(vmStat.Used), convertKBtoGB(vmStat.Total)),
 		Disk:     fmt.Sprintf("%.2f / %.2f GB", convertKBtoGB(diskStat.Used), convertKBtoGB(diskStat.Total)),
