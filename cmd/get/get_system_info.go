@@ -34,7 +34,8 @@ type SystemInfo struct {
 	MemoryTotal float64
 
 	// disk
-	Disk string
+	DiskUsed  float64
+	DiskTotal float64
 }
 
 func getSystemInfo() (SystemInfo, error) {
@@ -83,7 +84,8 @@ func getSystemInfo() (SystemInfo, error) {
 		CPUThreads:   cpuThreads,
 		MemoryUsed:   convertKBtoGB(vmStat.Used),
 		MemoryTotal:  convertKBtoGB(vmStat.Total),
-		Disk:         fmt.Sprintf("%.2f / %.2f GB", convertKBtoGB(diskStat.Used), convertKBtoGB(diskStat.Total)),
+		DiskUsed:     convertKBtoGB(diskStat.Used),
+		DiskTotal:    convertKBtoGB(diskStat.Total),
 	}, err
 }
 
@@ -101,13 +103,14 @@ var getSystemInfoCmd = &cobra.Command{
 
 		cpuInfo := fmt.Sprintf("%s (%v)", systemInfo.CPUModelName, systemInfo.CPUThreads)
 		memoryInfo := fmt.Sprintf("%.2f / %.2f GB", systemInfo.MemoryUsed, systemInfo.MemoryTotal)
+		diskInfo := fmt.Sprintf("%.2f / %.2f GB", systemInfo.DiskUsed, systemInfo.DiskTotal)
 
 		systemInfoStr := "" +
 			fmt.Sprintf("%s@%s\n", green(systemInfo.Username), green(systemInfo.Hostname)) +
 			fmt.Sprintf("%s:      %s\n", green("OS"), systemInfo.Platform) +
 			fmt.Sprintf("%s:     %s\n", green("CPU"), cpuInfo) +
 			fmt.Sprintf("%s:  %s\n", green("Memory"), memoryInfo) +
-			fmt.Sprintf("%s:    %s", green("Disk"), systemInfo.Disk)
+			fmt.Sprintf("%s:    %s", green("Disk"), diskInfo)
 
 		fmt.Println(systemInfoStr)
 	},
