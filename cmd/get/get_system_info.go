@@ -16,8 +16,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func convertKBtoGB(kb uint64) float64 {
-	return math.Ceil(float64(kb)/float64(1024)/float64(1024)) / float64(1024)
+func convertKBtoGB(v uint64) int {
+	return int(math.Round(float64(v) / float64(1024) / float64(1024) / float64(1024)))
+}
+
+func convertToPercent(v float64) int {
+	return int(math.Round(v * 100))
 }
 
 type SystemInfo struct {
@@ -30,12 +34,14 @@ type SystemInfo struct {
 	CPUThreads   int
 
 	// memory
-	MemoryUsed  float64
-	MemoryTotal float64
+	MemoryUsed        int
+	MemoryTotal       int
+	MemoryUsedPercent int
 
 	// disk
-	DiskUsed  float64
-	DiskTotal float64
+	DiskUsed        int
+	DiskTotal       int
+	DiskUsedPercent int
 }
 
 func getSystemInfo() (SystemInfo, error) {
@@ -70,22 +76,32 @@ func getSystemInfo() (SystemInfo, error) {
 		log.Fatalf(err.Error())
 	}
 
+	memoryUsed := convertKBtoGB(vmStat.Used)
+	memoryTotal := convertKBtoGB(vmStat.Total)
+	memoryUsedPercent := convertToPercent(float64(memoryUsed) / float64(memoryTotal))
+
 	// disk
 	diskStat, err := disk.Usage("/")
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
+	diskUsed := convertKBtoGB(diskStat.Used)
+	diskTotal := convertKBtoGB(diskStat.Total)
+	diskUsedPercent := convertToPercent(float64(diskUsed) / float64(diskTotal))
+
 	return SystemInfo{
-		Username:     username.Username,
-		Hostname:     hostStat.Hostname,
-		Platform:     fmt.Sprintf("%s %s", hostStat.Platform, hostStat.PlatformVersion),
-		CPUModelName: cpuStat[0].ModelName,
-		CPUThreads:   cpuThreads,
-		MemoryUsed:   convertKBtoGB(vmStat.Used),
-		MemoryTotal:  convertKBtoGB(vmStat.Total),
-		DiskUsed:     convertKBtoGB(diskStat.Used),
-		DiskTotal:    convertKBtoGB(diskStat.Total),
+		Username:          username.Username,
+		Hostname:          hostStat.Hostname,
+		Platform:          fmt.Sprintf("%s %s", hostStat.Platform, hostStat.PlatformVersion),
+		CPUModelName:      cpuStat[0].ModelName,
+		CPUThreads:        cpuThreads,
+		MemoryUsed:        memoryUsed,
+		MemoryTotal:       memoryTotal,
+		MemoryUsedPercent: memoryUsedPercent,
+		DiskUsed:          diskUsed,
+		DiskTotal:         diskTotal,
+		DiskUsedPercent:   diskUsedPercent,
 	}, err
 }
 
@@ -102,8 +118,8 @@ var getSystemInfoCmd = &cobra.Command{
 		green := color.New(color.FgHiGreen).SprintFunc()
 
 		cpuInfo := fmt.Sprintf("%s (%v)", systemInfo.CPUModelName, systemInfo.CPUThreads)
-		memoryInfo := fmt.Sprintf("%.2f / %.2f GB", systemInfo.MemoryUsed, systemInfo.MemoryTotal)
-		diskInfo := fmt.Sprintf("%.2f / %.2f GB", systemInfo.DiskUsed, systemInfo.DiskTotal)
+		memoryInfo := fmt.Sprintf("%v/%v GB (%v%%)", systemInfo.MemoryUsed, systemInfo.MemoryTotal, systemInfo.MemoryUsedPercent)
+		diskInfo := fmt.Sprintf("%v/%v GB (%v%%)", systemInfo.DiskUsed, systemInfo.DiskTotal, systemInfo.DiskUsedPercent)
 
 		systemInfoStr := "" +
 			fmt.Sprintf("%s@%s\n", green(systemInfo.Username), green(systemInfo.Hostname)) +
