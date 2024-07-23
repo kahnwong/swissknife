@@ -21,12 +21,13 @@ func convertKBtoGB(kb uint64) float64 {
 }
 
 type SystemInfo struct {
-	Username string
-	Hostname string
-	Platform string
-	CPU      string
-	RAM      string
-	Disk     string
+	Username     string
+	Hostname     string
+	Platform     string
+	CPUModelName string
+	CPUThreads   int
+	RAM          string
+	Disk         string
 }
 
 func getSystemInfo() (SystemInfo, error) {
@@ -68,12 +69,13 @@ func getSystemInfo() (SystemInfo, error) {
 	}
 
 	return SystemInfo{
-		Username: username.Username,
-		Hostname: hostStat.Hostname,
-		Platform: fmt.Sprintf("%s %s", hostStat.Platform, hostStat.PlatformVersion),
-		CPU:      fmt.Sprintf("%s (%v)", cpuStat[0].ModelName, cpuThreads),
-		RAM:      fmt.Sprintf("%.2f / %.2f GB", convertKBtoGB(vmStat.Used), convertKBtoGB(vmStat.Total)),
-		Disk:     fmt.Sprintf("%.2f / %.2f GB", convertKBtoGB(diskStat.Used), convertKBtoGB(diskStat.Total)),
+		Username:     username.Username,
+		Hostname:     hostStat.Hostname,
+		Platform:     fmt.Sprintf("%s %s", hostStat.Platform, hostStat.PlatformVersion),
+		CPUModelName: cpuStat[0].ModelName,
+		CPUThreads:   cpuThreads,
+		RAM:          fmt.Sprintf("%.2f / %.2f GB", convertKBtoGB(vmStat.Used), convertKBtoGB(vmStat.Total)),
+		Disk:         fmt.Sprintf("%.2f / %.2f GB", convertKBtoGB(diskStat.Used), convertKBtoGB(diskStat.Total)),
 	}, err
 }
 
@@ -88,10 +90,13 @@ var getSystemInfoCmd = &cobra.Command{
 
 		// format message
 		green := color.New(color.FgHiGreen).SprintFunc()
+
+		cpuInfo := fmt.Sprintf("%s (%v)", systemInfo.CPUModelName, systemInfo.CPUThreads)
+
 		systemInfoStr := "" +
 			fmt.Sprintf("%s@%s\n", green(systemInfo.Username), green(systemInfo.Hostname)) +
 			fmt.Sprintf("%s:      %s\n", green("OS"), systemInfo.Platform) +
-			fmt.Sprintf("%s:     %s\n", green("CPU"), systemInfo.CPU) +
+			fmt.Sprintf("%s:     %s\n", green("CPU"), cpuInfo) +
 			fmt.Sprintf("%s:  %s\n", green("Memory"), systemInfo.RAM) +
 			fmt.Sprintf("%s:    %s", green("Disk"), systemInfo.Disk)
 
