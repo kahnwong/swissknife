@@ -7,11 +7,11 @@ import (
 	"os/user"
 	"strings"
 
+	"github.com/kahnwong/swissknife/cmd/color"
 	"github.com/shirou/gopsutil/v4/disk"
 
 	"github.com/shirou/gopsutil/v4/mem"
 
-	"github.com/fatih/color"
 	"github.com/shirou/gopsutil/v4/cpu"
 	"github.com/shirou/gopsutil/v4/host"
 	"github.com/spf13/cobra"
@@ -116,20 +116,17 @@ var getSystemInfoCmd = &cobra.Command{
 		}
 
 		// format message
-		green := color.New(color.FgHiGreen).SprintFunc()
-		blue := color.New(color.FgBlue).SprintFunc()
-
 		cpuInfo := fmt.Sprintf("%s (%v)", systemInfo.CPUModelName, systemInfo.CPUThreads)
-		memoryInfo := fmt.Sprintf("%v/%v GB (%v%%)", systemInfo.MemoryUsed, systemInfo.MemoryTotal, blue(systemInfo.MemoryUsedPercent))
-		diskInfo := fmt.Sprintf("%v/%v GB (%v%%)", systemInfo.DiskUsed, systemInfo.DiskTotal, blue(systemInfo.DiskUsedPercent))
+		memoryInfo := fmt.Sprintf("%v/%v GB (%v%%)", systemInfo.MemoryUsed, systemInfo.MemoryTotal, color.Blue(systemInfo.MemoryUsedPercent))
+		diskInfo := fmt.Sprintf("%v/%v GB (%v%%)", systemInfo.DiskUsed, systemInfo.DiskTotal, color.Blue(systemInfo.DiskUsedPercent))
 
 		systemInfoStr := "" +
-			fmt.Sprintf("%s@%s\n", green(systemInfo.Username), green(systemInfo.Hostname)) +
+			fmt.Sprintf("%s@%s\n", color.Green(systemInfo.Username), color.Green(systemInfo.Hostname)) +
 			strings.Repeat("-", len(systemInfo.Username)+len(systemInfo.Hostname)+1) + "\n" +
-			fmt.Sprintf("%s:      %s\n", green("OS"), systemInfo.Platform) +
-			fmt.Sprintf("%s:     %s\n", green("CPU"), cpuInfo) +
-			fmt.Sprintf("%s:  %s\n", green("Memory"), memoryInfo) +
-			fmt.Sprintf("%s:    %s", green("Disk"), diskInfo)
+			fmt.Sprintf("%s:      %s\n", color.Green("OS"), systemInfo.Platform) +
+			fmt.Sprintf("%s:     %s\n", color.Green("CPU"), cpuInfo) +
+			fmt.Sprintf("%s:  %s\n", color.Green("Memory"), memoryInfo) +
+			fmt.Sprintf("%s:    %s", color.Green("Disk"), diskInfo)
 
 		fmt.Println(systemInfoStr)
 	},

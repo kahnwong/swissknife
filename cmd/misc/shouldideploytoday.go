@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/fatih/color"
+	"github.com/kahnwong/swissknife/cmd/color"
 	"github.com/spf13/cobra"
 )
 
@@ -62,15 +62,10 @@ var ShouldIDeployTodayCmd = &cobra.Command{
 			fmt.Println(err)
 		}
 
-		// init output colors
-		green := color.New(color.FgGreen).SprintFunc()
-		red := color.New(color.FgRed).SprintFunc()
-
-		// set output colors
 		if response.ShouldIDeploy {
-			fmt.Printf("%s\n", green(response.Message))
+			fmt.Printf("%s\n", color.Green(response.Message))
 		} else if !response.ShouldIDeploy {
-			fmt.Printf("%s\n", red(response.Message))
+			fmt.Printf("%s\n", color.Red(response.Message))
 		}
 	},
 }
