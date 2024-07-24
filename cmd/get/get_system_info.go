@@ -5,6 +5,7 @@ import (
 	"log"
 	"math"
 	"os/user"
+	"strings"
 
 	"github.com/shirou/gopsutil/v4/disk"
 
@@ -116,13 +117,15 @@ var getSystemInfoCmd = &cobra.Command{
 
 		// format message
 		green := color.New(color.FgHiGreen).SprintFunc()
+		blue := color.New(color.FgBlue).SprintFunc()
 
 		cpuInfo := fmt.Sprintf("%s (%v)", systemInfo.CPUModelName, systemInfo.CPUThreads)
-		memoryInfo := fmt.Sprintf("%v/%v GB (%v%%)", systemInfo.MemoryUsed, systemInfo.MemoryTotal, systemInfo.MemoryUsedPercent)
-		diskInfo := fmt.Sprintf("%v/%v GB (%v%%)", systemInfo.DiskUsed, systemInfo.DiskTotal, systemInfo.DiskUsedPercent)
+		memoryInfo := fmt.Sprintf("%v/%v GB (%v%%)", systemInfo.MemoryUsed, systemInfo.MemoryTotal, blue(systemInfo.MemoryUsedPercent))
+		diskInfo := fmt.Sprintf("%v/%v GB (%v%%)", systemInfo.DiskUsed, systemInfo.DiskTotal, blue(systemInfo.DiskUsedPercent))
 
 		systemInfoStr := "" +
 			fmt.Sprintf("%s@%s\n", green(systemInfo.Username), green(systemInfo.Hostname)) +
+			strings.Repeat("-", len(systemInfo.Username)+len(systemInfo.Hostname)+1) + "\n" +
 			fmt.Sprintf("%s:      %s\n", green("OS"), systemInfo.Platform) +
 			fmt.Sprintf("%s:     %s\n", green("CPU"), cpuInfo) +
 			fmt.Sprintf("%s:  %s\n", green("Memory"), memoryInfo) +
