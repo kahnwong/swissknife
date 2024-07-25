@@ -9,9 +9,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	version = "dev"
+)
+
 var rootCmd = &cobra.Command{
 	Use:     "swissknife",
-	Version: "0.1.0",
+	Version: version,
 	Short:   "Various utils",
 	Long:    `Various utils`,
 }
