@@ -1,0 +1,14 @@
+---
+version: 2
+
+builds:
+  - env:
+      - CGO_ENABLED=1
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -w -s
+      - -X github.com/kahnwong/swissknife/cmd.version={{.Version}}
