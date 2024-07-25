@@ -22,3 +22,5 @@ builds:
         goarch: arm64
         env:
           - CC=aarch64-linux-gnu-gcc
+checksum:
+  disable: true
