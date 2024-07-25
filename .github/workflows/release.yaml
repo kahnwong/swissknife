@@ -1,5 +1,5 @@
 ---
-name: goreleaser
+name: Release
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  goreleaser:
+  release-binary:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,11 +21,13 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: stable
-      - name: Run GoReleaser
+      - name: Install cross-compiler for linux/arm64
+        run: sudo apt install gcc-aarch64-linux-gnu
+      - name: Release
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean
+          args: release --clean --config .goreleaser-linux.yaml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
