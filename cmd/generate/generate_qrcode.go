@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kahnwong/swissknife/cmd/utils"
+	"github.com/kahnwong/swissknife/utils"
 	qrcode "github.com/skip2/go-qrcode"
 	"github.com/spf13/cobra"
 )

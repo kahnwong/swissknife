@@ -6,7 +6,7 @@ import (
 
 	"github.com/sethvargo/go-password/password"
 
-	"github.com/kahnwong/swissknife/cmd/utils"
+	"github.com/kahnwong/swissknife/utils"
 	"github.com/spf13/cobra"
 )
 

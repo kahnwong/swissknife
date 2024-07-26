@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/kahnwong/swissknife/cmd/color"
+	"github.com/kahnwong/swissknife/color"
 	"github.com/spf13/cobra"
 )
 

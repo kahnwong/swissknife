@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/kahnwong/swissknife/cmd/utils"
+	"github.com/kahnwong/swissknife/utils"
 
 	"github.com/sethvargo/go-diceware/diceware"
 	"github.com/spf13/cobra"

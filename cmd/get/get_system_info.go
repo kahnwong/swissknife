@@ -7,7 +7,7 @@ import (
 	"os/user"
 	"strings"
 
-	"github.com/kahnwong/swissknife/cmd/color"
+	"github.com/kahnwong/swissknife/color"
 	"github.com/shirou/gopsutil/v4/disk"
 
 	"github.com/shirou/gopsutil/v4/mem"

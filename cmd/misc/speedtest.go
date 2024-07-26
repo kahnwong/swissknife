@@ -3,7 +3,7 @@ package misc
 import (
 	"fmt"
 
-	"github.com/kahnwong/swissknife/cmd/color"
+	"github.com/kahnwong/swissknife/color"
 	"github.com/showwin/speedtest-go/speedtest"
 	"github.com/spf13/cobra"
 )

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/kahnwong/swissknife/cmd/utils"
+	"github.com/kahnwong/swissknife/utils"
 	"github.com/spf13/cobra"
 )
 
