@@ -14,3 +14,8 @@ var Cmd = &cobra.Command{
 		fmt.Println("Please specify subcommand")
 	},
 }
+
+func init() {
+	Cmd.AddCommand(getIPCmd)
+	Cmd.AddCommand(getSystemInfoCmd)
+}

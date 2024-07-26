@@ -131,7 +131,3 @@ var getSystemInfoCmd = &cobra.Command{
 		fmt.Println(systemInfoStr)
 	},
 }
-
-func init() {
-	Cmd.AddCommand(getSystemInfoCmd)
-}

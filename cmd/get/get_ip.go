@@ -81,7 +81,3 @@ var getIPCmd = &cobra.Command{
 		}
 	},
 }
-
-func init() {
-	Cmd.AddCommand(getIPCmd)
-}
