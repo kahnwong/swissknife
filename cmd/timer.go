@@ -1,5 +1,5 @@
 // modified from <https://github.com/maaslalani/pom/blob/main/main.go>
-package misc
+package cmd
 
 import (
 	"fmt"

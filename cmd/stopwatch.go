@@ -1,5 +1,5 @@
 // from <https://github.com/charmbracelet/bubbletea/blob/master/examples/stopwatch/main.go>
-package misc
+package cmd
 
 import (
 	"fmt"
