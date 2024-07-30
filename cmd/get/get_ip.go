@@ -59,14 +59,14 @@ var getIPCmd = &cobra.Command{
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			fmt.Printf("Local IP:   %s\n", color.Green(localIP))
+			fmt.Printf("%s: %s\n", color.Green("Local IP"), localIP)
 		}
 
 		publicIP, err := getPublicIP()
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			fmt.Printf("Public IP:  %s (%s)\n", color.Green(publicIP.Ip), publicIP.Country)
+			fmt.Printf("%s: %s (%s)\n", color.Green("Public IP"), publicIP.Ip, color.Blue(publicIP.Country))
 		}
 	},
 }
