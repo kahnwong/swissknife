@@ -5,6 +5,7 @@ import (
 	"log"
 	"math"
 	"os/user"
+	"strconv"
 	"strings"
 
 	"github.com/kahnwong/swissknife/color"
@@ -117,16 +118,16 @@ var getSystemInfoCmd = &cobra.Command{
 
 		// format message
 		cpuInfo := fmt.Sprintf("%s (%v)", systemInfo.CPUModelName, systemInfo.CPUThreads)
-		memoryInfo := fmt.Sprintf("%v/%v GB (%v%%)", systemInfo.MemoryUsed, systemInfo.MemoryTotal, color.Blue(systemInfo.MemoryUsedPercent))
-		diskInfo := fmt.Sprintf("%v/%v GB (%v%%)", systemInfo.DiskUsed, systemInfo.DiskTotal, color.Blue(systemInfo.DiskUsedPercent))
+		memoryInfo := fmt.Sprintf("%v/%v GB (%s)", systemInfo.MemoryUsed, systemInfo.MemoryTotal, color.Blue(strconv.Itoa(systemInfo.MemoryUsedPercent)+"%"))
+		diskInfo := fmt.Sprintf("%v/%v GB (%s)", systemInfo.DiskUsed, systemInfo.DiskTotal, color.Blue(strconv.Itoa(systemInfo.DiskUsedPercent)+"%"))
 
 		systemInfoStr := "" +
 			fmt.Sprintf("%s@%s\n", color.Green(systemInfo.Username), color.Green(systemInfo.Hostname)) +
 			strings.Repeat("-", len(systemInfo.Username)+len(systemInfo.Hostname)+1) + "\n" +
-			fmt.Sprintf("%s:      %s\n", color.Green("OS"), systemInfo.Platform) +
-			fmt.Sprintf("%s:     %s\n", color.Green("CPU"), cpuInfo) +
-			fmt.Sprintf("%s:  %s\n", color.Green("Memory"), memoryInfo) +
-			fmt.Sprintf("%s:    %s", color.Green("Disk"), diskInfo)
+			fmt.Sprintf("%s: %s\n", color.Green("OS"), systemInfo.Platform) +
+			fmt.Sprintf("%s: %s\n", color.Green("CPU"), cpuInfo) +
+			fmt.Sprintf("%s: %s\n", color.Green("Memory"), memoryInfo) +
+			fmt.Sprintf("%s: %s", color.Green("Disk"), diskInfo)
 
 		fmt.Println(systemInfoStr)
 	},
