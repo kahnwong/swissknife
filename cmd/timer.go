@@ -140,3 +140,7 @@ var TimerCmd = &cobra.Command{
 		}
 	},
 }
+
+func init() {
+	rootCmd.AddCommand(TimerCmd)
+}

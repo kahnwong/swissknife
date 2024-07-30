@@ -48,3 +48,7 @@ var ShouldIDeployTodayCmd = &cobra.Command{
 		}
 	},
 }
+
+func init() {
+	rootCmd.AddCommand(ShouldIDeployTodayCmd)
+}

@@ -46,3 +46,7 @@ var SpeedTestCmd = &cobra.Command{
 		}
 	},
 }
+
+func init() {
+	rootCmd.AddCommand(SpeedTestCmd)
+}

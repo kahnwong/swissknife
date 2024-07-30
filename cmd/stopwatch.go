@@ -109,3 +109,7 @@ var StopwatchCmd = &cobra.Command{
 		}
 	},
 }
+
+func init() {
+	rootCmd.AddCommand(StopwatchCmd)
+}
