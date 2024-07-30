@@ -1,13 +1,12 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
-	"log/slog"
-	"net/http"
 	"time"
 
+	"context"
+
+	"github.com/carlmjohnson/requests"
 	"github.com/kahnwong/swissknife/color"
 	"github.com/spf13/cobra"
 )
@@ -19,37 +18,20 @@ type ShouldIDeploy struct {
 	Message       string    `json:"message"`
 }
 
-func ShouldIDeployToday() (ShouldIDeploy, error) {
+func ShouldIDeployToday() ShouldIDeploy {
 	url := "https://shouldideploy.today/api?tz=Asia%2FBangkok"
-	method := "GET"
 
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, nil)
-	if err != nil {
-		return ShouldIDeploy{}, err
-	}
-
-	if err != nil {
-		return ShouldIDeploy{}, err
-	}
-	res, err := client.Do(req)
-	if err != nil {
-		return ShouldIDeploy{}, err
-	}
-	defer res.Body.Close()
-
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return ShouldIDeploy{}, err
-	}
-
-	// decode
 	var response ShouldIDeploy
-	if err := json.Unmarshal(body, &response); err != nil {
-		slog.Error("Can not unmarshal JSON")
+	err := requests.
+		URL(url).
+		ToJSON(&response).
+		Fetch(context.Background())
+
+	if err != nil {
+		fmt.Println("Error calling ShouldIDeploy API:", err)
 	}
 
-	return response, nil
+	return response
 }
 
 var ShouldIDeployTodayCmd = &cobra.Command{
@@ -57,10 +39,7 @@ var ShouldIDeployTodayCmd = &cobra.Command{
 	Short: "Should I deploy today?",
 	Long:  `Should I deploy today?`,
 	Run: func(cmd *cobra.Command, args []string) {
-		response, err := ShouldIDeployToday()
-		if err != nil {
-			fmt.Println(err)
-		}
+		response := ShouldIDeployToday()
 
 		if response.ShouldIDeploy {
 			fmt.Printf("%s\n", color.Green(response.Message))

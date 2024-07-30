@@ -1,13 +1,12 @@
 package get
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
-	"io"
 	"net"
-	"net/http"
 	"strings"
 
+	"github.com/carlmjohnson/requests"
 	"github.com/kahnwong/swissknife/color"
 	"github.com/spf13/cobra"
 )
@@ -39,26 +38,16 @@ type PublicIPResponse struct {
 }
 
 func getPublicIP() (PublicIPResponse, error) {
-	// make request
-	resp, err := http.Get("https://api.country.is")
+	var response PublicIPResponse
+	err := requests.
+		URL("https://api.country.is").
+		ToJSON(&response).
+		Fetch(context.Background())
+
 	if err != nil {
-		return PublicIPResponse{}, err
+		fmt.Println("Error getting public ip:", err)
 	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return PublicIPResponse{}, err
-	}
-
-	// parse
-
-	var jsonResponse PublicIPResponse
-	err = json.Unmarshal(body, &jsonResponse)
-	if err != nil {
-		return PublicIPResponse{}, err
-	}
-
-	return jsonResponse, nil
+	return response, nil
 }
 
 var getIPCmd = &cobra.Command{
