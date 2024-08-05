@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/kahnwong/swissknife/color"
+	"github.com/rs/zerolog/log"
 	"github.com/showwin/speedtest-go/speedtest"
 	"github.com/spf13/cobra"
 )
@@ -23,17 +24,17 @@ var SpeedTestCmd = &cobra.Command{
 
 			err := s.PingTest(nil)
 			if err != nil {
-				return
+				log.Fatal().Err(err).Msg("Error pinging server")
 			}
 
 			err = s.DownloadTest()
 			if err != nil {
-				return
+				log.Fatal().Err(err).Msg("Error testing download speed")
 			}
 
 			err = s.UploadTest()
 			if err != nil {
-				return
+				log.Fatal().Err(err).Msg("Error testing upload speed")
 			}
 
 			fmt.Printf("" +

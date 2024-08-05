@@ -8,13 +8,14 @@ import (
 
 	"github.com/carlmjohnson/requests"
 	"github.com/kahnwong/swissknife/color"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
-func getLocalIP() (string, error) {
+func getLocalIP() string {
 	conn, err := net.Dial("udp", "8.8.8.8:80")
 	if err != nil {
-		return "", err
+		log.Fatal().Err(err).Msg("Error on net.Dial")
 	}
 
 	localAddr := conn.LocalAddr().(*net.UDPAddr)
@@ -26,10 +27,10 @@ func getLocalIP() (string, error) {
 	if len(parts) > 0 {
 		localIP = parts[0]
 	} else {
-		fmt.Println("Invalid address format")
+		log.Error().Msg("Invalid address format")
 	}
 
-	return fmt.Sprintf("%v", localIP), nil
+	return localIP
 }
 
 type PublicIPResponse struct {
@@ -37,7 +38,7 @@ type PublicIPResponse struct {
 	Country string `json:"country"`
 }
 
-func getPublicIP() (PublicIPResponse, error) {
+func getPublicIP() PublicIPResponse {
 	var response PublicIPResponse
 	err := requests.
 		URL("https://api.country.is").
@@ -45,9 +46,10 @@ func getPublicIP() (PublicIPResponse, error) {
 		Fetch(context.Background())
 
 	if err != nil {
-		fmt.Println("Error getting public ip:", err)
+		log.Fatal().Err(err).Msg("Error getting public ip")
 	}
-	return response, nil
+
+	return response
 }
 
 var getIPCmd = &cobra.Command{
@@ -55,19 +57,11 @@ var getIPCmd = &cobra.Command{
 	Short: "Get IP information",
 	Long:  `Get IP information`,
 	Run: func(cmd *cobra.Command, args []string) {
-		localIP, err := getLocalIP()
-		if err != nil {
-			fmt.Println(err)
-		} else {
-			fmt.Printf("%s: %s\n", color.Green("Local IP"), localIP)
-		}
+		localIP := getLocalIP()
+		fmt.Printf("%s: %s\n", color.Green("Local IP"), localIP)
 
-		publicIP, err := getPublicIP()
-		if err != nil {
-			fmt.Println(err)
-		} else {
-			fmt.Printf("%s: %s (%s)\n", color.Green("Public IP"), publicIP.Ip, color.Blue(publicIP.Country))
-		}
+		publicIP := getPublicIP()
+		fmt.Printf("%s: %s (%s)\n", color.Green("Public IP"), publicIP.Ip, color.Blue(publicIP.Country))
 	},
 }
 

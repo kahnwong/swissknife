@@ -9,6 +9,7 @@ require (
 	github.com/charmbracelet/lipgloss v0.12.1
 	github.com/fatih/color v1.17.0
 	github.com/libp2p/go-netroute v0.2.1
+	github.com/rs/zerolog v1.33.0
 	github.com/sethvargo/go-diceware v0.4.0
 	github.com/sethvargo/go-password v0.3.1
 	github.com/shirou/gopsutil/v4 v4.24.6

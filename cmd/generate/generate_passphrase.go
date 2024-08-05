@@ -2,25 +2,24 @@ package generate
 
 import (
 	"fmt"
-	"log/slog"
 	"strings"
 
 	"github.com/kahnwong/swissknife/utils"
-
+	"github.com/rs/zerolog/log"
 	"github.com/sethvargo/go-diceware/diceware"
 	"github.com/spf13/cobra"
 )
 
-func generatePassphrase() (string, error) {
+func generatePassphrase() string {
 	// Generate 6 words using the diceware algorithm.
 	list, err := diceware.Generate(6)
 	if err != nil {
-		return "", err
+		log.Fatal().Err(err).Msg("Failed to generate passphrases")
 	}
 
 	res := strings.Join(list, "-")
 
-	return res, nil
+	return res
 }
 
 var generatePassphraseCmd = &cobra.Command{
@@ -28,11 +27,7 @@ var generatePassphraseCmd = &cobra.Command{
 	Short: "Generate passphrase",
 	Long:  `Generate passphrase. Result is copied to clipboard.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// main
-		passphrase, err := generatePassphrase()
-		if err != nil {
-			slog.Error("Error generating passphrase")
-		}
+		passphrase := generatePassphrase()
 		utils.WriteToClipboard(passphrase)
 		fmt.Printf("%s\n", passphrase)
 	},

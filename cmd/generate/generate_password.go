@@ -2,23 +2,22 @@ package generate
 
 import (
 	"fmt"
-	"log/slog"
-
-	"github.com/sethvargo/go-password/password"
 
 	"github.com/kahnwong/swissknife/utils"
+	"github.com/rs/zerolog/log"
+	"github.com/sethvargo/go-password/password"
 	"github.com/spf13/cobra"
 )
 
-func generatePassword() (string, error) {
+func generatePassword() string {
 	// Generate a password that is 64 characters long with 10 digits, 10 symbols,
 	// allowing upper and lower case letters, disallowing repeat characters.
 	res, err := password.Generate(32, 10, 0, false, false)
 	if err != nil {
-		return "", err
+		log.Fatal().Err(err).Msg("Failed to generate password")
 	}
 
-	return res, nil
+	return res
 }
 
 var generatePasswordCmd = &cobra.Command{
@@ -26,11 +25,7 @@ var generatePasswordCmd = &cobra.Command{
 	Short: "Generate password",
 	Long:  `Generate password. Result is copied to clipboard.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// main
-		password, err := generatePassword()
-		if err != nil {
-			slog.Error("Error generating password")
-		}
+		password := generatePassword()
 		utils.WriteToClipboard(password)
 		fmt.Printf("%s\n", password)
 	},

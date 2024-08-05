@@ -8,6 +8,7 @@ import (
 
 	"github.com/carlmjohnson/requests"
 	"github.com/kahnwong/swissknife/color"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
@@ -28,7 +29,7 @@ func ShouldIDeployToday() ShouldIDeploy {
 		Fetch(context.Background())
 
 	if err != nil {
-		fmt.Println("Error calling ShouldIDeploy API:", err)
+		log.Fatal().Err(err).Msg("Error calling ShouldIDeploy API")
 	}
 
 	return response
@@ -37,7 +38,6 @@ func ShouldIDeployToday() ShouldIDeploy {
 var ShouldIDeployTodayCmd = &cobra.Command{
 	Use:   "shouldideploytoday",
 	Short: "Should I deploy today?",
-	Long:  `Should I deploy today?`,
 	Run: func(cmd *cobra.Command, args []string) {
 		response := ShouldIDeployToday()
 

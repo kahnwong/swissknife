@@ -3,13 +3,13 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/charmbracelet/bubbles/progress"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/rs/zerolog/log"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
@@ -127,7 +127,7 @@ var TimerCmd = &cobra.Command{
 		// parse input
 		duration, err := time.ParseDuration(args[0])
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal().Err(err).Msg("Error parsing duration")
 		}
 
 		// timer
@@ -136,7 +136,7 @@ var TimerCmd = &cobra.Command{
 
 		_, err = tea.NewProgram(&m).Run()
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal().Err(err)
 		}
 	},
 }

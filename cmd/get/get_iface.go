@@ -5,28 +5,28 @@ import (
 	"net"
 
 	netroute "github.com/libp2p/go-netroute"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
 // unix: `netstat -nr -f inet`
 // get iface-owned app: `ifconfig -v utun3 | grep "agent domain"`
 
-func getIface() (string, error) {
+func getIface() string {
 	r, err := netroute.New()
 	if err != nil {
-		return "", err
+		log.Fatal().Err(err).Msg("Error initializing netroute")
 	}
 
 	iface, _, _, err := r.Route(
 		net.IPv4(104, 16, 133, 229), // cloudflare
 	)
 	if err != nil {
-		return "", err
+		log.Fatal().Err(err).Msg("Error retrieving net route")
 	}
-
 	//fmt.Printf("%v, %v, %v, %v\n", iface, gw, src, err)
 
-	return iface.Name, nil
+	return iface.Name
 }
 
 var getIfaceCmd = &cobra.Command{
@@ -34,10 +34,7 @@ var getIfaceCmd = &cobra.Command{
 	Short: "Get iface",
 	Long:  `Get iface used for public internet access`,
 	Run: func(cmd *cobra.Command, args []string) {
-		iface, err := getIface()
-		if err != nil {
-			fmt.Println(err)
-		}
+		iface := getIface()
 		fmt.Println(iface)
 	},
 }

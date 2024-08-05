@@ -6,71 +6,70 @@ import (
 	"encoding/base64"
 	"encoding/pem"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 
-	"golang.org/x/crypto/ssh"
-
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"golang.org/x/crypto/ssh"
 )
 
 // helpers
 func writeStringToFile(filePath string, data string, permission os.FileMode) {
 	file, err := os.Create(filePath)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Msgf("Failed to create file %s", filePath)
 	}
 
 	_, err = file.WriteString(data)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Msgf("Failed to write to file %s", filePath)
 	}
 
 	err = file.Chmod(permission)
 	if err != nil {
-		fmt.Println("Error setting file permissions:", err)
-		return
+		log.Fatal().Err(err).Msgf("Failed to change file permissions")
 	}
 }
 
 func returnKeyPath(fileName string) string {
 	currentDir, err := os.Getwd()
 	if err != nil {
-		fmt.Println("Error:", err)
+		log.Fatal().Err(err).Msgf("Failed to get current directory")
 	}
 
 	keyPath := filepath.Join(currentDir, fileName)
-	keyPath = keyPath + ".pem"
+	keyPath = fmt.Sprintf("%s.pem", keyPath)
 
 	return keyPath
 }
 
 // main
-func generateSSHKeyEDSA() (string, string, error) {
+func generateSSHKeyEDSA() (string, string) {
 	// Generate a new Ed25519 private key
 	//// If rand is nil, crypto/rand.Reader will be used
 	public, private, err := ed25519.GenerateKey(nil)
 	if err != nil {
-		return "", "", err
-	}
-	p, err := ssh.MarshalPrivateKey(crypto.PrivateKey(private), "")
-	if err != nil {
-		return "", "", err
+		log.Fatal().Err(err).Msgf("Failed to generate ed25519 key")
 	}
 
 	// public key
 	publicKey, err := ssh.NewPublicKey(public)
 	if err != nil {
-		return "", "", err
+		log.Fatal().Err(err).Msgf("Failed to create public key")
 	}
-	publicKeyString := "ssh-ed25519" + " " + base64.StdEncoding.EncodeToString(publicKey.Marshal())
+	publicKeyString := fmt.Sprintf("ssh-ed25519 %s", base64.StdEncoding.EncodeToString(publicKey.Marshal()))
 
 	// private key
+	//// p stands for pem
+	p, err := ssh.MarshalPrivateKey(crypto.PrivateKey(private), "")
+	if err != nil {
+		log.Fatal().Err(err).Msgf("Failed to marshal private key")
+	}
 	privateKeyPem := pem.EncodeToMemory(p)
 	privateKeyString := string(privateKeyPem)
 
-	return publicKeyString, privateKeyString, nil
+	return publicKeyString, privateKeyString
 }
 
 var generateSSHKeyCmd = &cobra.Command{
@@ -85,14 +84,14 @@ var generateSSHKeyCmd = &cobra.Command{
 		}
 
 		// main
-		publicKeyString, privateKeyString, err := generateSSHKeyEDSA()
-		if err != nil {
-			fmt.Print(err)
-		}
+		publicKeyString, privateKeyString := generateSSHKeyEDSA()
 
 		// write key to file
-		writeStringToFile(fmt.Sprintf("%s.pub", args[0]), publicKeyString, 0644)
-		writeStringToFile(fmt.Sprintf("%s.pem", args[0]), privateKeyString, 0600)
+		publicKeyFilename := fmt.Sprintf("%s.pub", args[0])
+		writeStringToFile(publicKeyFilename, publicKeyString, 0644)
+
+		privateKeyFilename := fmt.Sprintf("%s.pem", args[0])
+		writeStringToFile(privateKeyFilename, privateKeyString, 0600)
 
 		fmt.Printf("SSH key created at: %s\n", returnKeyPath(args[0]))
 	},
