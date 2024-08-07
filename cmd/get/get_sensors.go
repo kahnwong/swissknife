@@ -20,10 +20,8 @@ var SensorsCmd = &cobra.Command{
 
 		var temperature float64
 		for _, sensor := range sensors {
-			if sensor.SensorKey == "PMU" {
-				if temperature < sensor.Temperature {
-					temperature = sensor.Temperature
-				}
+			if temperature < sensor.Temperature {
+				temperature = sensor.Temperature
 			}
 		}
 
