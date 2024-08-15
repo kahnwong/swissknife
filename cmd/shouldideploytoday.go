@@ -20,11 +20,14 @@ type ShouldIDeploy struct {
 }
 
 func ShouldIDeployToday() ShouldIDeploy {
-	url := "https://shouldideploy.today/api?tz=Asia%2FBangkok"
+	url := "https://shouldideploy.today"
 
 	var response ShouldIDeploy
 	err := requests.
 		URL(url).
+		Path("api").
+		Param("tz", "UTC").
+		Param("date", time.Now().UTC().Format("2006-01-02T15:04:05.000Z")).
 		ToJSON(&response).
 		Fetch(context.Background())
 
