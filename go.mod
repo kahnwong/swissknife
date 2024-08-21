@@ -6,7 +6,7 @@ require (
 	github.com/carlmjohnson/requests v0.24.1
 	github.com/charmbracelet/bubbles v0.18.0
 	github.com/charmbracelet/bubbletea v0.26.6
-	github.com/charmbracelet/lipgloss v0.12.1
+	github.com/charmbracelet/lipgloss v0.13.0
 	github.com/fatih/color v1.17.0
 	github.com/libp2p/go-netroute v0.2.1
 	github.com/rs/zerolog v1.33.0
