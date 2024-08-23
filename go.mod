@@ -3,7 +3,7 @@ module github.com/kahnwong/swissknife
 go 1.22
 
 require (
-	github.com/carlmjohnson/requests v0.24.1
+	github.com/carlmjohnson/requests v0.24.2
 	github.com/charmbracelet/bubbles v0.18.0
 	github.com/charmbracelet/bubbletea v0.27.1
 	github.com/charmbracelet/lipgloss v0.13.0
