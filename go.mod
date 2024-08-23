@@ -17,7 +17,7 @@ require (
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/spf13/cobra v1.8.1
 	golang.design/x/clipboard v0.7.0
-	golang.org/x/crypto v0.25.0
+	golang.org/x/crypto v0.26.0
 )
 
 require (
@@ -55,5 +55,5 @@ require (
 	golang.org/x/net v0.27.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
 	golang.org/x/sys v0.24.0 // indirect
-	golang.org/x/text v0.16.0 // indirect
+	golang.org/x/text v0.17.0 // indirect
 )
