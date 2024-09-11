@@ -5,7 +5,7 @@ go 1.23
 require (
 	github.com/carlmjohnson/requests v0.24.2
 	github.com/charmbracelet/bubbles v0.20.0
-	github.com/charmbracelet/bubbletea v1.1.0
+	github.com/charmbracelet/bubbletea v1.1.1
 	github.com/charmbracelet/lipgloss v0.13.0
 	github.com/fatih/color v1.17.0
 	github.com/libp2p/go-netroute v0.2.1
