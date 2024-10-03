@@ -2,10 +2,10 @@
 version: 2
 
 builds:
-  - env:
-      - CGO_ENABLED=1
-    goos:
+  - goos:
+      - linux
       - darwin
+      - windows
     goarch:
       - amd64
       - arm64
