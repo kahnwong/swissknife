@@ -1,6 +1,6 @@
 module github.com/kahnwong/swissknife
 
-go 1.23
+go 1.23.2
 
 require (
 	github.com/carlmjohnson/requests v0.24.2
