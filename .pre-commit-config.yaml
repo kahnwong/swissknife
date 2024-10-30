@@ -15,7 +15,6 @@ repos:
       - id: detect-private-key
       - id: fix-byte-order-marker
       - id: mixed-line-ending
-  # ----------------------- OPS -----------------------
   - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
     rev: 0.2.3
     hooks:
@@ -23,16 +22,12 @@ repos:
         args: [--mapping, "2", --sequence, "4", --offset, "2", --width, "150", --preserve-quotes]
         exclude: ^.github/dependabot.yaml
 #        exclude: (sops\.yaml)$
-  # ----------------------- GOLANG -----------------------
-  - repo: https://github.com/dnephin/pre-commit-golang
-    rev: v0.5.1
+  - repo: https://github.com/kahnwong/pre-commit
+    rev: 0eb55ea
     hooks:
       - id: go-fmt
       - id: go-vet
       - id: go-imports
-      # - id: no-go-testing
-      - id: golangci-lint
-      # - id: go-critic
-      # - id: go-unit-tests
+#      - id: golangci-lint
       - id: go-build
       - id: go-mod-tidy
