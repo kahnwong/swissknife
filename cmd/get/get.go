@@ -1,7 +1,7 @@
 package get
 
 import (
-	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -11,6 +11,9 @@ var Cmd = &cobra.Command{
 	Short: "Obtain information",
 	Long:  `Obtain information`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Please specify subcommand")
+		if len(args) == 0 {
+			cmd.Help()
+			os.Exit(0)
+		}
 	},
 }

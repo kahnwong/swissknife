@@ -1,7 +1,7 @@
 package generate
 
 import (
-	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -11,6 +11,9 @@ var Cmd = &cobra.Command{
 	Short: "Generate stuff",
 	Long:  `Generate stuff`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Please specify subcommand")
+		if len(args) == 0 {
+			cmd.Help()
+			os.Exit(0)
+		}
 	},
 }
