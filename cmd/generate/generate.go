@@ -3,6 +3,7 @@ package generate
 import (
 	"os"
 
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
@@ -12,7 +13,10 @@ var Cmd = &cobra.Command{
 	Long:  `Generate stuff`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			cmd.Help()
+			err := cmd.Help()
+			if err != nil {
+				log.Fatal().Err(err).Msg("Failed to display help")
+			}
 			os.Exit(0)
 		}
 	},

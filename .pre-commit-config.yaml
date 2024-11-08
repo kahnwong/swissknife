@@ -23,11 +23,11 @@ repos:
         exclude: ^.github/dependabot.yaml
 #        exclude: (sops\.yaml)$
   - repo: https://github.com/kahnwong/pre-commit
-    rev: 0eb55ea
+    rev: 71489eb
     hooks:
       - id: go-fmt
       - id: go-vet
       - id: go-imports
-#      - id: golangci-lint
+      - id: golangci-lint
       - id: go-build
       - id: go-mod-tidy

@@ -3,6 +3,7 @@ module github.com/kahnwong/swissknife
 go 1.23.2
 
 require (
+	github.com/atotto/clipboard v0.1.4
 	github.com/carlmjohnson/requests v0.24.2
 	github.com/charmbracelet/bubbles v0.20.0
 	github.com/charmbracelet/bubbletea v1.1.2
@@ -14,9 +15,9 @@ require (
 	github.com/sethvargo/go-password v0.3.1
 	github.com/shirou/gopsutil/v4 v4.24.10
 	github.com/showwin/speedtest-go v1.7.9
+	github.com/skanehira/clipboard-image v1.0.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/spf13/cobra v1.8.1
-	golang.design/x/clipboard v0.7.0
 	golang.org/x/crypto v0.28.0
 )
 
@@ -45,9 +46,6 @@ require (
 	github.com/tklauser/go-sysconf v0.3.14 // indirect
 	github.com/tklauser/numcpus v0.8.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
-	golang.org/x/exp/shiny v0.0.0-20240719175910-8a7402abbf56 // indirect
-	golang.org/x/image v0.18.0 // indirect
-	golang.org/x/mobile v0.0.0-20231127183840-76ac6878050a // indirect
 	golang.org/x/net v0.30.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
 	golang.org/x/sys v0.26.0 // indirect

@@ -1,30 +1,39 @@
 package utils
 
 import (
-	"golang.design/x/clipboard"
+	"os"
+
+	"github.com/atotto/clipboard"
+	"github.com/rs/zerolog/log"
+	clipboardImage "github.com/skanehira/clipboard-image"
 )
 
 func WriteToClipboard(text string) {
-	err := clipboard.Init() // clipboard doesn't work from ssh session
-	if err == nil {         // clipboard doesn't work from ssh session
-		clipboard.Write(clipboard.FmtText, []byte(text))
+	err := clipboard.WriteAll(text)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to write to clipboard")
 	}
 }
 
 func WriteToClipboardImage(bytes []byte) {
-	err := clipboard.Init()
-	if err == nil {
-		clipboard.Write(clipboard.FmtImage, bytes)
+	tempFilename := "/tmp/qr-image.png"
+	err := os.WriteFile(tempFilename, bytes, 0644)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to write temp image for clipboard")
+	}
+
+	f, err := os.Open(tempFilename)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to open temp image for clipboard")
+	}
+	defer f.Close()
+
+	if err = clipboardImage.CopyToClipboard(f); err != nil {
+		log.Fatal().Err(err).Msg("Failed to copy to clipboard")
 	}
 }
 
 func ReadFromClipboard() string {
-	err := clipboard.Init()
-	if err == nil {
-
-		s := clipboard.Read(clipboard.FmtText)
-		return string(s)
-	}
-
-	return ""
+	text, _ := clipboard.ReadAll()
+	return text
 }

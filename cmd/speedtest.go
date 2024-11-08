@@ -37,10 +37,10 @@ var SpeedTestCmd = &cobra.Command{
 				log.Fatal().Err(err).Msg("Error testing upload speed")
 			}
 
-			fmt.Printf("" +
+			fmt.Print(
 				fmt.Sprintf("%s:  %s\n", color.Green("Latency"), s.Latency) +
-				fmt.Sprintf("%s: %s\n", color.Green("Download"), s.DLSpeed) +
-				fmt.Sprintf("%s:   %s\n", color.Green("Upload"), s.ULSpeed),
+					fmt.Sprintf("%s: %s\n", color.Green("Download"), s.DLSpeed) +
+					fmt.Sprintf("%s:   %s\n", color.Green("Upload"), s.ULSpeed),
 			)
 
 			s.Context.Reset()
