@@ -12,6 +12,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type PublicIPResponse struct {
+	Ip string `json:"ip"`
+}
+
+type IPLocation struct {
+	Ip         string `json:"ip"`
+	Country    string `json:"country"`
+	RegionName string `json:"regionName"`
+}
+
 func getLocalIP() string {
 	conn, err := net.Dial("udp", "8.8.8.8:80")
 	if err != nil {
@@ -33,20 +43,29 @@ func getLocalIP() string {
 	return localIP
 }
 
-type PublicIPResponse struct {
-	Ip      string `json:"ip"`
-	Country string `json:"country"`
-}
-
 func getPublicIP() PublicIPResponse {
 	var response PublicIPResponse
 	err := requests.
-		URL("https://api.country.is").
+		URL("https://api.ipify.org?format=json").
 		ToJSON(&response).
 		Fetch(context.Background())
 
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error getting public ip")
+	}
+
+	return response
+}
+
+func getIPLocation(ip string) IPLocation {
+	var response IPLocation
+	err := requests.
+		URL(fmt.Sprintf("http://ip-api.com/json/%s", ip)).
+		ToJSON(&response).
+		Fetch(context.Background())
+
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error getting ip location")
 	}
 
 	return response
@@ -61,7 +80,8 @@ var getIPCmd = &cobra.Command{
 		fmt.Printf("%s: %s\n", color.Green("Local IP"), localIP)
 
 		publicIP := getPublicIP()
-		fmt.Printf("%s: %s (%s)\n", color.Green("Public IP"), publicIP.Ip, color.Blue(publicIP.Country))
+		IPLocation := getIPLocation(publicIP.Ip)
+		fmt.Printf("%s: %s (%s, %s)\n", color.Green("Public IP"), publicIP.Ip, color.Blue(IPLocation.RegionName), color.Blue(IPLocation.Country))
 	},
 }
 
