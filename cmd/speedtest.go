@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"github.com/kahnwong/swissknife/color"
 	"github.com/rs/zerolog/log"
@@ -13,38 +15,65 @@ var SpeedTestCmd = &cobra.Command{
 	Use:   "speedtest",
 	Short: "Speedtest",
 	Run: func(cmd *cobra.Command, args []string) {
-		// https://github.com/showwin/speedtest-go#api-usage
+		// ref: <https://github.com/showwin/speedtest-go#api-usage>
 		var speedtestClient = speedtest.New()
-
 		serverList, _ := speedtestClient.FetchServers()
 		targets, _ := serverList.FindServer([]int{})
 
-		for _, s := range targets {
-			fmt.Printf("%s:   %s\n", color.Green("Server"), s.Name)
+		// start tests
+		var s *speedtest.Server
+		tests := make(chan struct{})
+		ctx, cancel := context.WithCancel(context.Background())
 
-			err := s.PingTest(nil)
-			if err != nil {
-				log.Fatal().Err(err).Msg("Error pinging server")
+		// -- background progress report -- //
+		go func(ctx context.Context) {
+			for {
+				select {
+				case <-ctx.Done():
+					tests <- struct{}{}
+					return
+				default:
+					fmt.Print(".") // for progress report
+				}
+
+				time.Sleep(500 * time.Millisecond)
+			}
+		}(ctx)
+
+		// -- actual tests -- //
+		go func() {
+			for _, s = range targets {
+				fmt.Printf("%s:   %s\n", color.Green("Server"), s.Name)
+
+				err := s.PingTest(nil)
+				if err != nil {
+					log.Fatal().Err(err).Msg("Error pinging server")
+				}
+
+				err = s.DownloadTest()
+				if err != nil {
+					log.Fatal().Err(err).Msg("Error testing download speed")
+				}
+
+				err = s.UploadTest()
+				if err != nil {
+					log.Fatal().Err(err).Msg("Error testing upload speed")
+				}
 			}
 
-			err = s.DownloadTest()
-			if err != nil {
-				log.Fatal().Err(err).Msg("Error testing download speed")
-			}
+			cancel()
+		}()
+		<-tests
 
-			err = s.UploadTest()
-			if err != nil {
-				log.Fatal().Err(err).Msg("Error testing upload speed")
-			}
+		// print results
+		fmt.Print(
+			"\n" +
+				fmt.Sprintf("%s:  %s\n", color.Green("Latency"), s.Latency.Truncate(time.Millisecond)) +
+				fmt.Sprintf("%s: %s\n", color.Green("Download"), s.DLSpeed) +
+				fmt.Sprintf("%s:   %s\n", color.Green("Upload"), s.ULSpeed),
+		)
 
-			fmt.Print(
-				fmt.Sprintf("%s:  %s\n", color.Green("Latency"), s.Latency) +
-					fmt.Sprintf("%s: %s\n", color.Green("Download"), s.DLSpeed) +
-					fmt.Sprintf("%s:   %s\n", color.Green("Upload"), s.ULSpeed),
-			)
-
-			s.Context.Reset()
-		}
+		s.Context.Reset()
 	},
 }
 
