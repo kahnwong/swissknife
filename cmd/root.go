@@ -5,6 +5,7 @@ import (
 
 	"github.com/kahnwong/swissknife/cmd/generate"
 	"github.com/kahnwong/swissknife/cmd/get"
+	"github.com/kahnwong/swissknife/cmd/list"
 	"github.com/spf13/cobra"
 )
 
@@ -29,4 +30,5 @@ func Execute() {
 func init() {
 	rootCmd.AddCommand(get.Cmd)
 	rootCmd.AddCommand(generate.Cmd)
+	rootCmd.AddCommand(list.Cmd)
 }
