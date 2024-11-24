@@ -5,10 +5,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/jedib0t/go-pretty/v6/table"
-
 	human "github.com/dustin/go-humanize"
+	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/kahnwong/swissknife/color"
+	"github.com/rs/zerolog/log"
 	"github.com/shirou/gopsutil/v4/disk"
 	"github.com/spf13/cobra"
 )
@@ -23,11 +23,18 @@ func listVolumes() {
 	t.AppendHeader(table.Row{"Mounted on", "Size", "Used", "Avail", "Use%", "Type", "Filesystem"})
 
 	// get volumes info
-	partitions, _ := disk.Partitions(false)
+	partitions, err := disk.Partitions(false)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Error getting partitions info")
+	}
+
 	for _, partition := range partitions {
 		if partition.Fstype != "squashfs" && !strings.Contains(partition.Mountpoint, "snap") { // for example: snap partitions on ubuntu
 			device := partition.Mountpoint
-			stats, _ := disk.Usage(device)
+			stats, err := disk.Usage(device)
+			if err != nil {
+				log.Fatal().Err(err).Msg("Error getting disk info")
+			}
 
 			if stats.Total == 0 {
 				continue
