@@ -74,7 +74,7 @@ func listVolumes() {
 					diskAvailStr,
 					percentStr,
 					color.Magenta(partition.Fstype),
-					color.Magenta(stats.Fstype),
+					color.Magenta(partition.Device),
 				},
 			})
 		}
