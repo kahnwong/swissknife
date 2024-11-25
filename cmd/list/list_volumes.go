@@ -29,9 +29,15 @@ func listVolumes() {
 	}
 
 	for _, partition := range partitions {
+		// linux
+		isSquashFs := partition.Fstype == "squashfs"
 		isSnap := strings.Contains(partition.Mountpoint, "snap")
 		isKubernetes := strings.Contains(partition.Mountpoint, "kubelet")
-		if partition.Fstype != "squashfs" && !isSnap && !isKubernetes {
+		// osx
+		isOsx := strings.Contains(partition.Mountpoint, "System/Volumes")
+		isDevFs := partition.Fstype == "devfs"
+		isOsxNix := strings.Contains(partition.Mountpoint, "/nix")
+		if !isSquashFs && !isSnap && !isKubernetes && !isOsx && !isDevFs && !isOsxNix {
 			device := partition.Mountpoint
 			stats, err := disk.Usage(device)
 			if err != nil {
