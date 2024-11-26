@@ -20,6 +20,9 @@ var SpeedTestCmd = &cobra.Command{
 		serverList, _ := speedtestClient.FetchServers()
 		targets, _ := serverList.FindServer([]int{})
 
+		// print test server location
+		fmt.Printf("%s:   %s\n", color.Green("Server"), targets[0].Name)
+
 		// start tests
 		var s *speedtest.Server
 		tests := make(chan struct{})
@@ -43,8 +46,6 @@ var SpeedTestCmd = &cobra.Command{
 		// -- actual tests -- //
 		go func() {
 			for _, s = range targets {
-				fmt.Printf("%s:   %s\n", color.Green("Server"), s.Name)
-
 				err := s.PingTest(nil)
 				if err != nil {
 					log.Fatal().Err(err).Msg("Error pinging server")
