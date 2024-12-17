@@ -8,6 +8,7 @@ require (
 	github.com/charmbracelet/bubbles v0.20.0
 	github.com/charmbracelet/bubbletea v1.2.4
 	github.com/charmbracelet/lipgloss v1.0.0
+	github.com/distatus/battery v0.11.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/fatih/color v1.18.0
 	github.com/jedib0t/go-pretty/v6 v6.6.5
@@ -18,7 +19,6 @@ require (
 	github.com/shirou/gopsutil/v4 v4.24.11
 	github.com/showwin/speedtest-go v1.7.9
 	github.com/skanehira/clipboard-image v1.0.0
-	github.com/skanehira/clipboard-image/v2 v2.0.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/spf13/cobra v1.8.1
 	golang.org/x/crypto v0.31.0
@@ -53,4 +53,5 @@ require (
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
+	howett.net/plist v1.0.0 // indirect
 )
