@@ -92,7 +92,11 @@ func getSystemInfo() SystemInfo {
 	// battery
 	batteries, err := battery.GetAll()
 	if err != nil {
-		log.Fatal().Err(err).Msg("Error getting battery info")
+		if strings.Contains(err.Error(), "no such file or directory") {
+			// ignore this happens on [linux on mac devices]
+		} else {
+			log.Fatal().Err(err).Msg("Error getting battery info")
+		}
 	}
 
 	var batteryCurrent float64
