@@ -46,20 +46,26 @@ var SpeedTestCmd = &cobra.Command{
 		// -- actual tests -- //
 		go func() {
 			for _, s = range targets {
+				fmt.Print("Pinging")
 				err := s.PingTest(nil)
 				if err != nil {
 					log.Fatal().Err(err).Msg("Error pinging server")
 				}
+				fmt.Printf("\033[2K\r") // clear line
 
+				fmt.Print("Downloading")
 				err = s.DownloadTest()
 				if err != nil {
 					log.Fatal().Err(err).Msg("Error testing download speed")
 				}
+				fmt.Printf("\033[2K\r") // clear line
 
+				fmt.Print("Uploading")
 				err = s.UploadTest()
 				if err != nil {
 					log.Fatal().Err(err).Msg("Error testing upload speed")
 				}
+				fmt.Printf("\033[2K\r") // clear line
 			}
 
 			cancel()
@@ -68,8 +74,7 @@ var SpeedTestCmd = &cobra.Command{
 
 		// print results
 		fmt.Print(
-			"\n" +
-				fmt.Sprintf("%s:  %s\n", color.Green("Latency"), s.Latency.Truncate(time.Millisecond)) +
+			fmt.Sprintf("%s:  %s\n", color.Green("Latency"), s.Latency.Truncate(time.Millisecond)) +
 				fmt.Sprintf("%s: %s\n", color.Green("Download"), s.DLSpeed) +
 				fmt.Sprintf("%s:   %s\n", color.Green("Upload"), s.ULSpeed),
 		)
