@@ -11,7 +11,7 @@ import (
 func WriteToClipboard(text string) {
 	err := clipboard.WriteAll(text)
 	if err != nil {
-		log.Error().Err(err).Msg("Failed to write to clipboard")
+		log.Error().Msg("Failed to write to clipboard")
 	}
 }
 
@@ -19,17 +19,17 @@ func WriteToClipboardImage(bytes []byte) {
 	tempFilename := "/tmp/qr-image.png"
 	err := os.WriteFile(tempFilename, bytes, 0644)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to write temp image for clipboard")
+		log.Fatal().Msg("Failed to write temp image for clipboard")
 	}
 
 	f, err := os.Open(tempFilename)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to open temp image for clipboard")
+		log.Fatal().Msg("Failed to open temp image for clipboard")
 	}
 	defer f.Close()
 
 	if err = clipboardImage.CopyToClipboard(f); err != nil {
-		log.Fatal().Err(err).Msg("Failed to copy to clipboard")
+		log.Fatal().Msg("Failed to copy to clipboard")
 	}
 }
 

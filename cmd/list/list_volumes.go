@@ -25,7 +25,7 @@ func listVolumes() {
 	// get volumes info
 	partitions, err := disk.Partitions(false)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Error getting partitions info")
+		log.Fatal().Msg("Error getting partitions info")
 	}
 
 	for _, partition := range partitions {
@@ -41,7 +41,7 @@ func listVolumes() {
 			device := partition.Mountpoint
 			stats, err := disk.Usage(device)
 			if err != nil {
-				log.Fatal().Err(err).Msg("Error getting disk info")
+				log.Fatal().Msg("Error getting disk info")
 			}
 
 			if stats.Total == 0 {

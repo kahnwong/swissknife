@@ -38,13 +38,13 @@ func generateQRCode(url string) ([]byte, string) {
 	var q *qrcode.QRCode
 	q, err := qrcode.New(url, qrcode.Medium)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to initialize QRCode object")
+		log.Fatal().Msg("Failed to initialize QRCode object")
 	}
 
 	// generate png
 	png, err := q.PNG(1024)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to generate QRCode PNG")
+		log.Fatal().Msg("Failed to generate QRCode PNG")
 	}
 
 	// for stdout

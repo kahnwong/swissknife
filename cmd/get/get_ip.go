@@ -25,7 +25,7 @@ type IPLocation struct {
 func getLocalIP() string {
 	conn, err := net.Dial("udp", "8.8.8.8:80")
 	if err != nil {
-		log.Fatal().Err(err).Msg("Error on net.Dial")
+		log.Fatal().Msg("Error on net.Dial")
 	}
 
 	localAddr := conn.LocalAddr().(*net.UDPAddr)
@@ -51,7 +51,7 @@ func getPublicIP() PublicIPResponse {
 		Fetch(context.Background())
 
 	if err != nil {
-		log.Fatal().Err(err).Msg("Error getting public ip")
+		log.Fatal().Msg("Error getting public ip")
 	}
 
 	return response
@@ -65,7 +65,7 @@ func getIPLocation(ip string) IPLocation {
 		Fetch(context.Background())
 
 	if err != nil {
-		log.Fatal().Err(err).Msg("Error getting ip location")
+		log.Fatal().Msg("Error getting ip location")
 	}
 
 	return response

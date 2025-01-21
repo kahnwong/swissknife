@@ -15,7 +15,7 @@ var Cmd = &cobra.Command{
 		if len(args) == 0 {
 			err := cmd.Help()
 			if err != nil {
-				log.Fatal().Err(err).Msg("Failed to display help")
+				log.Fatal().Msg("Failed to display help")
 			}
 			os.Exit(0)
 		}

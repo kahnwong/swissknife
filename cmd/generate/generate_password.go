@@ -14,7 +14,7 @@ func generatePassword() string {
 	// allowing upper and lower case letters, disallowing repeat characters.
 	res, err := password.Generate(32, 10, 0, false, false)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to generate password")
+		log.Fatal().Msg("Failed to generate password")
 	}
 
 	return res

@@ -32,7 +32,7 @@ func ShouldIDeployToday() ShouldIDeploy {
 		Fetch(context.Background())
 
 	if err != nil {
-		log.Fatal().Err(err).Msg("Error calling ShouldIDeploy API")
+		log.Fatal().Msg("Error calling ShouldIDeploy API")
 	}
 
 	return response

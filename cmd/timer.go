@@ -127,7 +127,7 @@ var TimerCmd = &cobra.Command{
 		// parse input
 		duration, err := time.ParseDuration(args[0])
 		if err != nil {
-			log.Fatal().Err(err).Msg("Error parsing duration")
+			log.Fatal().Msg("Error parsing duration")
 		}
 
 		// timer

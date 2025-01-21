@@ -15,7 +15,7 @@ var SensorsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		sensors, err := sensors.SensorsTemperatures()
 		if err != nil {
-			log.Fatal().Err(err).Msg("Failed to get sensors info")
+			log.Fatal().Msg("Failed to get sensors info")
 		}
 
 		var temperature float64

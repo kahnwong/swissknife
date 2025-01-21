@@ -49,21 +49,21 @@ var SpeedTestCmd = &cobra.Command{
 				fmt.Print("Pinging")
 				err := s.PingTest(nil)
 				if err != nil {
-					log.Fatal().Err(err).Msg("Error pinging server")
+					log.Fatal().Msg("Error pinging server")
 				}
 				fmt.Printf("\033[2K\r") // clear line
 
 				fmt.Print("Downloading")
 				err = s.DownloadTest()
 				if err != nil {
-					log.Fatal().Err(err).Msg("Error testing download speed")
+					log.Fatal().Msg("Error testing download speed")
 				}
 				fmt.Printf("\033[2K\r") // clear line
 
 				fmt.Print("Uploading")
 				err = s.UploadTest()
 				if err != nil {
-					log.Fatal().Err(err).Msg("Error testing upload speed")
+					log.Fatal().Msg("Error testing upload speed")
 				}
 				fmt.Printf("\033[2K\r") // clear line
 			}

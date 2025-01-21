@@ -17,7 +17,7 @@ func generateKey(n int) string {
 	_, err := rand.Read(b)
 	// Note that err == nil only if we read len(b) bytes.
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to generate random bytes")
+		log.Fatal().Msg("Failed to generate random bytes")
 	}
 
 	// convert to base64

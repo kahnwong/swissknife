@@ -14,7 +14,7 @@ func generatePassphrase() string {
 	// Generate 6 words using the diceware algorithm.
 	list, err := diceware.Generate(6)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to generate passphrases")
+		log.Fatal().Msg("Failed to generate passphrases")
 	}
 
 	res := strings.Join(list, "-")

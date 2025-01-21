@@ -18,24 +18,24 @@ import (
 func writeStringToFile(filePath string, data string, permission os.FileMode) {
 	file, err := os.Create(filePath)
 	if err != nil {
-		log.Fatal().Err(err).Msgf("Failed to create file %s", filePath)
+		log.Fatal().Msgf("Failed to create file %s", filePath)
 	}
 
 	_, err = file.WriteString(data)
 	if err != nil {
-		log.Fatal().Err(err).Msgf("Failed to write to file %s", filePath)
+		log.Fatal().Msgf("Failed to write to file %s", filePath)
 	}
 
 	err = file.Chmod(permission)
 	if err != nil {
-		log.Fatal().Err(err).Msgf("Failed to change file permissions")
+		log.Fatal().Msgf("Failed to change file permissions")
 	}
 }
 
 func returnKeyPath(fileName string) string {
 	currentDir, err := os.Getwd()
 	if err != nil {
-		log.Fatal().Err(err).Msgf("Failed to get current directory")
+		log.Fatal().Msgf("Failed to get current directory")
 	}
 
 	keyPath := filepath.Join(currentDir, fileName)
@@ -50,13 +50,13 @@ func generateSSHKeyEDSA() (string, string) {
 	//// If rand is nil, crypto/rand.Reader will be used
 	public, private, err := ed25519.GenerateKey(nil)
 	if err != nil {
-		log.Fatal().Err(err).Msgf("Failed to generate ed25519 key")
+		log.Fatal().Msgf("Failed to generate ed25519 key")
 	}
 
 	// public key
 	publicKey, err := ssh.NewPublicKey(public)
 	if err != nil {
-		log.Fatal().Err(err).Msgf("Failed to create public key")
+		log.Fatal().Msgf("Failed to create public key")
 	}
 	publicKeyString := fmt.Sprintf("ssh-ed25519 %s", base64.StdEncoding.EncodeToString(publicKey.Marshal()))
 
@@ -64,7 +64,7 @@ func generateSSHKeyEDSA() (string, string) {
 	//// p stands for pem
 	p, err := ssh.MarshalPrivateKey(crypto.PrivateKey(private), "")
 	if err != nil {
-		log.Fatal().Err(err).Msgf("Failed to marshal private key")
+		log.Fatal().Msgf("Failed to marshal private key")
 	}
 	privateKeyPem := pem.EncodeToMemory(p)
 	privateKeyString := string(privateKeyPem)

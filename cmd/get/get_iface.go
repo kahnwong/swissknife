@@ -15,14 +15,14 @@ import (
 func getIface() string {
 	r, err := netroute.New()
 	if err != nil {
-		log.Fatal().Err(err).Msg("Error initializing netroute")
+		log.Fatal().Msg("Error initializing netroute")
 	}
 
 	iface, _, _, err := r.Route(
 		net.IPv4(104, 16, 133, 229), // cloudflare
 	)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Error retrieving net route")
+		log.Fatal().Msg("Error retrieving net route")
 	}
 	//fmt.Printf("%v, %v, %v, %v\n", iface, gw, src, err)
 

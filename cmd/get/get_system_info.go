@@ -53,30 +53,30 @@ func getSystemInfo() SystemInfo {
 	// ---- username ---- //
 	username, err := user.Current()
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to get current user info")
+		log.Fatal().Msg("Failed to get current user info")
 	}
 
 	// ---- system ---- //
 	// host
 	hostStat, err := host.Info()
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to get host info")
+		log.Fatal().Msg("Failed to get host info")
 	}
 
 	// cpu
 	cpuStat, err := cpu.Info()
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to get cpu info")
+		log.Fatal().Msg("Failed to get cpu info")
 	}
 	cpuThreads, err := cpu.Counts(true)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to get cpu threads info")
+		log.Fatal().Msg("Failed to get cpu threads info")
 	}
 
 	// memory
 	vmStat, err := mem.VirtualMemory()
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to get memory info")
+		log.Fatal().Msg("Failed to get memory info")
 	}
 	memoryUsed := convertKBtoGB(vmStat.Used)
 	memoryTotal := convertKBtoGB(vmStat.Total)
@@ -84,7 +84,7 @@ func getSystemInfo() SystemInfo {
 	// disk
 	diskStat, err := disk.Usage("/")
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to get disk info")
+		log.Fatal().Msg("Failed to get disk info")
 	}
 	diskUsed := convertKBtoGB(diskStat.Used)
 	diskTotal := convertKBtoGB(diskStat.Total)
@@ -95,7 +95,7 @@ func getSystemInfo() SystemInfo {
 		if strings.Contains(err.Error(), "no such file or directory") {
 			// ignore this happens on [linux on mac devices]
 		} else {
-			log.Fatal().Err(err).Msg("Error getting battery info")
+			log.Fatal().Msg("Error getting battery info")
 		}
 	}
 
