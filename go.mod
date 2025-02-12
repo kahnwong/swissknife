@@ -14,7 +14,7 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.6.6
 	github.com/libp2p/go-netroute v0.2.2
 	github.com/rs/zerolog v1.33.0
-	github.com/sethvargo/go-diceware v0.4.0
+	github.com/sethvargo/go-diceware v0.5.0
 	github.com/sethvargo/go-password v0.3.1
 	github.com/shirou/gopsutil/v4 v4.25.1
 	github.com/showwin/speedtest-go v1.7.10
