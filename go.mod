@@ -20,7 +20,7 @@ require (
 	github.com/showwin/speedtest-go v1.7.10
 	github.com/skanehira/clipboard-image v1.0.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
-	github.com/spf13/cobra v1.8.1
+	github.com/spf13/cobra v1.9.1
 	golang.org/x/crypto v0.33.0
 )
 
@@ -45,7 +45,7 @@ require (
 	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/tklauser/go-sysconf v0.3.14 // indirect
 	github.com/tklauser/numcpus v0.8.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
