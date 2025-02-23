@@ -11,4 +11,5 @@ builds:
       - -w -s
       - -X github.com/kahnwong/swissknife/cmd.version={{.Version}}
 checksum:
-  disable: true
+  disable: false
+  name_template: "checksums.txt"
