@@ -28,8 +28,8 @@ type SystemInfo struct {
 	CPUThreads   int
 
 	// memory
-	MemoryUsed  int
-	MemoryTotal int
+	MemoryUsed  uint64
+	MemoryTotal uint64
 
 	// disk
 	DiskUsed  int
@@ -78,8 +78,8 @@ func getSystemInfo() SystemInfo {
 	if err != nil {
 		log.Fatal().Msg("Failed to get memory info")
 	}
-	memoryUsed := convertKBtoGB(vmStat.Used)
-	memoryTotal := convertKBtoGB(vmStat.Total)
+	memoryUsed := vmStat.Used
+	memoryTotal := vmStat.Total
 
 	// disk
 	diskStat, err := disk.Usage("/")
@@ -137,7 +137,7 @@ var getSystemInfoCmd = &cobra.Command{
 		cpuStdout := fmt.Sprintf("%s: %s", color.Green("CPU"), cpuInfo)
 
 		memoryUsedPercent := convertToPercent(float64(systemInfo.MemoryUsed) / float64(systemInfo.MemoryTotal))
-		memoryInfo := fmt.Sprintf("%v/%v GB (%s)", systemInfo.MemoryUsed, systemInfo.MemoryTotal, color.Blue(strconv.Itoa(memoryUsedPercent)+"%"))
+		memoryInfo := fmt.Sprintf("%v/%v GB (%s)", convertKBtoGB(systemInfo.MemoryUsed), convertKBtoGB(systemInfo.MemoryTotal), color.Blue(strconv.Itoa(memoryUsedPercent)+"%"))
 		memoryStdout := fmt.Sprintf("%s: %s", color.Green("Memory"), memoryInfo)
 
 		diskUsedPercent := convertToPercent(float64(systemInfo.DiskUsed) / float64(systemInfo.DiskTotal))
