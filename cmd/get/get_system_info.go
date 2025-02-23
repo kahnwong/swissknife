@@ -32,16 +32,16 @@ type SystemInfo struct {
 	MemoryTotal uint64
 
 	// disk
-	DiskUsed  int
-	DiskTotal int
+	DiskUsed  uint64
+	DiskTotal uint64
 
 	// battery
 	BatteryCurrent float64
 	BatteryFull    float64
 }
 
-func convertKBtoGB(v uint64) int {
-	return int(math.Round(float64(v) / float64(1024) / float64(1024) / float64(1024)))
+func convertKBtoGB(v uint64) float64 {
+	return math.Round(float64(v)/float64(1024)/float64(1024)/float64(1024)*100) / 100
 }
 
 func convertToPercent(v float64) int {
@@ -86,8 +86,8 @@ func getSystemInfo() SystemInfo {
 	if err != nil {
 		log.Fatal().Msg("Failed to get disk info")
 	}
-	diskUsed := convertKBtoGB(diskStat.Used)
-	diskTotal := convertKBtoGB(diskStat.Total)
+	diskUsed := diskStat.Used
+	diskTotal := diskStat.Total
 
 	// battery
 	batteries, err := battery.GetAll()
@@ -141,7 +141,7 @@ var getSystemInfoCmd = &cobra.Command{
 		memoryStdout := fmt.Sprintf("%s: %s", color.Green("Memory"), memoryInfo)
 
 		diskUsedPercent := convertToPercent(float64(systemInfo.DiskUsed) / float64(systemInfo.DiskTotal))
-		diskInfo := fmt.Sprintf("%v/%v GB (%s)", systemInfo.DiskUsed, systemInfo.DiskTotal, color.Blue(strconv.Itoa(diskUsedPercent)+"%"))
+		diskInfo := fmt.Sprintf("%v/%v GB (%s)", convertKBtoGB(systemInfo.DiskUsed), convertKBtoGB(systemInfo.DiskTotal), color.Blue(strconv.Itoa(diskUsedPercent)+"%"))
 		diskStdout := fmt.Sprintf("%s: %s", color.Green("Disk"), diskInfo)
 
 		systemInfoStdout := fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n", hostStdout, linebreakStdout, osStdout, cpuStdout, memoryStdout, diskStdout)
