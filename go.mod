@@ -1,8 +1,6 @@
 module github.com/kahnwong/swissknife
 
-go 1.23.2
-
-toolchain go1.24.1
+go 1.24.2
 
 require (
 	github.com/atotto/clipboard v0.1.4
@@ -21,7 +19,6 @@ require (
 	github.com/shirou/gopsutil/v4 v4.25.3
 	github.com/showwin/speedtest-go v1.7.10
 	github.com/skanehira/clipboard-image v1.0.0
-	github.com/skanehira/clipboard-image/v2 v2.0.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/spf13/cobra v1.9.1
 	golang.org/x/crypto v0.36.0
