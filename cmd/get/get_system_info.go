@@ -36,8 +36,9 @@ type SystemInfo struct {
 	DiskTotal uint64
 
 	// battery
-	BatteryCurrent float64
-	BatteryFull    float64
+	BatteryCurrent        float64
+	BatteryFull           float64
+	BatteryDesignCapacity float64
 }
 
 func convertKBtoGB(v uint64) float64 {
@@ -101,24 +102,27 @@ func getSystemInfo() SystemInfo {
 
 	var batteryCurrent float64
 	var batteryFull float64
+	var batteryDesignCapacity float64
 	if len(batteries) > 0 {
 		batteryCurrent = batteries[0].Current
 		batteryFull = batteries[0].Full
+		batteryDesignCapacity = batteries[0].Design
 	}
 
 	// return
 	return SystemInfo{
-		Username:       username.Username,
-		Hostname:       hostStat.Hostname,
-		Platform:       fmt.Sprintf("%s %s", hostStat.Platform, hostStat.PlatformVersion),
-		CPUModelName:   cpuStat[0].ModelName,
-		CPUThreads:     cpuThreads,
-		MemoryUsed:     memoryUsed,
-		MemoryTotal:    memoryTotal,
-		DiskUsed:       diskUsed,
-		DiskTotal:      diskTotal,
-		BatteryCurrent: batteryCurrent,
-		BatteryFull:    batteryFull,
+		Username:              username.Username,
+		Hostname:              hostStat.Hostname,
+		Platform:              fmt.Sprintf("%s %s", hostStat.Platform, hostStat.PlatformVersion),
+		CPUModelName:          cpuStat[0].ModelName,
+		CPUThreads:            cpuThreads,
+		MemoryUsed:            memoryUsed,
+		MemoryTotal:           memoryTotal,
+		DiskUsed:              diskUsed,
+		DiskTotal:             diskTotal,
+		BatteryCurrent:        batteryCurrent,
+		BatteryFull:           batteryFull,
+		BatteryDesignCapacity: batteryDesignCapacity,
 	}
 }
 
@@ -150,6 +154,7 @@ var getSystemInfoCmd = &cobra.Command{
 		// only print battery info if is a laptop
 		if systemInfo.BatteryFull > 0 {
 			batteryPercent := convertToPercent(systemInfo.BatteryCurrent / systemInfo.BatteryFull)
+			batteryHealth := convertToPercent(systemInfo.BatteryFull / systemInfo.BatteryDesignCapacity)
 			batteryFormat := fmt.Sprintf("%v%%", batteryPercent)
 			var batteryPercentStr string
 			if batteryPercent > 80 {
@@ -160,7 +165,7 @@ var getSystemInfoCmd = &cobra.Command{
 				batteryPercentStr = color.Red(batteryFormat)
 			}
 
-			batteryStdout := fmt.Sprintf("%s: %s", color.Green("Battery"), batteryPercentStr)
+			batteryStdout := fmt.Sprintf("%s: %s (Health: %s)", color.Green("Battery"), batteryPercentStr, color.Blue(strconv.Itoa(batteryHealth)+"%"))
 			fmt.Println(batteryStdout)
 		}
 	},
