@@ -30,7 +30,6 @@ Available Commands:
   generate           Generate stuff
   get                Obtain information
   help               Help about any command
-  list               List devices and volumes
   shouldideploytoday Should I deploy today?
   speedtest          Speedtest
   stopwatch          Create a stopwatch

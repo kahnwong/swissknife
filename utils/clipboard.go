@@ -26,7 +26,12 @@ func WriteToClipboardImage(bytes []byte) {
 	if err != nil {
 		log.Fatal().Msg("Failed to open temp image for clipboard")
 	}
-	defer f.Close()
+	defer func(f *os.File) {
+		err := f.Close()
+		if err != nil {
+			log.Error().Msg("Error opening temp image for clipboard")
+		}
+	}(f)
 
 	if err = clipboardImage.CopyToClipboard(f); err != nil {
 		log.Fatal().Msg("Failed to copy to clipboard")
