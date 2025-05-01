@@ -16,7 +16,7 @@ require (
 	github.com/rs/zerolog v1.34.0
 	github.com/sethvargo/go-diceware v0.5.0
 	github.com/sethvargo/go-password v0.3.1
-	github.com/shirou/gopsutil/v4 v4.25.3
+	github.com/shirou/gopsutil/v4 v4.25.4
 	github.com/showwin/speedtest-go v1.7.10
 	github.com/skanehira/clipboard-image v1.0.0
 	github.com/skanehira/clipboard-image/v2 v2.0.0
