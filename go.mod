@@ -19,7 +19,6 @@ require (
 	github.com/shirou/gopsutil/v4 v4.25.5
 	github.com/showwin/speedtest-go v1.7.10
 	github.com/skanehira/clipboard-image v1.0.0
-	github.com/skanehira/clipboard-image/v2 v2.0.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/spf13/cobra v1.9.1
 	golang.org/x/crypto v0.38.0
@@ -53,7 +52,7 @@ require (
 	github.com/tklauser/numcpus v0.8.0 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
-	golang.org/x/net v0.36.0 // indirect
+	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/sync v0.14.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.25.0 // indirect
