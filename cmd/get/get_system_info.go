@@ -141,11 +141,11 @@ var getSystemInfoCmd = &cobra.Command{
 		cpuStdout := fmt.Sprintf("%s: %s", color.Green("CPU"), cpuInfo)
 
 		memoryUsedPercent := convertToPercent(float64(systemInfo.MemoryUsed) / float64(systemInfo.MemoryTotal))
-		memoryInfo := fmt.Sprintf("%v/%v GB (%s)", convertKBtoGB(systemInfo.MemoryUsed), convertKBtoGB(systemInfo.MemoryTotal), color.Blue(strconv.Itoa(memoryUsedPercent)+"%"))
+		memoryInfo := fmt.Sprintf("%v GB / %v GB (%s)", convertKBtoGB(systemInfo.MemoryUsed), convertKBtoGB(systemInfo.MemoryTotal), color.Blue(strconv.Itoa(memoryUsedPercent)+"%"))
 		memoryStdout := fmt.Sprintf("%s: %s", color.Green("Memory"), memoryInfo)
 
 		diskUsedPercent := convertToPercent(float64(systemInfo.DiskUsed) / float64(systemInfo.DiskTotal))
-		diskInfo := fmt.Sprintf("%v/%v GB (%s)", convertKBtoGB(systemInfo.DiskUsed), convertKBtoGB(systemInfo.DiskTotal), color.Blue(strconv.Itoa(diskUsedPercent)+"%"))
+		diskInfo := fmt.Sprintf("%v GB / %v GB (%s)", convertKBtoGB(systemInfo.DiskUsed), convertKBtoGB(systemInfo.DiskTotal), color.Blue(strconv.Itoa(diskUsedPercent)+"%"))
 		diskStdout := fmt.Sprintf("%s: %s", color.Green("Disk"), diskInfo)
 
 		systemInfoStdout := fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n", hostStdout, linebreakStdout, osStdout, cpuStdout, memoryStdout, diskStdout)
