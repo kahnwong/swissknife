@@ -1,5 +1,5 @@
-build: build-static
-	goreleaser release --skip publish --skip validate --skip archive --clean -f .goreleaser-linux.yaml
+build: build-dynamic
+	goreleaser build --clean --skip validate -f .goreleaser.yaml
 
 test:
 	go test ./...

@@ -1,12 +1,29 @@
 version: 2
+before:
+  hooks:
+    - ./scripts/build-dynamic.sh
 builds:
-  - goos:
+  - id: "linux-amd64"
+    goos:
       - linux
-      - darwin
-      - windows
     goarch:
       - amd64
-      - arm64
+    env:
+      - CGO_ENABLED=1
+      - CC=x86_64-linux-gnu-gcc
+      - CXX=x86_64-linux-gnu-g++
+    ldflags:
+      - -w -s
+      - -X github.com/kahnwong/swissknife/cmd.version={{.Version}}
+  - id: "darwin-amd64"
+    goos:
+      - darwin
+    goarch:
+      - amd64
+    env:
+      - CGO_ENABLED=1
+      - CC=o64-clang
+      - CXX=o64-clang++
     ldflags:
       - -w -s
       - -X github.com/kahnwong/swissknife/cmd.version={{.Version}}

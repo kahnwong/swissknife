@@ -3,10 +3,10 @@ on:
   push:
     tags:
       - "*"
+  pull_request: # debug
+  workflow_dispatch: #  debug
 permissions:
   contents: write
-  id-token: write
-  attestations: write
 jobs:
   release-binary:
     runs-on: ubuntu-latest
@@ -19,14 +19,14 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: stable
+      - name: Install cross-compilation tools (using Docker image)
+        run: |
+          docker pull goreleaser/goreleaser-cross:latest
       - name: Release
         uses: goreleaser/goreleaser-action@v6
         with:
-          distribution: goreleaser
+          distribution: goreleaser-cross
           version: "~> v2"
           args: release --clean --config .goreleaser.yaml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/attest-build-provenance@v2
-        with:
-          subject-checksums: ./dist/checksums.txt
