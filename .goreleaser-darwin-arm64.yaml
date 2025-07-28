@@ -10,7 +10,7 @@ builds:
     goarch:
       - arm64
     ldflags:
-      - -linkmode 'external'
+#      - -linkmode 'external' # what if
       - -w -s
       - -X github.com/kahnwong/swissknife/cmd.version={{.Version}}
 checksum:
