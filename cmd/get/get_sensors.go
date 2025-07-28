@@ -3,7 +3,7 @@ package get
 import (
 	"fmt"
 
-	"github.com/kahnwong/swissknife/color"
+	"github.com/kahnwong/swissknife/configs/color"
 	"github.com/rs/zerolog/log"
 	"github.com/shirou/gopsutil/v4/sensors"
 	"github.com/spf13/cobra"

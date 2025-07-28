@@ -9,7 +9,7 @@ import (
 
 	"github.com/distatus/battery"
 
-	"github.com/kahnwong/swissknife/color"
+	"github.com/kahnwong/swissknife/configs/color"
 	"github.com/rs/zerolog/log"
 	"github.com/shirou/gopsutil/v4/cpu"
 	"github.com/shirou/gopsutil/v4/disk"

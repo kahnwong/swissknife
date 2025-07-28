@@ -7,7 +7,7 @@ import (
 
 	human "github.com/dustin/go-humanize"
 	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/kahnwong/swissknife/color"
+	"github.com/kahnwong/swissknife/configs/color"
 	"github.com/rs/zerolog/log"
 	"github.com/shirou/gopsutil/v4/disk"
 	"github.com/spf13/cobra"

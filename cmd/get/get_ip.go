@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/carlmjohnson/requests"
-	"github.com/kahnwong/swissknife/color"
+	"github.com/kahnwong/swissknife/configs/color"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
