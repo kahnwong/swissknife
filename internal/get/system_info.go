@@ -1,5 +1,11 @@
 package get
 
+/*
+#cgo LDFLAGS: ./lib/libsystem.dylib
+#include "../../lib/system.h"
+#include <stdlib.h>
+*/
+import "C"
 import (
 	"fmt"
 	"math"
@@ -38,6 +44,7 @@ type systemInfoStruct struct {
 	BatteryCurrent        float64
 	BatteryFull           float64
 	BatteryDesignCapacity float64
+	BatteryCycleCount     uint64
 }
 
 func convertKBtoGB(v uint64) float64 {
@@ -108,6 +115,23 @@ func getSystemInfo() systemInfoStruct {
 		batteryDesignCapacity = batteries[0].Design
 	}
 
+	//// cycle count
+	var batteryCycleCount uint64
+	result := C.battery_cycle_count()
+
+	switch result.error {
+	case C.BATTERY_SUCCESS:
+		batteryCycleCount = uint64(result.cycle_count)
+	case C.BATTERY_NO_BATTERY:
+		batteryCycleCount = 0
+	case C.BATTERY_NO_CYCLE_COUNT:
+		batteryCycleCount = 0
+	case C.BATTERY_MANAGER_ERROR:
+		log.Fatal().Msg("Battery manager error")
+	default:
+		log.Fatal().Msg("Unknown error occurred")
+	}
+
 	// return
 	return systemInfoStruct{
 		Username:              username.Username,
@@ -122,6 +146,7 @@ func getSystemInfo() systemInfoStruct {
 		BatteryCurrent:        batteryCurrent,
 		BatteryFull:           batteryFull,
 		BatteryDesignCapacity: batteryDesignCapacity,
+		BatteryCycleCount:     batteryCycleCount,
 	}
 }
 
@@ -161,7 +186,7 @@ func SystemInfo() {
 			batteryPercentStr = color.Red(batteryFormat)
 		}
 
-		batteryStdout := fmt.Sprintf("%s: %s (Health: %s)", color.Green("Battery"), batteryPercentStr, color.Blue(strconv.Itoa(batteryHealth)+"%"))
+		batteryStdout := fmt.Sprintf("%s: %s (Health: %s, Cycles: %s)", color.Green("Battery"), batteryPercentStr, color.Blue(strconv.Itoa(batteryHealth)+"%"), color.Blue(strconv.Itoa(int(systemInfo.BatteryCycleCount))))
 		fmt.Println(batteryStdout)
 	}
 }

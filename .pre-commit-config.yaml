@@ -17,7 +17,6 @@ repos:
   - repo: https://github.com/kahnwong/pre-commit
     rev: "791fd68"
     hooks:
-      - id: go-build
       - id: go-fmt
       - id: go-imports
       - id: go-mod-tidy
@@ -25,3 +24,12 @@ repos:
       - id: go-vet
       - id: golangci-lint
       - id: yamlfmt
+  - repo: local
+    hooks:
+      - id: go-build
+        name: go-build
+        entry: "make build-dynamic"
+        language: system
+        types: [go]
+        pass_filenames: false
+        require_serial: true
