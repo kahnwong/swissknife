@@ -2,7 +2,7 @@ package get
 
 /*
 #cgo linux LDFLAGS: ./lib/libsystem.a -ldl
-#cgo darwin LDFLAGS: ./lib/libsystem.a -ldl
+#cgo darwin LDFLAGS: ./lib/libsystem.a -ldl -framework IOKit
 #cgo windows LDFLAGS: ./lib/libsystem.a
 #include "../../lib/system.h"
 #include <stdlib.h>
