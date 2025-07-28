@@ -2,6 +2,7 @@ package get
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"strings"
 
@@ -59,15 +60,21 @@ func listVolumes() {
 			}
 
 			// disk use percent
-			percent := fmt.Sprintf("%2.f%%", stats.UsedPercent)
 			percentRaw := stats.UsedPercent
-			percentStr := ""
+			diskUseTicks := int(math.Round(stats.UsedPercent)) / 10
+			diskUseBar := fmt.Sprintf(
+				"[%s%s] %2.f%%",
+				strings.Repeat("#", diskUseTicks),
+				strings.Repeat(".", 10-diskUseTicks),
+				stats.UsedPercent,
+			)
+			diskUseStr := ""
 			if percentRaw > 80 {
-				percentStr = color.Red(percent)
+				diskUseStr = color.Red(diskUseBar)
 			} else if percentRaw > 70 {
-				percentStr = color.Yellow(percent)
+				diskUseStr = color.Yellow(diskUseBar)
 			} else {
-				percentStr = color.Green(percent)
+				diskUseStr = color.Green(diskUseBar)
 			}
 
 			// append info to table
@@ -77,7 +84,7 @@ func listVolumes() {
 					human.Bytes(stats.Total),
 					human.Bytes(stats.Used),
 					diskAvailStr,
-					percentStr,
+					diskUseStr,
 					color.Magenta(partition.Fstype),
 					color.Magenta(partition.Device),
 				},
