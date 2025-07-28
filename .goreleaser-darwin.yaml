@@ -1,0 +1,18 @@
+version: 2
+before:
+  hooks:
+    - ./scripts/build-dynamic.sh
+builds:
+  - goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=1
+    ldflags:
+      - -w -s
+      - -X github.com/kahnwong/swissknife/cmd.version={{.Version}}
+checksum:
+  disable: false
+  name_template: "checksums.txt"

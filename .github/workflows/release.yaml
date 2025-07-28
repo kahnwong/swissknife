@@ -9,7 +9,10 @@ permissions:
   attestations: write
 jobs:
   release-binary:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -19,14 +22,46 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: stable
+      - name: Install C build dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential gcc make
+      - name: Install C build dependencies (macOS)
+        if: runner.os == 'Darwin'
+        run: |
+          brew install gcc make
+      - name: Install C build dependencies (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          choco install mingw-w64
+          echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - name: Release
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean --config .goreleaser.yaml
+          args: release --clean --config ${{ runner.os == 'Linux' && '.goreleaser-linux.yaml' || runner.os == 'Windows' && '.goreleaser-windows.yaml' || '.goreleaser-darwin.yaml' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload checksums
+        uses: actions/upload-artifact@v4
+        with:
+          name: checksums-${{ runner.os }}
+          path: ./dist/checksums.txt
+  attest:
+    needs: release-binary
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all checksums
+        uses: actions/download-artifact@v4
+        with:
+          pattern: checksums-*
+          merge-multiple: true
+          path: checksums
+      - name: Combine checksums
+        run: |
+          cat checksums/checksums-* > combined-checksums.txt
       - uses: actions/attest-build-provenance@v2
         with:
-          subject-checksums: ./dist/checksums.txt
+          subject-checksums: combined-checksums.txt

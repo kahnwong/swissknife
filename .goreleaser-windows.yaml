@@ -1,12 +1,15 @@
 version: 2
+before:
+  hooks:
+    - ./scripts/build-dynamic.sh
 builds:
   - goos:
-      - linux
-      - darwin
       - windows
     goarch:
       - amd64
       - arm64
+    env:
+      - CGO_ENABLED=1
     ldflags:
       - -w -s
       - -X github.com/kahnwong/swissknife/cmd.version={{.Version}}
