@@ -1,16 +1,16 @@
 version: 2
 before:
   hooks:
-    - ./scripts/build-dynamic-ci-linux-amd64.sh
+    - ./scripts/build-static-ci-linux-amd64.sh
 builds:
   - env:
       - CGO_ENABLED=1
-      - CC=gcc
     goos:
       - linux
     goarch:
       - amd64
     ldflags:
+      - -linkmode 'external' -extldflags '-static'
       - -w -s
       - -X github.com/kahnwong/swissknife/cmd.version={{.Version}}
 checksum:
