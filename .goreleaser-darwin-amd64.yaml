@@ -1,0 +1,16 @@
+version: 2
+before:
+  hooks:
+    - ./scripts/build-dynamic-ci-darwin-amd64.sh
+builds:
+  - env:
+      - CGO_ENABLED=1
+    goos:
+      - darwin
+    goarch:
+      - amd64
+    ldflags:
+      - -w -s
+      - -X github.com/kahnwong/swissknife/cmd.version={{.Version}}
+checksum:
+  disable: true

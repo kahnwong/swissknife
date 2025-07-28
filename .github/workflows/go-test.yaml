@@ -17,6 +17,8 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: stable
+      - name: Build ffi
+        run: ./scripts/build-dynamic.sh
       - name: Install dependencies
         run: go get .
       - name: Build

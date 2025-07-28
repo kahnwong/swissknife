@@ -1,0 +1,16 @@
+#!/bin/bash
+
+cd lib/system || exit
+
+if [[ "$(uname)" == "Linux" ]]; then
+	cross build --release --target x86_64-unknown-linux-gnu
+	cross build --release --target aarch64-unknown-linux-gnu
+	cd ../..
+
+	cp lib/system/target/x86_64-unknown-linux-gnu/release/libsystem.so lib/
+	cp lib/system/target/aarch64-unknown-linux-gnu/release/libsystem.so lib/libsystem-aarch64.so
+elif [[ "$(uname)" == "Darwin" ]]; then
+	cp lib/system/target/release/libsystem.dylib lib/
+elif [[ "$(uname)" == "Windows" ]]; then
+	cp lib/system/target/release/libsystem.dll lib/
+fi

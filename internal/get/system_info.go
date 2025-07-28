@@ -3,6 +3,7 @@ package get
 /*
 #cgo linux LDFLAGS: ./lib/libsystem.so
 #cgo darwin LDFLAGS: ./lib/libsystem.dylib
+#cgo windows LDFLAGS: ./lib/system.dll
 #include "../../lib/system.h"
 #include <stdlib.h>
 */
