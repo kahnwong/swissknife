@@ -13,8 +13,5 @@ builds:
       - -extldflags "-static"
       - -w -s
       - -X github.com/kahnwong/swissknife/cmd.version={{.Version}}
-    flags:
-      - -a
-      - -installsuffix cgo
 checksum:
   disable: true
