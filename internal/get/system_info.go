@@ -1,7 +1,8 @@
 package get
 
 /*
-#cgo LDFLAGS: ./lib/libsystem.dylib
+#cgo linux LDFLAGS: ./lib/libsystem.so
+#cgo darwin LDFLAGS: ./lib/libsystem.dylib
 #include "../../lib/system.h"
 #include <stdlib.h>
 */

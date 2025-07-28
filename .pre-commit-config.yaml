@@ -24,6 +24,8 @@ repos:
       - id: go-vet
       - id: golangci-lint
       - id: yamlfmt
+      - id: shellcheck
+      - id: shfmt
   - repo: local
     hooks:
       - id: go-build

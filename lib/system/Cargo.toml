@@ -3,7 +3,7 @@ name = "system"
 version = "0.1.0"
 
 [lib]
-crate-type = ["staticlib"]
+crate-type = ["cdylib"]
 
 [dependencies]
 battery = "0.7.8"

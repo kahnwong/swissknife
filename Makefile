@@ -4,5 +4,5 @@ build: build-static
 test:
 	go test ./...
 
-build-static:
-	./scripts/build-static.sh
+build-dynamic:
+	./scripts/build-dynamic.sh
