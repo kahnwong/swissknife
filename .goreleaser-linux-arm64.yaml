@@ -11,7 +11,7 @@ builds:
     goarch:
       - arm64
     ldflags:
-      - -extldflags "-static"
+      - -linkmode 'external' -extldflags '-static'
       - -w -s
       - -X github.com/kahnwong/swissknife/cmd.version={{.Version}}
 checksum:
