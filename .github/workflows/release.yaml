@@ -25,7 +25,7 @@ jobs:
       # --------- setup cross compilers ---------
       - name: Install cross-compiler for linux/arm64
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install gcc-aarch64-linux-gnu
+        run: sudo apt-get install gcc-aarch64-linux-gnu musl-tools
       - name: Install cross-compiler for windows
         if: matrix.os == 'windows-latest'
         run: sudo apt-get install gcc-mingw-w64-x86-64
