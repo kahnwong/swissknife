@@ -4,7 +4,7 @@ before:
     - ./scripts/build-static-ci-linux-amd64.sh
 builds:
   - env:
-      - CGO_ENABLED=0
+      - CGO_ENABLED=1
     goos:
       - linux
     goarch:
