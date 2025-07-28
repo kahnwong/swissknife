@@ -4,14 +4,12 @@ before:
     - ./scripts/build-static-ci-linux-amd64.sh
 builds:
   - env:
-      - CGO_ENABLED=1
-      - CC=gcc
+      - CGO_ENABLED=0
     goos:
       - linux
     goarch:
       - amd64
     ldflags:
-#      - -linkmode 'external' -extldflags '-static' # what if
       - -w -s
       - -X github.com/kahnwong/swissknife/cmd.version={{.Version}}
 checksum:

@@ -4,16 +4,17 @@ before:
     - ./scripts/build-static-ci-linux-arm64.sh
 builds:
   - env:
-      - CGO_ENABLED=1
-#      - CC=aarch64-linux-gnu-gcc
-      - CC=musl-gcc
+      - CGO_ENABLED=0
     goos:
       - linux
     goarch:
       - arm64
     ldflags:
-      - -linkmode 'external' -extldflags '-static'
+      - -extldflags "-static"
       - -w -s
       - -X github.com/kahnwong/swissknife/cmd.version={{.Version}}
+    flags:
+      - -a
+      - -installsuffix cgo
 checksum:
   disable: true
