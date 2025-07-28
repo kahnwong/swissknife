@@ -5,7 +5,8 @@ before:
 builds:
   - env:
       - CGO_ENABLED=1
-      - CC=aarch64-linux-gnu-gcc
+#      - CC=aarch64-linux-gnu-gcc
+      - CC=musl-gcc
     goos:
       - linux
     goarch:
