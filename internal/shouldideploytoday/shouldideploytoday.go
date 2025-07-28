@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/carlmjohnson/requests"
-	"github.com/kahnwong/swissknife/configs"
+	"github.com/kahnwong/swissknife/configs/color"
 	"github.com/rs/zerolog/log"
 )
 
@@ -40,8 +40,8 @@ func ShouldIDeployToday() {
 	response := getResponse()
 
 	if response.ShouldIDeploy {
-		fmt.Printf("%s\n", configs.Colors.Green(response.Message))
+		fmt.Printf("%s\n", color.Green(response.Message))
 	} else if !response.ShouldIDeploy {
-		fmt.Printf("%s\n", configs.Colors.Red(response.Message))
+		fmt.Printf("%s\n", color.Red(response.Message))
 	}
 }
