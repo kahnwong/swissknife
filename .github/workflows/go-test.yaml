@@ -18,7 +18,7 @@ jobs:
         with:
           go-version: stable
       - name: Build ffi
-        run: ./scripts/build-dynamic.sh
+        run: ./scripts/build-static.sh
       - name: Install dependencies
         run: go get .
       - name: Build

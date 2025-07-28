@@ -3,6 +3,7 @@ on:
   push:
     tags:
       - "*"
+  pull_request: # debug
 permissions:
   contents: write
 jobs:
@@ -65,6 +66,7 @@ jobs:
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean --config ${{ steps.config.outputs.config_file }}
+          # args: release --clean --config ${{ steps.config.outputs.config_file }}
+          args: build --skip validate --clean --config ${{ steps.config.outputs.config_file }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

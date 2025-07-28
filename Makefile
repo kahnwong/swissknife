@@ -1,8 +1,8 @@
-build: build-dynamic
+build: build-static
 	goreleaser build --clean --skip validate -f .goreleaser.yaml
 
 test:
 	go test ./...
 
-build-dynamic:
-	./scripts/build-dynamic.sh
+build-static:
+	./scripts/build-static.sh

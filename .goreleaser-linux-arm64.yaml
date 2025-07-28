@@ -1,7 +1,7 @@
 version: 2
 before:
   hooks:
-    - ./scripts/build-dynamic-ci-linux-arm64.sh
+    - ./scripts/build-static-ci-linux-arm64.sh
 builds:
   - env:
       - CGO_ENABLED=1
