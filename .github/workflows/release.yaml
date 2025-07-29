@@ -43,6 +43,13 @@ jobs:
           elif [ "${{ matrix.os }}" == "windows" ]; then
             rustup target add x86_64-pc-windows-gnu
           fi
+      - name: Cache cargo install
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin
+          key: ${{ runner.os }}-cargo-bin-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-bin-
       - name: Setup cross toolchain
         run: cargo install cross
       # --------- setup go ---------
