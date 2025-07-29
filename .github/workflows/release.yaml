@@ -3,13 +3,13 @@ on:
   push:
     tags:
       - "*"
-  pull_request: # debug
+#  pull_request: # debug
 permissions:
   contents: write
 jobs:
   release-binary:
     strategy:
-      fail-fast: false # debug
+      # fail-fast: false # debug
       matrix:
         os: [linux, darwin, windows]
         arch: [amd64, arm64]
@@ -59,7 +59,7 @@ jobs:
         with:
           distribution: goreleaser
           version: "~> v2"
-          # args: release --clean --config .goreleaser-${{ matrix.os }}-${{ matrix.arch }}.yaml
-          args: build --skip validate --clean --config .goreleaser-${{ matrix.os }}-${{ matrix.arch }}.yaml # debug
+          args: release --clean --config .goreleaser-${{ matrix.os }}-${{ matrix.arch }}.yaml
+          # args: build --skip validate --clean --config .goreleaser-${{ matrix.os }}-${{ matrix.arch }}.yaml # debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
