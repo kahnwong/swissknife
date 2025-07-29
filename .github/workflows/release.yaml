@@ -59,7 +59,7 @@ jobs:
         with:
           distribution: goreleaser
           version: "~> v2"
-          #          args: release --clean --config .goreleaser-${{ matrix.os }}-${{ matrix.arch }}.yaml
+          # args: release --clean --config .goreleaser-${{ matrix.os }}-${{ matrix.arch }}.yaml
           args: build --skip validate --clean --config .goreleaser-${{ matrix.os }}-${{ matrix.arch }}.yaml # debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
