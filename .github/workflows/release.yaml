@@ -93,7 +93,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: checksum.txt
           asset_name: checksum.txt
-          tag: ${{ github.ref }}
+          tag: ${{ steps.name.outputs.TAG_NAME }}
           overwrite: true
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
