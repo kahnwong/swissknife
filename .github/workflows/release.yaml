@@ -37,6 +37,7 @@ jobs:
           toolchain: stable
           cache: true
           cache-workspaces: ./lib/system
+          cache-key: ${{ runner.os }}
       - name: Add Rust targets
         run: |
           if [ "${{ matrix.os }}" == "darwin" ]; then
