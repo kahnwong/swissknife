@@ -11,38 +11,38 @@ jobs:
     strategy:
       fail-fast: false # debug
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [linux, darwin, windows]
         arch: [amd64, arm64]
         exclude:
           - os: windows-latest
             arch: arm64
-    runs-on: ${{ (matrix.os == 'windows-latest' && 'ubuntu-latest') || matrix.os }}
+    runs-on: ${{ (matrix.os != 'darwin' && 'ubuntu-latest') || 'macos-latest' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
       # --------- setup cross compilers ---------
-      - name: Install cross-compiler for linux/arm64
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install gcc-aarch64-linux-gnu
-      - name: Install cross-compiler for windows
-        if: matrix.os == 'windows-latest'
-        run: sudo apt-get install gcc-mingw-w64-x86-64
+      - name: Install cross-compilers
+        run: |
+          if [ "${{ matrix.os }}" == "linux" ]; then
+            sudo apt-get install gcc-aarch64-linux-gnu
+          elif [ "${{ matrix.os }}" == "windows" ]; then
+            sudo apt-get install gcc-mingw-w64-x86-64
+          fi
       # --------- setup rust ---------
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
-      - name: Add macOS Rust target
-        if: matrix.os == 'macos-latest'
+      - name: Add Rust targets
         run: |
-          rustup target add x86_64-apple-darwin
-          rustup target add aarch64-apple-darwin
-      - name: Add Windows Rust target
-        if: matrix.os == 'windows-latest'
-        run: |
-          rustup target add x86_64-pc-windows-gnu
+          if [ "${{ matrix.os }}" == "darwin" ]; then
+            rustup target add x86_64-apple-darwin
+            rustup target add aarch64-apple-darwin
+          elif [ "${{ matrix.os }}" == "windows" ]; then
+            rustup target add x86_64-pc-windows-gnu
+          fi
       - name: Setup cross toolchain
         run: cargo install cross
       # --------- setup go ---------
@@ -51,23 +51,12 @@ jobs:
         with:
           go-version: stable
       # --------- goreleaser ---------
-      - name: Set config file
-        id: config
-        run: |
-          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            OS_NAME="linux"
-          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
-            OS_NAME="darwin"
-          elif [ "${{ matrix.os }}" = "windows-latest" ]; then
-            OS_NAME="windows"
-          fi
-          echo "config_file=.goreleaser-${OS_NAME}-${{ matrix.arch }}.yaml" >> $GITHUB_OUTPUT
       - name: Release
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean --config ${{ steps.config.outputs.config_file }}
+          args: release --clean --config .goreleaser-${{ matrix.os }}-${{ matrix.arch }}.yaml"
           # args: build --skip validate --clean --config ${{ steps.config.outputs.config_file }} # debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
