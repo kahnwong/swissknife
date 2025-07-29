@@ -1,8 +1,5 @@
-build: build-static
-	goreleaser build --clean --skip validate -f .goreleaser-linux-amd64.yaml
+build:
+	./scripts/build-static.sh
 
 test:
 	go test ./...
-
-build-static:
-	./scripts/build-static.sh
