@@ -30,7 +30,7 @@ repos:
     hooks:
       - id: go-build
         name: go-build
-        entry: "make build-static"
+        entry: "make build"
         language: system
         types: [go]
         pass_filenames: false
