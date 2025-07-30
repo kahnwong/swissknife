@@ -3,7 +3,7 @@ on:
   push:
     tags:
       - "*"
-#  pull_request: # debug
+  pull_request: # debug
 permissions:
   contents: write
   id-token: write
@@ -13,7 +13,7 @@ jobs:
     strategy:
       # fail-fast: false # debug
       matrix:
-        os: [linux, darwin, windows]
+        os: [linux] #, darwin, windows]
         arch: [amd64, arm64]
         exclude:
           - os: windows
@@ -28,7 +28,7 @@ jobs:
       - name: Install cross-compilers
         run: |
           if [ "${{ matrix.os }}" == "linux" ]; then
-            sudo apt-get install gcc-aarch64-linux-gnu
+            sudo apt-get install musl-tools gcc-aarch64-linux-gnu
           elif [ "${{ matrix.os }}" == "windows" ]; then
             sudo apt-get install gcc-mingw-w64-x86-64
           fi
@@ -42,7 +42,10 @@ jobs:
           cache-key: ${{ runner.os }}
       - name: Add Rust targets
         run: |
-          if [ "${{ matrix.os }}" == "darwin" ]; then
+          if [ "${{ matrix.os }}" == "linux" ]; then
+            rustup target add x86_64-unknown-linux-musl
+            rustup target add aarch64-unknown-linux-musl
+          elif [ "${{ matrix.os }}" == "darwin" ]; then
             rustup target add x86_64-apple-darwin
             rustup target add aarch64-apple-darwin
           elif [ "${{ matrix.os }}" == "windows" ]; then
@@ -61,26 +64,26 @@ jobs:
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean --config .goreleaser-${{ matrix.os }}-${{ matrix.arch }}.yaml
-          # args: build --skip validate --clean --config .goreleaser-${{ matrix.os }}-${{ matrix.arch }}.yaml # debug
+          # args: release --clean --config .goreleaser-${{ matrix.os }}-${{ matrix.arch }}.yaml
+          args: build --skip validate --clean --config .goreleaser-${{ matrix.os }}-${{ matrix.arch }}.yaml # debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  attestation:
-    runs-on: ubuntu-latest
-    needs: release-binary
-    steps:
-      - name: Set tag name
-        id: name
-        run: |
-          TAG_NAME="${{ github.ref_name }}"
-          # TAG_NAME="v0.8.0"  # debug
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_OUTPUT
-      # --------- attestation ---------
-      - uses: robinraju/release-downloader@v1
-        with:
-          tag: ${{ steps.name.outputs.TAG_NAME }}
-          fileName: "*"
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-path: .
+  # attestation:
+  #   runs-on: ubuntu-latest
+  #   needs: release-binary
+  #   steps:
+  #     - name: Set tag name
+  #       id: name
+  #       run: |
+  #         TAG_NAME="${{ github.ref_name }}"
+  #         # TAG_NAME="v0.8.0"  # debug
+  #         echo "TAG_NAME=$TAG_NAME" >> $GITHUB_OUTPUT
+  #     # --------- attestation ---------
+  #     - uses: robinraju/release-downloader@v1
+  #       with:
+  #         tag: ${{ steps.name.outputs.TAG_NAME }}
+  #         fileName: "*"
+  #     - name: Generate artifact attestation
+  #       uses: actions/attest-build-provenance@v2
+  #       with:
+  #         subject-path: .

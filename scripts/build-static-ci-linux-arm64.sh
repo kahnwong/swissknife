@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd lib/system || exit
-cross build --release --target aarch64-unknown-linux-gnu
+cross build --release --target aarch64-linux-musl-gcc
 cd ../..
 
-cp lib/system/target/aarch64-unknown-linux-gnu/release/libsystem.a lib/
+cp lib/system/target/aarch64-linux-musl-gcc/release/libsystem.a lib/
