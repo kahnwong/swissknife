@@ -5,7 +5,7 @@ import (
 
 	"github.com/atotto/clipboard"
 	"github.com/rs/zerolog/log"
-	clipboardImage "github.com/skanehira/clipboard-image"
+	clipboardImage "github.com/skanehira/clipboard-image/v2"
 )
 
 func WriteToClipboard(text string) {
@@ -33,7 +33,7 @@ func WriteToClipboardImage(bytes []byte) {
 		}
 	}(f)
 
-	if err = clipboardImage.CopyToClipboard(f); err != nil {
+	if err = clipboardImage.Write(f); err != nil {
 		log.Fatal().Msg("Failed to copy to clipboard")
 	}
 }
