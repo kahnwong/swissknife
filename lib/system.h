@@ -13,6 +13,21 @@ struct BatteryResult {
 
 struct BatteryResult battery_cycle_count(void);
 
+// battery time to empty
+enum BatteryTimeToEmptyError {
+    BATTERY_TIME_TO_EMPTY_SUCCESS = 0,
+    BATTERY_TIME_TO_EMPTY_NO_BATTERY = 1,
+    BATTERY_TIME_TO_EMPTY_NO_TIME_TO_EMPTY = 2,
+    BATTERY_TIME_TO_EMPTY_MANAGER_ERROR = 3
+};
+
+struct BatteryTimeToEmptyResult {
+    unsigned long long time_to_empty_seconds;
+    enum BatteryTimeToEmptyError error;
+};
+
+struct BatteryTimeToEmptyResult battery_time_to_empty(void);
+
 
 // sensors
 enum SensorError {

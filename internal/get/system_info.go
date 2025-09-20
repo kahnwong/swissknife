@@ -47,6 +47,7 @@ type systemInfoStruct struct {
 	BatteryFull           float64
 	BatteryDesignCapacity float64
 	BatteryCycleCount     uint64
+	BatteryTimeToEmpty    uint64
 }
 
 func convertKBtoGB(v uint64) float64 {
@@ -134,6 +135,23 @@ func getSystemInfo() systemInfoStruct {
 		log.Fatal().Msg("Unknown error occurred")
 	}
 
+	//// time to empty
+	var batteryTimeToEmpty uint64
+	resultTimeToEmpty := C.battery_time_to_empty()
+
+	switch result.error {
+	case C.BATTERY_TIME_TO_EMPTY_SUCCESS:
+		batteryTimeToEmpty = uint64(resultTimeToEmpty.time_to_empty_seconds)
+	case C.BATTERY_TIME_TO_EMPTY_NO_BATTERY:
+		batteryTimeToEmpty = 0
+	case C.BATTERY_TIME_TO_EMPTY_NO_TIME_TO_EMPTY:
+		batteryTimeToEmpty = 0
+	case C.BATTERY_TIME_TO_EMPTY_MANAGER_ERROR:
+		log.Fatal().Msg("Battery manager error")
+	default:
+		log.Fatal().Msg("Unknown error occurred")
+	}
+
 	// return
 	return systemInfoStruct{
 		Username:              username.Username,
@@ -149,6 +167,7 @@ func getSystemInfo() systemInfoStruct {
 		BatteryFull:           batteryFull,
 		BatteryDesignCapacity: batteryDesignCapacity,
 		BatteryCycleCount:     batteryCycleCount,
+		BatteryTimeToEmpty:    batteryTimeToEmpty,
 	}
 }
 
@@ -188,7 +207,23 @@ func SystemInfo() {
 			batteryPercentStr = color.Red(batteryFormat)
 		}
 
-		batteryStdout := fmt.Sprintf("%s: %s (Health: %s, Cycles: %s)", color.Green("Battery"), batteryPercentStr, color.Blue(strconv.Itoa(batteryHealth)+"%"), color.Blue(strconv.Itoa(int(systemInfo.BatteryCycleCount))))
+		// convert BatteryTimeToEmpty from second to hour
+		var batteryTimeToEmptyFormatted string
+		if systemInfo.BatteryTimeToEmpty > 0 {
+			hours := systemInfo.BatteryTimeToEmpty / 3600
+			minutes := (systemInfo.BatteryTimeToEmpty % 3600) / 60
+			batteryTimeToEmptyFormatted = fmt.Sprintf("%02d:%02d", hours, minutes)
+		} else {
+			batteryTimeToEmptyFormatted = "--:--"
+		}
+
+		batteryStdout := fmt.Sprintf(
+			"%s: %s (Health: %s, Cycles: %s, Time Remaining: %s)",
+			color.Green("Battery"), batteryPercentStr,
+			color.Blue(strconv.Itoa(batteryHealth)+"%"),
+			color.Blue(strconv.Itoa(int(systemInfo.BatteryCycleCount))),
+			color.Blue(batteryTimeToEmptyFormatted),
+		)
 		fmt.Println(batteryStdout)
 	}
 }
