@@ -16,33 +16,16 @@ import (
 	"strings"
 
 	"github.com/distatus/battery"
+	"github.com/shirou/gopsutil/v4/cpu"
 
 	"github.com/kahnwong/swissknife/configs/color"
 	"github.com/rs/zerolog/log"
-	"github.com/shirou/gopsutil/v4/cpu"
 	"github.com/shirou/gopsutil/v4/disk"
 	"github.com/shirou/gopsutil/v4/host"
 	"github.com/shirou/gopsutil/v4/mem"
 )
 
-type systemInfoStruct struct {
-	Username string
-	Hostname string
-	Platform string
-
-	// cpu
-	CPUModelName string
-	CPUThreads   int
-
-	// memory
-	MemoryUsed  uint64
-	MemoryTotal uint64
-
-	// disk
-	DiskUsed  uint64
-	DiskTotal uint64
-
-	// battery
+type batteryStruct struct {
 	BatteryCurrent        float64
 	BatteryFull           float64
 	BatteryDesignCapacity float64
@@ -50,30 +33,91 @@ type systemInfoStruct struct {
 	BatteryTimeToEmpty    uint64
 }
 
-func convertKBtoGB(v uint64) float64 {
-	return math.Round(float64(v)/float64(1024)/float64(1024)/float64(1024)*100) / 100
+func SystemInfo() {
+	// host
+	username := getUsername()
+	hostInfo := getHostInfo()
+	fmt.Printf("%s@%s\n", color.Green(username), color.Green(hostInfo.Hostname))
+	fmt.Println(strings.Repeat("-", len(username)+len(hostInfo.Hostname)+1))
+
+	// os
+	fmt.Printf("%s: %s %s\n", color.Green("OS"), hostInfo.Platform, hostInfo.PlatformVersion)
+
+	// cpu
+	cpuModel, cpuThreads := getCpuInfo()
+	fmt.Printf("%s: %s (%v)\n", color.Green("CPU"), cpuModel, cpuThreads)
+
+	// memory
+	memoryUsed, memoryTotal, memoryUsedPercent := getMemoryInfo()
+	fmt.Printf("%s: %v GB / %v GB (%s)\n",
+		color.Green("Memory"),
+		convertKBtoGB(memoryUsed), convertKBtoGB(memoryTotal),
+		color.Blue(strconv.Itoa(memoryUsedPercent)+"%"),
+	)
+
+	// disk
+	diskUsed, diskTotal, diskUsedPercent := getDiskInfo()
+	fmt.Printf("%s: %v GB / %v GB (%s)\n",
+		color.Green("Disk"),
+		convertKBtoGB(diskUsed), convertKBtoGB(diskTotal),
+		color.Blue(strconv.Itoa(diskUsedPercent)+"%"),
+	)
+
+	// battery
+	batteryInfo := getBatteryInfo()
+
+	// only print battery info if is a laptop
+	if batteryInfo.BatteryFull > 0 {
+		batteryPercent := convertToPercent(batteryInfo.BatteryCurrent / batteryInfo.BatteryFull)
+		batteryHealth := convertToPercent(batteryInfo.BatteryFull / batteryInfo.BatteryDesignCapacity)
+		batteryFormat := fmt.Sprintf("%v%%", batteryPercent)
+		var batteryPercentStr string
+		if batteryPercent > 80 {
+			batteryPercentStr = color.Green(batteryFormat)
+		} else if batteryPercent > 70 {
+			batteryPercentStr = color.Yellow(batteryFormat)
+		} else {
+			batteryPercentStr = color.Red(batteryFormat)
+		}
+
+		// convert BatteryTimeToEmpty from second to hour
+		var batteryTimeToEmptyFormatted string
+		if batteryInfo.BatteryTimeToEmpty > 0 {
+			hours := batteryInfo.BatteryTimeToEmpty / 3600
+			minutes := (batteryInfo.BatteryTimeToEmpty % 3600) / 60
+			batteryTimeToEmptyFormatted = fmt.Sprintf("%02d:%02d", hours, minutes)
+		} else {
+			batteryTimeToEmptyFormatted = "--:--"
+		}
+
+		fmt.Printf(
+			"%s: %s (Health: %s, Cycles: %s, Time Remaining: %s)\n",
+			color.Green("Battery"), batteryPercentStr,
+			color.Blue(strconv.Itoa(batteryHealth)+"%"),
+			color.Blue(strconv.Itoa(int(batteryInfo.BatteryCycleCount))),
+			color.Blue(batteryTimeToEmptyFormatted),
+		)
+	}
 }
 
-func convertToPercent(v float64) int {
-	return int(math.Round(v * 100))
-}
-
-func getSystemInfo() systemInfoStruct {
-	// get info
-	// ---- username ---- //
+// ---- functions ----
+func getUsername() string {
 	username, err := user.Current()
 	if err != nil {
 		log.Fatal().Msg("Failed to get current user info")
 	}
+	return username.Username
+}
 
-	// ---- system ---- //
-	// host
+func getHostInfo() *host.InfoStat {
 	hostStat, err := host.Info()
 	if err != nil {
 		log.Fatal().Msg("Failed to get host info")
 	}
+	return hostStat
+}
 
-	// cpu
+func getCpuInfo() (string, int) {
 	cpuStat, err := cpu.Info()
 	if err != nil {
 		log.Fatal().Msg("Failed to get cpu info")
@@ -83,22 +127,26 @@ func getSystemInfo() systemInfoStruct {
 		log.Fatal().Msg("Failed to get cpu threads info")
 	}
 
-	// memory
+	return cpuStat[0].ModelName, cpuThreads
+}
+
+func getMemoryInfo() (uint64, uint64, int) {
 	vmStat, err := mem.VirtualMemory()
 	if err != nil {
 		log.Fatal().Msg("Failed to get memory info")
 	}
-	memoryUsed := vmStat.Used
-	memoryTotal := vmStat.Total
+	return vmStat.Used, vmStat.Total, convertToPercent(float64(vmStat.Used) / float64(vmStat.Total))
+}
 
-	// disk
+func getDiskInfo() (uint64, uint64, int) {
 	diskStat, err := disk.Usage("/")
 	if err != nil {
 		log.Fatal().Msg("Failed to get disk info")
 	}
-	diskUsed := diskStat.Used
-	diskTotal := diskStat.Total
+	return diskStat.Used, diskStat.Total, convertToPercent(float64(diskStat.Used) / float64(diskStat.Total))
+}
 
+func getBatteryInfo() batteryStruct {
 	// battery
 	batteries, err := battery.GetAll()
 	if err != nil {
@@ -109,6 +157,7 @@ func getSystemInfo() systemInfoStruct {
 		}
 	}
 
+	//// charge stats
 	var batteryCurrent float64
 	var batteryFull float64
 	var batteryDesignCapacity float64
@@ -153,16 +202,7 @@ func getSystemInfo() systemInfoStruct {
 	}
 
 	// return
-	return systemInfoStruct{
-		Username:              username.Username,
-		Hostname:              hostStat.Hostname,
-		Platform:              fmt.Sprintf("%s %s", hostStat.Platform, hostStat.PlatformVersion),
-		CPUModelName:          cpuStat[0].ModelName,
-		CPUThreads:            cpuThreads,
-		MemoryUsed:            memoryUsed,
-		MemoryTotal:           memoryTotal,
-		DiskUsed:              diskUsed,
-		DiskTotal:             diskTotal,
+	return batteryStruct{
 		BatteryCurrent:        batteryCurrent,
 		BatteryFull:           batteryFull,
 		BatteryDesignCapacity: batteryDesignCapacity,
@@ -171,59 +211,11 @@ func getSystemInfo() systemInfoStruct {
 	}
 }
 
-func SystemInfo() {
-	systemInfo := getSystemInfo()
+// ---- utils ----
+func convertKBtoGB(v uint64) float64 {
+	return math.Round(float64(v)/float64(1024)/float64(1024)/float64(1024)*100) / 100
+}
 
-	// format message
-	hostStdout := fmt.Sprintf("%s@%s", color.Green(systemInfo.Username), color.Green(systemInfo.Hostname))
-	linebreakStdout := strings.Repeat("-", len(systemInfo.Username)+len(systemInfo.Hostname)+1)
-	osStdout := fmt.Sprintf("%s: %s", color.Green("OS"), systemInfo.Platform)
-
-	cpuInfo := fmt.Sprintf("%s (%v)", systemInfo.CPUModelName, systemInfo.CPUThreads)
-	cpuStdout := fmt.Sprintf("%s: %s", color.Green("CPU"), cpuInfo)
-
-	memoryUsedPercent := convertToPercent(float64(systemInfo.MemoryUsed) / float64(systemInfo.MemoryTotal))
-	memoryInfo := fmt.Sprintf("%v GB / %v GB (%s)", convertKBtoGB(systemInfo.MemoryUsed), convertKBtoGB(systemInfo.MemoryTotal), color.Blue(strconv.Itoa(memoryUsedPercent)+"%"))
-	memoryStdout := fmt.Sprintf("%s: %s", color.Green("Memory"), memoryInfo)
-
-	diskUsedPercent := convertToPercent(float64(systemInfo.DiskUsed) / float64(systemInfo.DiskTotal))
-	diskInfo := fmt.Sprintf("%v GB / %v GB (%s)", convertKBtoGB(systemInfo.DiskUsed), convertKBtoGB(systemInfo.DiskTotal), color.Blue(strconv.Itoa(diskUsedPercent)+"%"))
-	diskStdout := fmt.Sprintf("%s: %s", color.Green("Disk"), diskInfo)
-
-	systemInfoStdout := fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n", hostStdout, linebreakStdout, osStdout, cpuStdout, memoryStdout, diskStdout)
-	fmt.Print(systemInfoStdout)
-
-	// only print battery info if is a laptop
-	if systemInfo.BatteryFull > 0 {
-		batteryPercent := convertToPercent(systemInfo.BatteryCurrent / systemInfo.BatteryFull)
-		batteryHealth := convertToPercent(systemInfo.BatteryFull / systemInfo.BatteryDesignCapacity)
-		batteryFormat := fmt.Sprintf("%v%%", batteryPercent)
-		var batteryPercentStr string
-		if batteryPercent > 80 {
-			batteryPercentStr = color.Green(batteryFormat)
-		} else if batteryPercent > 70 {
-			batteryPercentStr = color.Yellow(batteryFormat)
-		} else {
-			batteryPercentStr = color.Red(batteryFormat)
-		}
-
-		// convert BatteryTimeToEmpty from second to hour
-		var batteryTimeToEmptyFormatted string
-		if systemInfo.BatteryTimeToEmpty > 0 {
-			hours := systemInfo.BatteryTimeToEmpty / 3600
-			minutes := (systemInfo.BatteryTimeToEmpty % 3600) / 60
-			batteryTimeToEmptyFormatted = fmt.Sprintf("%02d:%02d", hours, minutes)
-		} else {
-			batteryTimeToEmptyFormatted = "--:--"
-		}
-
-		batteryStdout := fmt.Sprintf(
-			"%s: %s (Health: %s, Cycles: %s, Time Remaining: %s)",
-			color.Green("Battery"), batteryPercentStr,
-			color.Blue(strconv.Itoa(batteryHealth)+"%"),
-			color.Blue(strconv.Itoa(int(systemInfo.BatteryCycleCount))),
-			color.Blue(batteryTimeToEmptyFormatted),
-		)
-		fmt.Println(batteryStdout)
-	}
+func convertToPercent(v float64) int {
+	return int(math.Round(v * 100))
 }
