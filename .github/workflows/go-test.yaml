@@ -17,6 +17,8 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version: stable
+      - name: Setup cross toolchain
+        run: cargo install cross
       - name: Build ffi
         run: ./scripts/build-static.sh
       - name: Install dependencies

@@ -1,7 +1,9 @@
 version: 2
+env:
+  - TARGET=aarch64-apple-darwin
 before:
   hooks:
-    - ./scripts/build-static-ci-darwin-arm64.sh
+    - ./scripts/build-static-ci.sh
 builds:
   - env:
       - CGO_ENABLED=1
