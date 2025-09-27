@@ -1,7 +1,9 @@
 version: 2
+env:
+  - TARGET=x86_64-pc-windows-gnu
 before:
   hooks:
-    - ./scripts/build-static-ci-windows-amd64.sh
+    - ./scripts/build-static-ci.sh
 builds:
   - env:
       - CGO_ENABLED=1

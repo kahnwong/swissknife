@@ -3,7 +3,7 @@ on:
   push:
     tags:
       - "*"
-#  pull_request: # debug
+      # pull_request: # debug
 permissions:
   contents: write
   id-token: write
