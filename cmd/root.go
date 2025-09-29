@@ -5,6 +5,8 @@ import (
 
 	"github.com/kahnwong/swissknife/cmd/generate"
 	"github.com/kahnwong/swissknife/cmd/get"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
@@ -27,6 +29,8 @@ func Execute() {
 }
 
 func init() {
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+
 	rootCmd.AddCommand(get.Cmd)
 	rootCmd.AddCommand(generate.Cmd)
 }

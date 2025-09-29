@@ -3,6 +3,7 @@ module github.com/kahnwong/swissknife
 go 1.25.1
 
 require (
+	github.com/anatol/smart.go v0.0.0-20241126061019-f03d79b340d2
 	github.com/atotto/clipboard v0.1.4
 	github.com/carlmjohnson/requests v0.25.1
 	github.com/charmbracelet/bubbles v0.21.0

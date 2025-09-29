@@ -15,7 +15,7 @@ type PublicIPResponse struct {
 	Ip string `json:"ip"`
 }
 
-type IPLocation struct {
+type IPLocationResponse struct {
 	Ip         string `json:"ip"`
 	Country    string `json:"country"`
 	RegionName string `json:"regionName"`
@@ -56,8 +56,8 @@ func getPublicIP() PublicIPResponse {
 	return response
 }
 
-func getIPLocation(ip string) IPLocation {
-	var response IPLocation
+func getIPLocation(ip string) IPLocationResponse {
+	var response IPLocationResponse
 	err := requests.
 		URL(fmt.Sprintf("http://ip-api.com/json/%s", ip)).
 		ToJSON(&response).
