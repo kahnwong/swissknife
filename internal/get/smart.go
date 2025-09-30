@@ -1,10 +1,12 @@
 package get
 
 import (
-	"fmt"
+	"os"
+	"reflect"
 	"runtime"
 
 	"github.com/anatol/smart.go"
+	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/kahnwong/swissknife/configs/color"
 	"github.com/rs/zerolog/log"
 	"github.com/shirou/gopsutil/v4/disk"
@@ -20,7 +22,39 @@ func nvmeSmart(device string) error {
 		if err != nil {
 			return err
 		}
-		fmt.Printf("%s: %v\n", color.Green("Percent Used"), sm.PercentUsed)
+
+		// render table
+		t := table.NewWriter()
+		t.SetOutputMirror(os.Stdout)
+		t.AppendHeader(table.Row{"Name", "Value"})
+
+		v := reflect.ValueOf(sm)
+		typeOfS := v.Type()
+
+		if v.Kind() == reflect.Ptr {
+			v = v.Elem()
+			typeOfS = typeOfS.Elem()
+		}
+
+		for i := 0; i < v.NumField(); i++ {
+			fieldName := typeOfS.Field(i).Name
+			field := v.Field(i)
+
+			if !field.CanInterface() {
+				continue
+			} else {
+				fieldValue := field.Interface()
+
+				t.AppendRows([]table.Row{
+					{
+						color.Green(fieldName),
+						fieldValue,
+					},
+				})
+			}
+		}
+
+		t.Render()
 
 		return nil
 	}
@@ -36,16 +70,39 @@ func sataSmart(device string) error {
 		if err != nil {
 			return err
 		}
-		fmt.Printf("%s: %v\n", color.Green("Media Wearout Indicator"), sm.Attrs[230].Current)
+
+		// render table
+		t := table.NewWriter()
+		t.SetOutputMirror(os.Stdout)
+		t.AppendHeader(table.Row{"Name", "Current", "Worst", "Raw Value"})
+
+		for _, i := range sm.Attrs {
+			t.AppendRows([]table.Row{
+				{
+					color.Green(i.Name),
+					i.Current,
+					i.Worst,
+					i.ValueRaw,
+				},
+			})
+		}
+
+		t.Render()
 
 		return nil
 	}
 }
 
-func Smart() {
+func Smart(args []string) {
 	if runtime.GOOS == "linux" {
-		device := getRootDiskVolume()
-
+		var device string
+		if len(args) == 0 {
+			device = getRootDiskVolume()
+		} else if len(args) == 1 {
+			device = args[0]
+		} else {
+			log.Error().Msg("Too many arguments")
+		}
 		err := nvmeSmart(device)
 		if err != nil {
 			err = sataSmart(device)
