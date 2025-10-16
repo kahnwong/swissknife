@@ -1,0 +1,30 @@
+name: Deploy to Cloudflare Pages
+on:
+  push:
+    branches: [master]
+    paths:
+      - './static/**'
+  workflow_dispatch:
+concurrency:
+  group: environment-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  PROJECT_NAME: swissknife
+  BUILD_DIR: static
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    name: Deploy to Cloudflare Pages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      # ---------- publish ----------
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy ${{ env.BUILD_DIR }} --project-name=${{ env.PROJECT_NAME }}
