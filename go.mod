@@ -13,7 +13,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/fatih/color v1.18.0
 	github.com/jedib0t/go-pretty/v6 v6.6.8
-	github.com/libp2p/go-netroute v0.3.0
+	github.com/libp2p/go-netroute v0.4.0
 	github.com/rs/zerolog v1.34.0
 	github.com/sethvargo/go-diceware v0.5.0
 	github.com/sethvargo/go-password v0.3.1
