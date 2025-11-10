@@ -38,7 +38,7 @@ func returnKeyPath(fileName string) string {
 	}
 
 	keyPath := filepath.Join(currentDir, fileName)
-	keyPath = fmt.Sprintf("%s.pem", keyPath)
+	keyPath = keyPath
 
 	return keyPath
 }
@@ -85,7 +85,7 @@ func SSHKey(args []string) {
 	publicKeyFilename := fmt.Sprintf("%s.pub", args[0])
 	writeStringToFile(publicKeyFilename, publicKeyString, 0644)
 
-	privateKeyFilename := fmt.Sprintf("%s.pem", args[0])
+	privateKeyFilename := args[0]
 	writeStringToFile(privateKeyFilename, privateKeyString, 0600)
 
 	fmt.Printf("SSH key created at: %s\n", returnKeyPath(args[0]))
