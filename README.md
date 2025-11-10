@@ -6,6 +6,14 @@ Because everything in a single binary is noice.
 
 This is a WIP 🚧.
 
+## Pre-reqs
+
+```bash
+cargo install cross --git https://github.com/cross-rs/cross
+```
+
+If run into cross build failure error, run `cargo clean`.
+
 ## Build
 
 ```bash
