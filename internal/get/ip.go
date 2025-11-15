@@ -21,6 +21,51 @@ type IPLocationResponse struct {
 	RegionName string `json:"regionName"`
 }
 
+func getInternalIP() string {
+	var internalIP string
+
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		panic(err)
+	}
+
+	for _, iface := range ifaces {
+		if iface.Flags&net.FlagUp == 0 {
+			continue // interface down
+		}
+		if iface.Flags&net.FlagLoopback != 0 {
+			continue // skip loopback interface
+		}
+
+		addrs, err := iface.Addrs()
+		if err != nil {
+			panic(err)
+		}
+
+		for _, addr := range addrs {
+			var ip net.IP
+
+			switch v := addr.(type) {
+			case *net.IPNet:
+				ip = v.IP
+			case *net.IPAddr:
+				ip = v.IP
+			}
+
+			if ip == nil || ip.IsLoopback() {
+				continue
+			}
+			if ip.To4() != nil {
+				if internalIP == "" {
+					internalIP = ip.String()
+				}
+			}
+		}
+	}
+
+	return internalIP
+}
+
 func getLocalIP() string {
 	conn, err := net.Dial("udp", "8.8.8.8:80")
 	if err != nil {
@@ -71,6 +116,9 @@ func getIPLocation(ip string) IPLocationResponse {
 }
 
 func IP() {
+	internalIP := getInternalIP()
+	fmt.Printf("%s: %s\n", color.Green("Internal IP"), internalIP)
+
 	localIP := getLocalIP()
 	fmt.Printf("%s: %s\n", color.Green("Local IP"), localIP)
 

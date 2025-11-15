@@ -38,7 +38,6 @@ func returnKeyPath(fileName string) string {
 	}
 
 	keyPath := filepath.Join(currentDir, fileName)
-	keyPath = keyPath
 
 	return keyPath
 }
