@@ -14,8 +14,12 @@ jobs:
       # fail-fast: false # debug
       matrix:
         os: [linux, darwin, windows]
-        arch: [amd64, arm64]
+        arch: [amd64, arm64, arm32]
         exclude:
+          - os: darwin
+            arch: arm32
+          - os: windows
+            arch: arm32
           - os: windows
             arch: arm64
     runs-on: ${{ (matrix.os != 'darwin' && 'ubuntu-latest') || 'macos-latest' }}
@@ -28,7 +32,7 @@ jobs:
       - name: Install cross-compilers
         run: |
           if [ "${{ matrix.os }}" == "linux" ]; then
-            sudo apt-get install gcc-aarch64-linux-gnu
+            sudo apt-get install gcc-aarch64-linux-gnu gcc-arm-linux-gnueabihf
           elif [ "${{ matrix.os }}" == "windows" ]; then
             sudo apt-get install gcc-mingw-w64-x86-64
           fi
@@ -42,7 +46,10 @@ jobs:
           cache-key: ${{ runner.os }}
       - name: Add Rust targets
         run: |
-          if [ "${{ matrix.os }}" == "darwin" ]; then
+          if [ "${{ matrix.os }}" == "linux" ]; then
+            rustup target add armv7-unknown-linux-gnueabihf
+            rustup target add aarch64-unknown-linux-gnu
+          elif [ "${{ matrix.os }}" == "darwin" ]; then
             rustup target add x86_64-apple-darwin
             rustup target add aarch64-apple-darwin
           elif [ "${{ matrix.os }}" == "windows" ]; then
