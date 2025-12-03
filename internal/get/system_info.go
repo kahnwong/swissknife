@@ -33,7 +33,7 @@ type batteryStruct struct {
 	BatteryTimeToEmpty    uint64
 }
 
-func SystemInfo() {
+func SysInfo() {
 	// host
 	username := getUsername()
 	hostInfo := getHostInfo()
