@@ -5,14 +5,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var getSystemInfoCmd = &cobra.Command{
-	Use:   "system-info",
+var getSysInfoCmd = &cobra.Command{
+	Use:   "sysinfo",
 	Short: "Get system info",
 	Run: func(cmd *cobra.Command, args []string) {
-		get.SystemInfo()
+		get.SysInfo()
 	},
 }
 
 func init() {
-	Cmd.AddCommand(getSystemInfoCmd)
+	Cmd.AddCommand(getSysInfoCmd)
 }
