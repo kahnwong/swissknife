@@ -32,8 +32,10 @@ jobs:
       - name: Install cross-compilers
         run: |
           if [ "${{ matrix.os }}" == "linux" ]; then
+            sudo apt update
             sudo apt-get install gcc-aarch64-linux-gnu gcc-arm-linux-gnueabihf
           elif [ "${{ matrix.os }}" == "windows" ]; then
+            sudo apt update
             sudo apt-get install gcc-mingw-w64-x86-64
           fi
       # --------- setup rust ---------
