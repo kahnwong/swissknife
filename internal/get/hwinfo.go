@@ -21,13 +21,11 @@ func HwInfo() {
 		fmt.Printf("Error getting GPU info: %v", err)
 	}
 
-	if len(gpu.GraphicsCards) > 0 {
-		fmt.Printf("%s:\n", color.Green("GPUs"))
+	fmt.Printf("%s:\n", color.Green("GPUs"))
 
-		for _, card := range gpu.GraphicsCards {
-			fmt.Printf("  - %s: %s\n", color.Blue("Vendor"), card.DeviceInfo.Vendor.Name)
-			fmt.Printf("    %s: %s\n", color.Blue("Model"), card.DeviceInfo.Product.Name)
-		}
+	for _, card := range gpu.GraphicsCards {
+		fmt.Printf("  - %s: %s\n", color.Blue("Vendor"), card.DeviceInfo.Vendor.Name)
+		fmt.Printf("    %s: %s\n", color.Blue("Model"), card.DeviceInfo.Product.Name)
 	}
 
 	// memory
@@ -59,7 +57,7 @@ func HwInfo() {
 
 	fmt.Printf("%s:\n", color.Green("Disks"))
 	for _, disk := range block.Disks {
-		if (disk.DriveType.String() != "virtual") && (disk.DriveType.String() != "Unknown") {
+		if (disk.DriveType.String() != "virtual") && (disk.DriveType.String() != "Unknown") && (disk.DriveType.String() != "ODD") {
 			fmt.Printf("  - %s: %s\n", color.Blue("Type"), disk.DriveType)
 			fmt.Printf("    %s: %s\n", color.Blue("Model"), disk.Model)
 			fmt.Printf("    %s: %v GB\n", color.Blue("Size"), disk.SizeBytes/1000/1000/1000)
