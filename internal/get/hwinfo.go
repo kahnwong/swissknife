@@ -42,11 +42,13 @@ func HwInfo() {
 	}
 
 	for _, i := range memoryDevices {
-		fmt.Printf("  - %s: %s\n", color.Blue("Manufacturer"), i.Manufacturer)
-		fmt.Printf("    %s: %s\n", color.Blue("Type"), i.Type)
-		fmt.Printf("    %s: %v GB\n", color.Blue("Size"), i.Size/1024)
-		fmt.Printf("    %s: %v MHz\n", color.Blue("Speed"), i.Speed)
-		fmt.Printf("    %s: %s \n", color.Blue("Model"), i.PartNumber)
+		if i.Type.String() != "Unknown" {
+			fmt.Printf("  - %s: %s\n", color.Blue("Manufacturer"), i.Manufacturer)
+			fmt.Printf("    %s: %s\n", color.Blue("Type"), i.Type)
+			fmt.Printf("    %s: %v GB\n", color.Blue("Size"), i.Size/1024)
+			fmt.Printf("    %s: %v MHz\n", color.Blue("Speed"), i.Speed)
+			fmt.Printf("    %s: %s \n", color.Blue("Model"), i.PartNumber)
+		}
 	}
 
 	// disk
