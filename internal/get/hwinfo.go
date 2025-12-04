@@ -59,7 +59,7 @@ func HwInfo() {
 
 	fmt.Printf("%s:\n", color.Green("Disks"))
 	for _, disk := range block.Disks {
-		if disk.DriveType.String() != "virtual" {
+		if (disk.DriveType.String() != "virtual") && (disk.DriveType.String() != "Unknown") {
 			fmt.Printf("  - %s: %s\n", color.Blue("Type"), disk.DriveType)
 			fmt.Printf("    %s: %s\n", color.Blue("Model"), disk.Model)
 			fmt.Printf("    %s: %v GB\n", color.Blue("Size"), disk.SizeBytes/1000/1000/1000)
