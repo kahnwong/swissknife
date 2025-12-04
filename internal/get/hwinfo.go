@@ -3,6 +3,7 @@ package get
 import "C"
 import (
 	"fmt"
+	"os"
 
 	"github.com/jaypipes/ghw"
 	"github.com/kahnwong/swissknife/configs/color"
@@ -11,6 +12,11 @@ import (
 )
 
 func HwInfo() {
+	// need to run as sudo
+	if os.Geteuid() != 0 {
+		log.Fatal().Msg("Need to run as sudo")
+	}
+
 	// cpu
 	cpuModel, cpuThreads := getCpuInfo() // shared with `sysinfo.go`
 	fmt.Printf("%s: %s (%v)\n", color.Green("CPU"), cpuModel, cpuThreads)
