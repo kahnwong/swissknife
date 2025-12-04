@@ -15,6 +15,21 @@ func HwInfo() {
 	cpuModel, cpuThreads := getCpuInfo() // shared with `sysinfo.go`
 	fmt.Printf("%s: %s (%v)\n", color.Green("CPU"), cpuModel, cpuThreads)
 
+	// gpu
+	gpu, err := ghw.GPU()
+	if err != nil {
+		fmt.Printf("Error getting GPU info: %v", err)
+	}
+
+	if len(gpu.GraphicsCards) > 0 {
+		fmt.Printf("%s:\n", color.Green("GPUs"))
+
+		for _, card := range gpu.GraphicsCards {
+			fmt.Printf("  - %s: %s\n", color.Blue("Vendor"), card.DeviceInfo.Vendor.Name)
+			fmt.Printf("    %s: %s\n", color.Blue("Model"), card.DeviceInfo.Product.Name)
+		}
+	}
+
 	// memory
 	dmi, err := dmidecode.New()
 	if err != nil {
