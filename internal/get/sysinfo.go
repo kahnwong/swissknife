@@ -49,9 +49,9 @@ func SysInfo() {
 
 	// memory
 	memoryUsed, memoryTotal, memoryUsedPercent := getMemoryInfo()
-	fmt.Printf("%s: %v GB / %v GB (%s)\n",
+	fmt.Printf("%s: %.2f GB / %v GB (%s)\n",
 		color.Green("Memory"),
-		convertKBtoGB(memoryUsed), convertKBtoGB(memoryTotal),
+		convertKBtoGB(memoryUsed, true), convertKBtoGB(memoryTotal, false),
 		color.Blue(strconv.Itoa(memoryUsedPercent)+"%"),
 	)
 
@@ -59,7 +59,7 @@ func SysInfo() {
 	diskUsed, diskTotal, diskUsedPercent := getDiskInfo()
 	fmt.Printf("%s: %v GB / %v GB (%s)\n",
 		color.Green("Disk"),
-		convertKBtoGB(diskUsed), convertKBtoGB(diskTotal),
+		convertKBtoGiB(diskUsed), convertKBtoGiB(diskTotal),
 		color.Blue(strconv.Itoa(diskUsedPercent)+"%"),
 	)
 
@@ -212,8 +212,17 @@ func getBatteryInfo() batteryStruct {
 }
 
 // ---- utils ----
-func convertKBtoGB(v uint64) float64 {
+func convertKBtoGiB(v uint64) float64 {
 	return math.Round(float64(v)/float64(1024)/float64(1024)/float64(1024)*100) / 100
+}
+
+func convertKBtoGB(v uint64, isFloat bool) float64 {
+	gb := (float64(v) / float64(1024) / float64(1024) / float64(1000) * 100) / 100
+	if isFloat {
+		return gb
+	} else {
+		return math.Round(gb)
+	}
 }
 
 func convertToPercent(v float64) int {
