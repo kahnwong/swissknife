@@ -12,7 +12,7 @@ require (
 	github.com/distatus/battery v0.11.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/fatih/color v1.18.0
-	github.com/jaypipes/ghw v0.21.0
+	github.com/jaypipes/ghw v0.21.2
 	github.com/jedib0t/go-pretty/v6 v6.7.5
 	github.com/libp2p/go-netroute v0.4.0
 	github.com/rs/zerolog v1.34.0
