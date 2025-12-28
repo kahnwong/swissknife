@@ -2,35 +2,11 @@ package generate
 
 import (
 	"fmt"
-	"os"
-	"strings"
 
 	"github.com/kahnwong/swissknife/internal/utils"
 	"github.com/rs/zerolog/log"
 	qrcode "github.com/skip2/go-qrcode"
 )
-
-func setURL(args []string) string {
-	var url string
-	if len(args) == 0 {
-		urlFromClipboard := utils.ReadFromClipboard()
-		if urlFromClipboard != "" {
-			if strings.HasPrefix(urlFromClipboard, "https://") {
-				url = urlFromClipboard
-			}
-		}
-	}
-	if url == "" {
-		if len(args) == 0 {
-			fmt.Println("Please specify URL")
-			os.Exit(1)
-		} else if len(args) == 1 {
-			url = args[0]
-		}
-	}
-
-	return url
-}
 
 func generateQRCode(url string) ([]byte, string) {
 	// init
@@ -55,7 +31,7 @@ func generateQRCode(url string) ([]byte, string) {
 
 func QRCode(args []string) {
 	// set URL
-	url := setURL(args)
+	url := utils.SetURL(args)
 	fmt.Println(url)
 
 	// main
