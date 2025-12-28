@@ -14,5 +14,5 @@ var listVolumesCmd = &cobra.Command{
 }
 
 func init() {
-	Cmd.AddCommand(listVolumesCmd)
+	GetCmd.AddCommand(listVolumesCmd)
 }

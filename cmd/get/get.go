@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var Cmd = &cobra.Command{
+var GetCmd = &cobra.Command{
 	Use:   "get",
 	Short: "Obtain information",
 	Long:  `Obtain information`,

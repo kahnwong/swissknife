@@ -31,6 +31,6 @@ func Execute() {
 func init() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
-	rootCmd.AddCommand(get.Cmd)
+	rootCmd.AddCommand(get.GetCmd)
 	rootCmd.AddCommand(generate.Cmd)
 }

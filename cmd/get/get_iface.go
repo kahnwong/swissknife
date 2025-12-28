@@ -15,5 +15,5 @@ var getIfaceCmd = &cobra.Command{
 }
 
 func init() {
-	Cmd.AddCommand(getIfaceCmd)
+	GetCmd.AddCommand(getIfaceCmd)
 }

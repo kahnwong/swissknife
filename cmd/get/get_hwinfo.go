@@ -14,5 +14,5 @@ var getHwInfoCmd = &cobra.Command{
 }
 
 func init() {
-	Cmd.AddCommand(getHwInfoCmd)
+	GetCmd.AddCommand(getHwInfoCmd)
 }

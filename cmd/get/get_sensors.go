@@ -14,5 +14,5 @@ var SensorsCmd = &cobra.Command{
 }
 
 func init() {
-	Cmd.AddCommand(SensorsCmd)
+	GetCmd.AddCommand(SensorsCmd)
 }

@@ -14,5 +14,5 @@ var getSysInfoCmd = &cobra.Command{
 }
 
 func init() {
-	Cmd.AddCommand(getSysInfoCmd)
+	GetCmd.AddCommand(getSysInfoCmd)
 }

@@ -15,5 +15,5 @@ var getSmartCmd = &cobra.Command{
 }
 
 func init() {
-	Cmd.AddCommand(getSmartCmd)
+	GetCmd.AddCommand(getSmartCmd)
 }
