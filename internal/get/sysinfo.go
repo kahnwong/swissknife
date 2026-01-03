@@ -74,10 +74,12 @@ func SysInfo() {
 		var batteryPercentStr string
 		if batteryPercent > 80 {
 			batteryPercentStr = color.Green(batteryFormat)
-		} else if batteryPercent > 70 {
+		} else if batteryPercent > 60 {
 			batteryPercentStr = color.Yellow(batteryFormat)
-		} else {
+		} else if batteryPercent > 30 {
 			batteryPercentStr = color.Red(batteryFormat)
+		} else {
+			batteryPercentStr = batteryFormat
 		}
 
 		// convert BatteryTimeToEmpty from second to hour
