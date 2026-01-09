@@ -104,7 +104,7 @@ func getPublicIP() PublicIPResponse {
 func getIPLocation(ip string) IPLocationResponse {
 	var response IPLocationResponse
 	err := requests.
-		URL(fmt.Sprintf("http://ip-api.com/json/%s", ip)).
+		URL(fmt.Sprintf("http://ip-api.com/json/%s?fields=query,country,regionName", ip)).
 		ToJSON(&response).
 		Fetch(context.Background())
 
