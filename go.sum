@@ -95,6 +95,8 @@ github.com/projectdiscovery/wappalyzergo v0.2.62 h1:SMZ70bLCj6jHnFgjanuiaQpqUXY6
 github.com/projectdiscovery/wappalyzergo v0.2.62/go.mod h1:8FtSVcmPRZU0g1euBpdSYEBHIvB7Zz9MOb754ZqZmfU=
 github.com/projectdiscovery/wappalyzergo v0.2.63 h1:iSIU2rfPkHcpBSTol7S3PqgfBXn+JD56s4BsVEGxJ+o=
 github.com/projectdiscovery/wappalyzergo v0.2.63/go.mod h1:8FtSVcmPRZU0g1euBpdSYEBHIvB7Zz9MOb754ZqZmfU=
+github.com/projectdiscovery/wappalyzergo v0.2.64 h1:Y55sb5qUdFvMtR81m1hr54PdGh/hZ4XtuGPdCFAirEk=
+github.com/projectdiscovery/wappalyzergo v0.2.64/go.mod h1:8FtSVcmPRZU0g1euBpdSYEBHIvB7Zz9MOb754ZqZmfU=
 github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
 github.com/rivo/uniseg v0.4.7 h1:WUdvkW8uEhrYfLC4ZzdpI2ztxP1I582+49Oc5Mq64VQ=
 github.com/rivo/uniseg v0.4.7/go.mod h1:FN3SvrM+Zdj16jyLfmOkMNblXMcoc8DfTHruCPUcx88=
