@@ -8,8 +8,8 @@ import (
 var TimerCmd = &cobra.Command{
 	Use:   "timer",
 	Short: "Create a timer",
-	Run: func(cmd *cobra.Command, args []string) {
-		timer.Timer(args)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return timer.Timer(args)
 	},
 }
 

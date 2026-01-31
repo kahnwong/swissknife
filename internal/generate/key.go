@@ -6,25 +6,32 @@ import (
 	"fmt"
 
 	"github.com/kahnwong/swissknife/internal/utils"
-	"github.com/rs/zerolog/log"
 )
 
-func generateKey(n int) string {
+func generateKey(n int) (string, error) {
 	// https://stackoverflow.com/questions/32349807/how-can-i-generate-a-random-int-using-the-crypto-rand-package/32351471#32351471
 	// generate random bytes
 	b := make([]byte, n)
 	_, err := rand.Read(b)
 	// Note that err == nil only if we read len(b) bytes.
 	if err != nil {
-		log.Fatal().Msg("Failed to generate random bytes")
+		return "", fmt.Errorf("failed to generate random bytes: %w", err)
 	}
 
 	// convert to base64
-	return base64.URLEncoding.EncodeToString(b)
+	return base64.URLEncoding.EncodeToString(b), nil
 }
 
-func Key() {
-	key := generateKey(48)
-	utils.WriteToClipboard(key)
+func Key() error {
+	key, err := generateKey(48)
+	if err != nil {
+		return err
+	}
+
+	if err = utils.WriteToClipboard(key); err != nil {
+		return err
+	}
+
 	fmt.Printf("%s\n", key)
+	return nil
 }

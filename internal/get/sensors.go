@@ -12,20 +12,20 @@ import (
 	"fmt"
 
 	"github.com/kahnwong/swissknife/configs/color"
-	"github.com/rs/zerolog/log"
 )
 
-func Sensors() {
+func Sensors() error {
 	result := C.sensors()
 
 	switch result.error {
 	case C.SENSOR_SUCCESS:
 		fmt.Printf("%s: %.2f\n", color.Green("Temperature"), float64(result.temperature))
+		return nil
 	case C.SENSOR_NO_COMPONENTS:
-		log.Fatal().Msg("No components found")
+		return fmt.Errorf("no components found")
 	case C.SENSOR_NO_TEMPERATURE:
-		log.Fatal().Msg("No temperature reading available")
+		return fmt.Errorf("no temperature reading available")
 	default:
-		log.Fatal().Msg("Unknown error occurred")
+		return fmt.Errorf("unknown error occurred")
 	}
 }

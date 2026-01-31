@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"sort"
 	"strings"
 
 	"github.com/kahnwong/swissknife/configs/color"
 	"github.com/kahnwong/swissknife/internal/utils"
 	wappalyzer "github.com/projectdiscovery/wappalyzergo"
-	"github.com/rs/zerolog/log"
 )
 
 // categoryMapping maps wappalyzer category names to our display categories
@@ -101,7 +101,7 @@ var categoryMapping = map[string]string{
 	"Webcams":                         "Media",
 }
 
-func GetSiteInfo(args []string) {
+func GetSiteInfo(args []string) error {
 	// set URL
 	url := utils.SetURL(args)
 	fmt.Println(url)
@@ -109,24 +109,23 @@ func GetSiteInfo(args []string) {
 	// fetch site
 	resp, err := http.DefaultClient.Get(url)
 	if err != nil {
-		log.Fatal().Err(err).Msgf("Failed to fetch URL: %s", url)
+		return fmt.Errorf("failed to fetch URL %s: %w", url, err)
 	}
 	defer func(Body io.ReadCloser) {
-		err = Body.Close()
-		if err != nil {
-			log.Error().Err(err).Msg("Failed to close response body")
+		if err := Body.Close(); err != nil {
+			fmt.Fprintf(os.Stderr, "warning: failed to close response body: %v\n", err)
 		}
 	}(resp.Body)
 
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to read response body")
+		return fmt.Errorf("failed to read response body: %w", err)
 	}
 
 	// init wappalyzer
 	wappalyzerClient, err := wappalyzer.New()
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to initialize wappalyzer")
+		return fmt.Errorf("failed to initialize wappalyzer: %w", err)
 	}
 
 	appsInfo := wappalyzerClient.FingerprintWithInfo(resp.Header, data)
@@ -158,6 +157,7 @@ func GetSiteInfo(args []string) {
 
 	if len(categoryTechs) == 0 {
 		fmt.Println("No technologies detected")
+		return nil
 	}
 
 	categories := make([]string, 0, len(categoryTechs))
@@ -176,4 +176,5 @@ func GetSiteInfo(args []string) {
 			fmt.Printf("- %s\n", tech)
 		}
 	}
+	return nil
 }

@@ -9,8 +9,8 @@ var getIPInfoCmd = &cobra.Command{
 	Use:   "ipinfo [ip]",
 	Short: "Get detailed IP information (location, ISP, etc.)",
 	Args:  cobra.MaximumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		get.IPInfo(args)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return get.IPInfo(args)
 	},
 }
 

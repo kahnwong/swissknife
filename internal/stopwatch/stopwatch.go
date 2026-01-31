@@ -3,7 +3,6 @@ package stopwatch
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/charmbracelet/bubbles/help"
@@ -71,7 +70,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func Stopwatch() {
+func Stopwatch() error {
 	m := model{
 		stopwatch: stopwatch.NewWithInterval(time.Millisecond),
 		keymap: keymap{
@@ -98,7 +97,7 @@ func Stopwatch() {
 	m.keymap.start.SetEnabled(false)
 
 	if _, err := tea.NewProgram(m).Run(); err != nil {
-		fmt.Println("Oh no, it didn't work:", err)
-		os.Exit(1)
+		return fmt.Errorf("stopwatch error: %w", err)
 	}
+	return nil
 }

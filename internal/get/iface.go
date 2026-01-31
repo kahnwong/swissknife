@@ -5,30 +5,33 @@ import (
 	"net"
 
 	"github.com/libp2p/go-netroute"
-	"github.com/rs/zerolog/log"
 )
 
 // unix: `netstat -nr -f inet`
 // get iface-owned app: `ifconfig -v utun3 | grep "agent domain"`
 
-func getIface() string {
+func getIface() (string, error) {
 	r, err := netroute.New()
 	if err != nil {
-		log.Fatal().Msg("Error initializing netroute")
+		return "", fmt.Errorf("error initializing netroute: %w", err)
 	}
 
 	iface, _, _, err := r.Route(
 		net.IPv4(104, 16, 133, 229), // cloudflare
 	)
 	if err != nil {
-		log.Fatal().Msg("Error retrieving net route")
+		return "", fmt.Errorf("error retrieving net route: %w", err)
 	}
 	//fmt.Printf("%v, %v, %v, %v\n", iface, gw, src, err)
 
-	return iface.Name
+	return iface.Name, nil
 }
 
-func Iface() {
-	iface := getIface()
+func Iface() error {
+	iface, err := getIface()
+	if err != nil {
+		return err
+	}
 	fmt.Println(iface)
+	return nil
 }

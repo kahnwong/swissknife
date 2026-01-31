@@ -8,8 +8,8 @@ import (
 var listVolumesCmd = &cobra.Command{
 	Use:   "volumes",
 	Short: "List volumes",
-	Run: func(cmd *cobra.Command, args []string) {
-		get.Volumes()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return get.Volumes()
 	},
 }
 

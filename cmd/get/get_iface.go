@@ -9,8 +9,8 @@ var getIfaceCmd = &cobra.Command{
 	Use:   "iface",
 	Short: "Get iface",
 	Long:  `Get iface used for public internet access`,
-	Run: func(cmd *cobra.Command, args []string) {
-		get.Iface()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return get.Iface()
 	},
 }
 

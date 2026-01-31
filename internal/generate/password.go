@@ -4,23 +4,30 @@ import (
 	"fmt"
 
 	"github.com/kahnwong/swissknife/internal/utils"
-	"github.com/rs/zerolog/log"
 	"github.com/sethvargo/go-password/password"
 )
 
-func generatePassword() string {
+func generatePassword() (string, error) {
 	// Generate a password that is 64 characters long with 10 digits, 10 symbols,
 	// allowing upper and lower case letters, disallowing repeat characters.
 	res, err := password.Generate(32, 10, 0, false, false)
 	if err != nil {
-		log.Fatal().Msg("Failed to generate password")
+		return "", fmt.Errorf("failed to generate password: %w", err)
 	}
 
-	return res
+	return res, nil
 }
 
-func Password() {
-	psswd := generatePassword()
-	utils.WriteToClipboard(psswd)
+func Password() error {
+	psswd, err := generatePassword()
+	if err != nil {
+		return err
+	}
+
+	if err = utils.WriteToClipboard(psswd); err != nil {
+		return err
+	}
+
 	fmt.Printf("%s\n", psswd)
+	return nil
 }

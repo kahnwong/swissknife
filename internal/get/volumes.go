@@ -9,11 +9,10 @@ import (
 	human "github.com/dustin/go-humanize"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/kahnwong/swissknife/configs/color"
-	"github.com/rs/zerolog/log"
 	"github.com/shirou/gopsutil/v4/disk"
 )
 
-func listVolumes() {
+func Volumes() error {
 	// ref: <https://stackoverflow.com/a/64141403>
 	// layout inspired by `duf`
 
@@ -25,7 +24,7 @@ func listVolumes() {
 	// get volumes info
 	partitions, err := disk.Partitions(false)
 	if err != nil {
-		log.Fatal().Msg("Error getting partitions info")
+		return fmt.Errorf("error getting partitions info: %w", err)
 	}
 
 	for _, partition := range partitions {
@@ -41,7 +40,7 @@ func listVolumes() {
 			device := partition.Mountpoint
 			stats, err := disk.Usage(device)
 			if err != nil {
-				log.Fatal().Msg("Error getting disk info")
+				return fmt.Errorf("error getting disk info: %w", err)
 			}
 
 			if stats.Total == 0 {
@@ -94,8 +93,5 @@ func listVolumes() {
 
 	// render
 	t.Render()
-}
-
-func Volumes() {
-	listVolumes()
+	return nil
 }

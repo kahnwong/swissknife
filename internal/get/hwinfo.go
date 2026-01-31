@@ -7,44 +7,46 @@ import (
 
 	"github.com/jaypipes/ghw"
 	"github.com/kahnwong/swissknife/configs/color"
-	"github.com/rs/zerolog/log"
 	"github.com/yumaojun03/dmidecode"
 )
 
-func HwInfo() {
+func HwInfo() error {
 	// need to run as sudo
 	if os.Geteuid() != 0 {
-		log.Fatal().Msg("Need to run as sudo")
+		return fmt.Errorf("need to run as sudo")
 	}
 
 	// cpu
-	cpuModel, cpuThreads := getCpuInfo() // shared with `sysinfo.go`
+	cpuModel, cpuThreads, err := getCpuInfo() // shared with `sysinfo.go`
+	if err != nil {
+		return err
+	}
 	fmt.Printf("%s: %s (%v)\n", color.Green("CPU"), cpuModel, cpuThreads)
 
 	// gpu
 	gpu, err := ghw.GPU()
 	if err != nil {
-		fmt.Printf("Error getting GPU info: %v", err)
-	}
+		fmt.Printf("Error getting GPU info: %v\n", err)
+	} else {
+		fmt.Printf("%s:\n", color.Green("GPUs"))
 
-	fmt.Printf("%s:\n", color.Green("GPUs"))
-
-	for _, card := range gpu.GraphicsCards {
-		fmt.Printf("  - %s: %s\n", color.Blue("Vendor"), card.DeviceInfo.Vendor.Name)
-		fmt.Printf("    %s: %s\n", color.Blue("Model"), card.DeviceInfo.Product.Name)
+		for _, card := range gpu.GraphicsCards {
+			fmt.Printf("  - %s: %s\n", color.Blue("Vendor"), card.DeviceInfo.Vendor.Name)
+			fmt.Printf("    %s: %s\n", color.Blue("Model"), card.DeviceInfo.Product.Name)
+		}
 	}
 
 	// memory
 	dmi, err := dmidecode.New()
 	if err != nil {
-		log.Fatal().Msg("Failed to get dmi info")
+		return fmt.Errorf("failed to get dmi info: %w", err)
 	}
 
 	fmt.Printf("%s:\n", color.Green("Memory"))
 
 	memoryDevices, err := dmi.MemoryDevice()
 	if err != nil {
-		log.Fatal().Msg("Failed to get memory info")
+		return fmt.Errorf("failed to get memory info: %w", err)
 	}
 
 	for _, i := range memoryDevices {
@@ -60,7 +62,7 @@ func HwInfo() {
 	// disk
 	block, err := ghw.Block()
 	if err != nil {
-		log.Fatal().Msg("Failed to get block storage info")
+		return fmt.Errorf("failed to get block storage info: %w", err)
 	}
 
 	fmt.Printf("%s:\n", color.Green("Disks"))
@@ -76,10 +78,11 @@ func HwInfo() {
 	//// mainboardInfo, err := dmi.BaseBoard()
 	baseboard, err := ghw.Baseboard()
 	if err != nil {
-		log.Fatal().Msg("Failed to get baseboard info")
+		return fmt.Errorf("failed to get baseboard info: %w", err)
 	}
 
 	fmt.Printf("%s:\n", color.Green("Mainboard"))
 	fmt.Printf("  - %s: %s\n", color.Blue("Manufacturer"), baseboard.Vendor)
 	fmt.Printf("    %s: %s\n", color.Blue("Model"), baseboard.Product)
+	return nil
 }

@@ -9,8 +9,8 @@ var generateQRCodeCmd = &cobra.Command{
 	Use:   "qrcode",
 	Short: "Generate QR code",
 	Long:  `Generate QR code from URL (either as an arg or from clipboard) and copy resulting image to clipboard.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		generate.QRCode(args)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return generate.QRCode(args)
 	},
 }
 

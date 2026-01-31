@@ -1,44 +1,47 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/atotto/clipboard"
-	"github.com/rs/zerolog/log"
 	clipboardImage "github.com/skanehira/clipboard-image/v2"
 )
 
-func WriteToClipboard(text string) {
-	err := clipboard.WriteAll(text)
-	if err != nil {
-		log.Error().Msg("Failed to write to clipboard")
+func WriteToClipboard(text string) error {
+	if err := clipboard.WriteAll(text); err != nil {
+		return fmt.Errorf("failed to write to clipboard: %w", err)
 	}
+	return nil
 }
 
-func WriteToClipboardImage(bytes []byte) {
+func WriteToClipboardImage(bytes []byte) error {
 	tempFilename := "/tmp/qr-image.png"
-	err := os.WriteFile(tempFilename, bytes, 0644)
-	if err != nil {
-		log.Fatal().Msg("Failed to write temp image for clipboard")
+	if err := os.WriteFile(tempFilename, bytes, 0644); err != nil {
+		return fmt.Errorf("failed to write temp image for clipboard: %w", err)
 	}
 
 	f, err := os.Open(tempFilename)
 	if err != nil {
-		log.Fatal().Msg("Failed to open temp image for clipboard")
+		return fmt.Errorf("failed to open temp image for clipboard: %w", err)
 	}
 	defer func(f *os.File) {
-		err := f.Close()
-		if err != nil {
-			log.Error().Msg("Error opening temp image for clipboard")
+		if err := f.Close(); err != nil {
+			// Log this error but don't override the main return error
+			fmt.Fprintf(os.Stderr, "warning: error closing temp image file: %v\n", err)
 		}
 	}(f)
 
 	if err = clipboardImage.Write(f); err != nil {
-		log.Fatal().Msg("Failed to copy to clipboard")
+		return fmt.Errorf("failed to copy to clipboard: %w", err)
 	}
+	return nil
 }
 
-func ReadFromClipboard() string {
-	text, _ := clipboard.ReadAll()
-	return text
+func ReadFromClipboard() (string, error) {
+	text, err := clipboard.ReadAll()
+	if err != nil {
+		return "", fmt.Errorf("failed to read from clipboard: %w", err)
+	}
+	return text, nil
 }

@@ -6,11 +6,10 @@ import (
 	"time"
 
 	"github.com/kahnwong/swissknife/configs/color"
-	"github.com/rs/zerolog/log"
 	"github.com/showwin/speedtest-go/speedtest"
 )
 
-func SpeedTest() {
+func SpeedTest() error {
 	// ref: <https://github.com/showwin/speedtest-go#api-usage>
 	var speedtestClient = speedtest.New()
 	serverList, _ := speedtestClient.FetchServers()
@@ -23,6 +22,9 @@ func SpeedTest() {
 	var s *speedtest.Server
 	tests := make(chan struct{})
 	ctx, cancel := context.WithCancel(context.Background())
+
+	// Store error from goroutine
+	errChan := make(chan error, 1)
 
 	// -- background progress report -- //
 	go func(ctx context.Context) {
@@ -45,28 +47,40 @@ func SpeedTest() {
 			fmt.Print("Pinging")
 			err := s.PingTest(nil)
 			if err != nil {
-				log.Fatal().Msg("Error pinging server")
+				errChan <- fmt.Errorf("error pinging server: %w", err)
+				cancel()
+				return
 			}
 			fmt.Printf("\033[2K\r") // clear line
 
 			fmt.Print("Downloading")
 			err = s.DownloadTest()
 			if err != nil {
-				log.Fatal().Msg("Error testing download speed")
+				errChan <- fmt.Errorf("error testing download speed: %w", err)
+				cancel()
+				return
 			}
 			fmt.Printf("\033[2K\r") // clear line
 
 			fmt.Print("Uploading")
 			err = s.UploadTest()
 			if err != nil {
-				log.Fatal().Msg("Error testing upload speed")
+				errChan <- fmt.Errorf("error testing upload speed: %w", err)
+				cancel()
+				return
 			}
 			fmt.Printf("\033[2K\r") // clear line
 		}
 
+		errChan <- nil
 		cancel()
 	}()
 	<-tests
+
+	// Check for errors
+	if err := <-errChan; err != nil {
+		return err
+	}
 
 	// print results
 	fmt.Print(
@@ -76,4 +90,5 @@ func SpeedTest() {
 	)
 
 	s.Context.Reset()
+	return nil
 }

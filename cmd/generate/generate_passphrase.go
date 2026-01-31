@@ -9,8 +9,8 @@ var generatePassphraseCmd = &cobra.Command{
 	Use:   "passphrase",
 	Short: "Generate passphrase",
 	Long:  `Generate passphrase. Result is copied to clipboard.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		generate.Passphrase()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return generate.Passphrase()
 	},
 }
 

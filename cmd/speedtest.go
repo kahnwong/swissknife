@@ -8,8 +8,8 @@ import (
 var SpeedTestCmd = &cobra.Command{
 	Use:   "speedtest",
 	Short: "Speedtest",
-	Run: func(cmd *cobra.Command, args []string) {
-		speedtest.SpeedTest()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return speedtest.SpeedTest()
 	},
 }
 

@@ -19,7 +19,6 @@ import (
 	"github.com/shirou/gopsutil/v4/cpu"
 
 	"github.com/kahnwong/swissknife/configs/color"
-	"github.com/rs/zerolog/log"
 	"github.com/shirou/gopsutil/v4/disk"
 	"github.com/shirou/gopsutil/v4/host"
 	"github.com/shirou/gopsutil/v4/mem"
@@ -33,10 +32,16 @@ type batteryStruct struct {
 	BatteryTimeToEmpty    uint64
 }
 
-func SysInfo() {
+func SysInfo() error {
 	// host
-	username := getUsername()
-	hostInfo := getHostInfo()
+	username, err := getUsername()
+	if err != nil {
+		return err
+	}
+	hostInfo, err := getHostInfo()
+	if err != nil {
+		return err
+	}
 	fmt.Printf("%s@%s\n", color.Green(username), color.Green(hostInfo.Hostname))
 	fmt.Println(strings.Repeat("-", len(username)+len(hostInfo.Hostname)+1))
 
@@ -44,11 +49,17 @@ func SysInfo() {
 	fmt.Printf("%s: %s %s\n", color.Green("OS"), hostInfo.Platform, hostInfo.PlatformVersion)
 
 	// cpu
-	cpuModel, cpuThreads := getCpuInfo()
+	cpuModel, cpuThreads, err := getCpuInfo()
+	if err != nil {
+		return err
+	}
 	fmt.Printf("%s: %s (%v)\n", color.Green("CPU"), cpuModel, cpuThreads)
 
 	// memory
-	memoryUsed, memoryTotal, memoryUsedPercent := getMemoryInfo()
+	memoryUsed, memoryTotal, memoryUsedPercent, err := getMemoryInfo()
+	if err != nil {
+		return err
+	}
 	fmt.Printf("%s: %.2f GB / %v GB (%s)\n",
 		color.Green("Memory"),
 		convertKBtoGB(memoryUsed, true), convertKBtoGB(memoryTotal, false),
@@ -56,7 +67,10 @@ func SysInfo() {
 	)
 
 	// disk
-	diskUsed, diskTotal, diskUsedPercent := getDiskInfo()
+	diskUsed, diskTotal, diskUsedPercent, err := getDiskInfo()
+	if err != nil {
+		return err
+	}
 	fmt.Printf("%s: %v GB / %v GB (%s)\n",
 		color.Green("Disk"),
 		convertKBtoGiB(diskUsed), convertKBtoGiB(diskTotal),
@@ -64,7 +78,10 @@ func SysInfo() {
 	)
 
 	// battery
-	batteryInfo := getBatteryInfo()
+	batteryInfo, err := getBatteryInfo()
+	if err != nil {
+		return err
+	}
 
 	// only print battery info if is a laptop
 	if batteryInfo.BatteryFull > 0 {
@@ -100,63 +117,63 @@ func SysInfo() {
 			color.Blue(batteryTimeToEmptyFormatted),
 		)
 	}
+	return nil
 }
 
 // ---- functions ----
-func getUsername() string {
+func getUsername() (string, error) {
 	username, err := user.Current()
 	if err != nil {
-		log.Fatal().Msg("Failed to get current user info")
+		return "", fmt.Errorf("failed to get current user info: %w", err)
 	}
-	return username.Username
+	return username.Username, nil
 }
 
-func getHostInfo() *host.InfoStat {
+func getHostInfo() (*host.InfoStat, error) {
 	hostStat, err := host.Info()
 	if err != nil {
-		log.Fatal().Msg("Failed to get host info")
+		return nil, fmt.Errorf("failed to get host info: %w", err)
 	}
-	return hostStat
+	return hostStat, nil
 }
 
-func getCpuInfo() (string, int) {
+func getCpuInfo() (string, int, error) {
 	cpuStat, err := cpu.Info()
 	if err != nil {
-		log.Fatal().Msg("Failed to get cpu info")
+		return "", 0, fmt.Errorf("failed to get cpu info: %w", err)
 	}
 	cpuThreads, err := cpu.Counts(true)
 	if err != nil {
-		log.Fatal().Msg("Failed to get cpu threads info")
+		return "", 0, fmt.Errorf("failed to get cpu threads info: %w", err)
 	}
 
-	return cpuStat[0].ModelName, cpuThreads
+	return cpuStat[0].ModelName, cpuThreads, nil
 }
 
-func getMemoryInfo() (uint64, uint64, int) {
+func getMemoryInfo() (uint64, uint64, int, error) {
 	vmStat, err := mem.VirtualMemory()
 	if err != nil {
-		log.Fatal().Msg("Failed to get memory info")
+		return 0, 0, 0, fmt.Errorf("failed to get memory info: %w", err)
 	}
-	return vmStat.Used, vmStat.Total, convertToPercent(float64(vmStat.Used) / float64(vmStat.Total))
+	return vmStat.Used, vmStat.Total, convertToPercent(float64(vmStat.Used) / float64(vmStat.Total)), nil
 }
 
-func getDiskInfo() (uint64, uint64, int) {
+func getDiskInfo() (uint64, uint64, int, error) {
 	diskStat, err := disk.Usage("/")
 	if err != nil {
-		log.Fatal().Msg("Failed to get disk info")
+		return 0, 0, 0, fmt.Errorf("failed to get disk info: %w", err)
 	}
-	return diskStat.Used, diskStat.Total, convertToPercent(float64(diskStat.Used) / float64(diskStat.Total))
+	return diskStat.Used, diskStat.Total, convertToPercent(float64(diskStat.Used) / float64(diskStat.Total)), nil
 }
 
-func getBatteryInfo() batteryStruct {
+func getBatteryInfo() (batteryStruct, error) {
 	// battery
 	batteries, err := battery.GetAll()
 	if err != nil {
-		if strings.Contains(err.Error(), "no such file or directory") {
-			// ignore this happens on [linux on mac devices]
-		} else {
-			log.Fatal().Msg("Error getting battery info")
+		if !strings.Contains(err.Error(), "no such file or directory") {
+			return batteryStruct{}, fmt.Errorf("error getting battery info: %w", err)
 		}
+		// ignore this happens on [linux on mac devices]
 	}
 
 	//// charge stats
@@ -181,9 +198,9 @@ func getBatteryInfo() batteryStruct {
 	case C.BATTERY_NO_CYCLE_COUNT:
 		batteryCycleCount = 0
 	case C.BATTERY_MANAGER_ERROR:
-		log.Fatal().Msg("Battery manager error")
+		return batteryStruct{}, fmt.Errorf("battery manager error")
 	default:
-		log.Fatal().Msg("Unknown error occurred")
+		return batteryStruct{}, fmt.Errorf("unknown error occurred")
 	}
 
 	//// time to empty
@@ -198,9 +215,9 @@ func getBatteryInfo() batteryStruct {
 	case C.BATTERY_TIME_TO_EMPTY_NO_TIME_TO_EMPTY:
 		batteryTimeToEmpty = 0
 	case C.BATTERY_TIME_TO_EMPTY_MANAGER_ERROR:
-		log.Fatal().Msg("Battery manager error")
+		return batteryStruct{}, fmt.Errorf("battery manager error")
 	default:
-		log.Fatal().Msg("Unknown error occurred")
+		return batteryStruct{}, fmt.Errorf("unknown error occurred")
 	}
 
 	// return
@@ -210,7 +227,7 @@ func getBatteryInfo() batteryStruct {
 		BatteryDesignCapacity: batteryDesignCapacity,
 		BatteryCycleCount:     batteryCycleCount,
 		BatteryTimeToEmpty:    batteryTimeToEmpty,
-	}
+	}, nil
 }
 
 // ---- utils ----

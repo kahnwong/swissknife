@@ -9,8 +9,8 @@ var generateSSHKeyCmd = &cobra.Command{
 	Use:   "ssh-key",
 	Short: "Create SSH key",
 	Long:  `Create SSH key`,
-	Run: func(cmd *cobra.Command, args []string) {
-		generate.SSHKey(args)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return generate.SSHKey(args)
 	},
 }
 

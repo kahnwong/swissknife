@@ -1,6 +1,7 @@
 package get
 
 import (
+	"fmt"
 	"os"
 	"reflect"
 	"runtime"
@@ -8,7 +9,6 @@ import (
 	"github.com/anatol/smart.go"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/kahnwong/swissknife/configs/color"
-	"github.com/rs/zerolog/log"
 	"github.com/shirou/gopsutil/v4/disk"
 )
 
@@ -93,32 +93,38 @@ func sataSmart(device string) error {
 	}
 }
 
-func Smart(args []string) {
-	if runtime.GOOS == "linux" {
-		var device string
-		if len(args) == 0 {
-			device = getRootDiskVolume()
-		} else if len(args) == 1 {
-			device = args[0]
-		} else {
-			log.Error().Msg("Too many arguments")
-		}
-		err := nvmeSmart(device)
-		if err != nil {
-			err = sataSmart(device)
-			if err != nil {
-				log.Error().Err(err).Msg("Unrecognized device type. It's not NVME or SATA, or you didn't run as sudo")
-			}
-		}
-	} else {
-		log.Error().Msgf("%s is not supported\n", runtime.GOOS)
+func Smart(args []string) error {
+	if runtime.GOOS != "linux" {
+		return fmt.Errorf("%s is not supported", runtime.GOOS)
 	}
+
+	var device string
+	var err error
+	if len(args) == 0 {
+		device, err = getRootDiskVolume()
+		if err != nil {
+			return err
+		}
+	} else if len(args) == 1 {
+		device = args[0]
+	} else {
+		return fmt.Errorf("too many arguments")
+	}
+
+	err = nvmeSmart(device)
+	if err != nil {
+		err = sataSmart(device)
+		if err != nil {
+			return fmt.Errorf("unrecognized device type. It's not NVME or SATA, or you didn't run as sudo: %w", err)
+		}
+	}
+	return nil
 }
 
-func getRootDiskVolume() string {
+func getRootDiskVolume() (string, error) {
 	partitions, err := disk.Partitions(false)
 	if err != nil {
-		log.Fatal().Msg("Failed to get disk partitions")
+		return "", fmt.Errorf("failed to get disk partitions: %w", err)
 	}
 
 	var volume string
@@ -128,5 +134,5 @@ func getRootDiskVolume() string {
 		}
 	}
 
-	return volume
+	return volume, nil
 }

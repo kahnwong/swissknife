@@ -7,7 +7,6 @@ import (
 	"github.com/carlmjohnson/requests"
 	"github.com/kahnwong/swissknife/configs/color"
 	"github.com/kahnwong/swissknife/internal/utils"
-	"github.com/rs/zerolog/log"
 )
 
 type IPInfoResponse struct {
@@ -27,7 +26,7 @@ type IPInfoResponse struct {
 	As          string  `json:"as"`
 }
 
-func getIPInfo(ip string) IPInfoResponse {
+func getIPInfo(ip string) (IPInfoResponse, error) {
 	var response IPInfoResponse
 	err := requests.
 		URL(fmt.Sprintf("http://ip-api.com/json/%s", ip)).
@@ -35,27 +34,34 @@ func getIPInfo(ip string) IPInfoResponse {
 		Fetch(context.Background())
 
 	if err != nil {
-		log.Fatal().Msg("Error getting detailed ip info")
+		return IPInfoResponse{}, fmt.Errorf("error getting detailed ip info: %w", err)
 	}
 
-	return response
+	return response, nil
 }
 
-func IPInfo(args []string) {
+func IPInfo(args []string) error {
 	ip := utils.SetIP(args)
 
 	var targetIP string
 	if ip == "" {
-		publicIP := getPublicIP()
+		publicIP, err := getPublicIP()
+		if err != nil {
+			return err
+		}
 		targetIP = publicIP.Ip
 	} else {
 		targetIP = ip
 	}
 
-	ipInfo := getIPInfo(targetIP)
+	ipInfo, err := getIPInfo(targetIP)
+	if err != nil {
+		return err
+	}
 
 	fmt.Printf("%s: %s\n", color.Green("IP Address"), ipInfo.Query)
 	fmt.Printf("%s: %s, %s, %s\n", color.Green("Location"), ipInfo.City, ipInfo.RegionName, color.Blue(ipInfo.Country))
 	fmt.Printf("%s: %s\n", color.Green("ISP"), ipInfo.Isp)
 	fmt.Printf("%s: %s\n", color.Green("Organization"), ipInfo.Org)
+	return nil
 }

@@ -7,7 +7,6 @@ import (
 
 	"github.com/carlmjohnson/requests"
 	"github.com/kahnwong/swissknife/configs/color"
-	"github.com/rs/zerolog/log"
 )
 
 type ShouldIDeploy struct {
@@ -17,7 +16,7 @@ type ShouldIDeploy struct {
 	Message       string    `json:"message"`
 }
 
-func getResponse() ShouldIDeploy {
+func getResponse() (ShouldIDeploy, error) {
 	url := "https://shouldideploy.today"
 
 	var response ShouldIDeploy
@@ -30,18 +29,22 @@ func getResponse() ShouldIDeploy {
 		Fetch(context.Background())
 
 	if err != nil {
-		log.Fatal().Msg("Error calling ShouldIDeploy API")
+		return ShouldIDeploy{}, fmt.Errorf("error calling ShouldIDeploy API: %w", err)
 	}
 
-	return response
+	return response, nil
 }
 
-func ShouldIDeployToday() {
-	response := getResponse()
+func ShouldIDeployToday() error {
+	response, err := getResponse()
+	if err != nil {
+		return err
+	}
 
 	if response.ShouldIDeploy {
 		fmt.Printf("%s\n", color.Green(response.Message))
 	} else if !response.ShouldIDeploy {
 		fmt.Printf("%s\n", color.Red(response.Message))
 	}
+	return nil
 }

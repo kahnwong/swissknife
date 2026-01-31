@@ -3,13 +3,11 @@ package timer
 
 import (
 	"fmt"
-	"os"
 	"strings"
 	"time"
 
 	"github.com/charmbracelet/bubbles/progress"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/rs/zerolog/log"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -113,24 +111,23 @@ func NewModel() Model {
 	}
 }
 
-func Timer(args []string) {
+func Timer(args []string) error {
 	// check if input exists
 	if len(args) == 0 {
-		fmt.Println("Please provide a duration")
-		os.Exit(1)
+		return fmt.Errorf("please provide a duration")
 	}
 	// parse input
 	duration, err := time.ParseDuration(args[0])
 	if err != nil {
-		log.Fatal().Msg("Error parsing duration")
+		return fmt.Errorf("error parsing duration: %w", err)
 	}
 
 	// timer
 	m := NewModel()
 	m.duration = duration
 
-	_, err = tea.NewProgram(&m).Run()
-	if err != nil {
-		log.Fatal().Err(err)
+	if _, err = tea.NewProgram(&m).Run(); err != nil {
+		return fmt.Errorf("error running timer: %w", err)
 	}
+	return nil
 }

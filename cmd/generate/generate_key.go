@@ -9,8 +9,8 @@ var generateKeyCmd = &cobra.Command{
 	Use:   "key",
 	Short: "Generate key",
 	Long:  `Generate key. Re-implementation of "openssl rand -base64 48"". Result is copied to clipboard.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		generate.Key()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return generate.Key()
 	},
 }
 

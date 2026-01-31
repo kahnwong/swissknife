@@ -8,8 +8,8 @@ import (
 var SensorsCmd = &cobra.Command{
 	Use:   "sensors",
 	Short: "Get sensors info",
-	Run: func(cmd *cobra.Command, args []string) {
-		get.Sensors()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return get.Sensors()
 	},
 }
 

@@ -8,8 +8,8 @@ import (
 var getHwInfoCmd = &cobra.Command{
 	Use:   "hwinfo",
 	Short: "Get hardware info",
-	Run: func(cmd *cobra.Command, args []string) {
-		get.HwInfo()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return get.HwInfo()
 	},
 }
 

@@ -91,10 +91,6 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/power-devops/perfstat v0.0.0-20240221224432-82ca36839d55 h1:o4JXh1EVt9k/+g42oCprj/FisM4qX9L3sZB3upGN2ZU=
 github.com/power-devops/perfstat v0.0.0-20240221224432-82ca36839d55/go.mod h1:OmDBASR4679mdNQnz2pUhc2G8CO2JrUAVFDRBDP/hJE=
-github.com/projectdiscovery/wappalyzergo v0.2.62 h1:SMZ70bLCj6jHnFgjanuiaQpqUXY6aiEC3YoM0ZSvYes=
-github.com/projectdiscovery/wappalyzergo v0.2.62/go.mod h1:8FtSVcmPRZU0g1euBpdSYEBHIvB7Zz9MOb754ZqZmfU=
-github.com/projectdiscovery/wappalyzergo v0.2.63 h1:iSIU2rfPkHcpBSTol7S3PqgfBXn+JD56s4BsVEGxJ+o=
-github.com/projectdiscovery/wappalyzergo v0.2.63/go.mod h1:8FtSVcmPRZU0g1euBpdSYEBHIvB7Zz9MOb754ZqZmfU=
 github.com/projectdiscovery/wappalyzergo v0.2.64 h1:Y55sb5qUdFvMtR81m1hr54PdGh/hZ4XtuGPdCFAirEk=
 github.com/projectdiscovery/wappalyzergo v0.2.64/go.mod h1:8FtSVcmPRZU0g1euBpdSYEBHIvB7Zz9MOb754ZqZmfU=
 github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=

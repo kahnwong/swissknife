@@ -5,24 +5,31 @@ import (
 	"strings"
 
 	"github.com/kahnwong/swissknife/internal/utils"
-	"github.com/rs/zerolog/log"
 	"github.com/sethvargo/go-diceware/diceware"
 )
 
-func generatePassphrase() string {
+func generatePassphrase() (string, error) {
 	// Generate 6 words using the diceware algorithm.
 	list, err := diceware.Generate(6)
 	if err != nil {
-		log.Fatal().Msg("Failed to generate passphrases")
+		return "", fmt.Errorf("failed to generate passphrases: %w", err)
 	}
 
 	res := strings.Join(list, "-")
 
-	return res
+	return res, nil
 }
 
-func Passphrase() {
-	passphrase := generatePassphrase()
-	utils.WriteToClipboard(passphrase)
+func Passphrase() error {
+	passphrase, err := generatePassphrase()
+	if err != nil {
+		return err
+	}
+
+	if err = utils.WriteToClipboard(passphrase); err != nil {
+		return err
+	}
+
 	fmt.Printf("%s\n", passphrase)
+	return nil
 }

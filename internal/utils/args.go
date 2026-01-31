@@ -10,8 +10,8 @@ import (
 func setValueFromArgsOrClipboard(args []string, validator func(string) bool, errorMsg string, allowEmpty bool) string {
 	var value string
 	if len(args) == 0 {
-		clipboardValue := ReadFromClipboard()
-		if clipboardValue != "" && validator(clipboardValue) {
+		clipboardValue, err := ReadFromClipboard()
+		if err == nil && clipboardValue != "" && validator(clipboardValue) {
 			value = strings.TrimSpace(clipboardValue)
 		}
 	}

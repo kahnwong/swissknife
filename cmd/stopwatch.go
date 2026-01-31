@@ -8,8 +8,8 @@ import (
 var StopwatchCmd = &cobra.Command{
 	Use:   "stopwatch",
 	Short: "Create a stopwatch",
-	Run: func(cmd *cobra.Command, args []string) {
-		stopwatch.Stopwatch()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return stopwatch.Stopwatch()
 	},
 }
 

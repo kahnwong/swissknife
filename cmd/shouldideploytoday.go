@@ -8,8 +8,8 @@ import (
 var ShouldIDeployTodayCmd = &cobra.Command{
 	Use:   "shouldideploytoday",
 	Short: "Should I deploy today?",
-	Run: func(cmd *cobra.Command, args []string) {
-		shouldideploytoday.ShouldIDeployToday()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return shouldideploytoday.ShouldIDeployToday()
 	},
 }
 

@@ -9,8 +9,8 @@ var getIPCmd = &cobra.Command{
 	Use:   "ip",
 	Short: "Get IP information",
 	Long:  `Get IP information`,
-	Run: func(cmd *cobra.Command, args []string) {
-		get.IP()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return get.IP()
 	},
 }
 

@@ -21,12 +21,12 @@ type IPLocationResponse struct {
 	RegionName string `json:"regionName"`
 }
 
-func getInternalIP() string {
+func getInternalIP() (string, error) {
 	var internalIP string
 
 	ifaces, err := net.Interfaces()
 	if err != nil {
-		panic(err)
+		return "", fmt.Errorf("failed to get network interfaces: %w", err)
 	}
 
 	for _, iface := range ifaces {
@@ -39,7 +39,7 @@ func getInternalIP() string {
 
 		addrs, err := iface.Addrs()
 		if err != nil {
-			panic(err)
+			return "", fmt.Errorf("failed to get interface addresses: %w", err)
 		}
 
 		for _, addr := range addrs {
@@ -63,14 +63,20 @@ func getInternalIP() string {
 		}
 	}
 
-	return internalIP
+	return internalIP, nil
 }
 
-func getLocalIP() string {
+func getLocalIP() (string, error) {
 	conn, err := net.Dial("udp", "8.8.8.8:80")
 	if err != nil {
-		log.Fatal().Msg("Error on net.Dial")
+		return "", fmt.Errorf("error on net.Dial: %w", err)
 	}
+	defer func(conn net.Conn) {
+		err = conn.Close()
+		if err != nil {
+			log.Error().Err(err).Msg("error closing connection")
+		}
+	}(conn)
 
 	localAddr := conn.LocalAddr().(*net.UDPAddr)
 
@@ -81,13 +87,13 @@ func getLocalIP() string {
 	if len(parts) > 0 {
 		localIP = parts[0]
 	} else {
-		log.Error().Msg("Invalid address format")
+		return "", fmt.Errorf("invalid address format")
 	}
 
-	return localIP
+	return localIP, nil
 }
 
-func getPublicIP() PublicIPResponse {
+func getPublicIP() (PublicIPResponse, error) {
 	var response PublicIPResponse
 	err := requests.
 		URL("https://api.ipify.org?format=json").
@@ -95,13 +101,13 @@ func getPublicIP() PublicIPResponse {
 		Fetch(context.Background())
 
 	if err != nil {
-		log.Fatal().Msg("Error getting public ip")
+		return PublicIPResponse{}, fmt.Errorf("error getting public ip: %w", err)
 	}
 
-	return response
+	return response, nil
 }
 
-func getIPLocation(ip string) IPLocationResponse {
+func getIPLocation(ip string) (IPLocationResponse, error) {
 	var response IPLocationResponse
 	err := requests.
 		URL(fmt.Sprintf("http://ip-api.com/json/%s?fields=query,country,regionName", ip)).
@@ -109,20 +115,34 @@ func getIPLocation(ip string) IPLocationResponse {
 		Fetch(context.Background())
 
 	if err != nil {
-		log.Fatal().Msg("Error getting ip location")
+		return IPLocationResponse{}, fmt.Errorf("error getting ip location: %w", err)
 	}
 
-	return response
+	return response, nil
 }
 
-func IP() {
-	internalIP := getInternalIP()
+func IP() error {
+	internalIP, err := getInternalIP()
+	if err != nil {
+		return err
+	}
 	fmt.Printf("%s: %s\n", color.Green("Internal IP"), internalIP)
 
-	localIP := getLocalIP()
+	localIP, err := getLocalIP()
+	if err != nil {
+		return err
+	}
 	fmt.Printf("%s: %s\n", color.Green("Local IP"), localIP)
 
-	publicIP := getPublicIP()
-	IPLocation := getIPLocation(publicIP.Ip)
+	publicIP, err := getPublicIP()
+	if err != nil {
+		return err
+	}
+
+	IPLocation, err := getIPLocation(publicIP.Ip)
+	if err != nil {
+		return err
+	}
 	fmt.Printf("%s: %s (%s, %s)\n", color.Green("Public IP"), publicIP.Ip, color.Blue(IPLocation.RegionName), color.Blue(IPLocation.Country))
+	return nil
 }
