@@ -9,4 +9,4 @@ crate-type = ["staticlib"]
 battery = "0.7.8"
 libc = "0.2.174"
 log = "0.4.27"
-sysinfo = "0.37.0"
+sysinfo = "0.38.0"
