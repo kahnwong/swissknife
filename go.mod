@@ -6,7 +6,7 @@ require (
 	github.com/anatol/smart.go v0.0.0-20241126061019-f03d79b340d2
 	github.com/atotto/clipboard v0.1.4
 	github.com/carlmjohnson/requests v0.25.1
-	github.com/charmbracelet/bubbles v0.21.1
+	github.com/charmbracelet/bubbles v1.0.0
 	github.com/charmbracelet/bubbletea v1.3.10
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/distatus/battery v0.11.0
