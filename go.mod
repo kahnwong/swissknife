@@ -3,7 +3,7 @@ module github.com/kahnwong/swissknife
 go 1.25.1
 
 require (
-	github.com/anatol/smart.go v0.0.0-20241126061019-f03d79b340d2
+	github.com/anatol/smart.go v0.0.0-20260213010714-b8c428e1f7f2
 	github.com/atotto/clipboard v0.1.4
 	github.com/carlmjohnson/requests v0.25.1
 	github.com/charmbracelet/bubbles v0.21.1
@@ -63,7 +63,7 @@ require (
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225 // indirect
 	golang.org/x/net v0.49.0 // indirect
-	golang.org/x/sys v0.40.0 // indirect
+	golang.org/x/sys v0.41.0 // indirect
 	golang.org/x/text v0.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	howett.net/plist v1.0.2-0.20250314012144-ee69052608d9 // indirect
