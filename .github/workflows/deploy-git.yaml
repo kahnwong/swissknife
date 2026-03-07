@@ -1,0 +1,40 @@
+name: Deploy Git to Cloudflare Pages
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+concurrency:
+  group: environment-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  PROJECT_NAME: swissknife-git
+  BUILD_DIR: output
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    name: Deploy to Cloudflare Pages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      # ---------- build ----------
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: stable
+          cache: true
+      - name: Install gitmal
+        run: go install github.com/antonmedv/gitmal@latest
+      - name: Build
+        run: gitmal --theme onedark .
+      # ---------- publish ----------
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy ${{ env.BUILD_DIR }} --project-name=${{ env.PROJECT_NAME }}
