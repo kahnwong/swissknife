@@ -19,7 +19,7 @@ require (
 	github.com/rs/zerolog v1.34.0
 	github.com/sethvargo/go-diceware v0.5.0
 	github.com/sethvargo/go-password v0.3.1
-	github.com/shirou/gopsutil/v4 v4.26.1
+	github.com/shirou/gopsutil/v4 v4.26.2
 	github.com/showwin/speedtest-go v1.7.10
 	github.com/skanehira/clipboard-image/v2 v2.0.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
@@ -38,7 +38,7 @@ require (
 	github.com/clipperhouse/displaywidth v0.10.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.6.0 // indirect
 	github.com/digitalocean/go-smbios v0.0.0-20180907143718-390a4f403a8e // indirect
-	github.com/ebitengine/purego v0.9.1 // indirect
+	github.com/ebitengine/purego v0.10.0 // indirect
 	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
