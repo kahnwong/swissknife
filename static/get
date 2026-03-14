@@ -23,13 +23,18 @@ VERSION=`
       sed -E 's/.*"([^"]+)".*/\1/'
 `
 VERSION_BINARY=$(echo "${VERSION}" | sed 's/^v//')
-FILE="swissknife_${VERSION_BINARY}_${OS}_${ARCH}.tar.gz"
+BINARY_NAME="swissknife"
+FILE="${BINARY_NAME}_${VERSION_BINARY}_${OS}_${ARCH}.tar.gz"
+
+# get current path, will be used later
+CURRENT_PATH=$(pwd)
 
 # download
-curl -L -s -o "$FILE" "https://github.com/${REPO}/releases/download/${VERSION}/${FILE}"
+curl -L -s -o "/tmp/$FILE" "https://github.com/${REPO}/releases/download/${VERSION}/${FILE}"
 
 # extract
 echo "Extracting ${FILE}..."
+cd "/tmp" || exit 1
 tar -xzvf "${FILE}"
 if [ $? -ne 0 ]; then
     echo "Error: Failed to extract ${FILE}."
@@ -39,6 +44,9 @@ fi
 # cleanup
 rm -f "${FILE}"
 rm README.md
+
+# move binary to CURRENT_PATH
+mv "$BINARY_NAME" "${CURRENT_PATH}/"
 
 # success message
 echo "Successfully downloaded and extracted ${FILE}."
