@@ -1,9 +1,9 @@
 module github.com/kahnwong/swissknife
 
-go 1.25.1
+go 1.26
 
 require (
-	github.com/anatol/smart.go v0.0.0-20260213010714-b8c428e1f7f2
+	github.com/anatol/smart.go v0.0.0-20260314002218-4abf60ecc43c
 	github.com/atotto/clipboard v0.1.4
 	github.com/carlmjohnson/requests v0.25.1
 	github.com/charmbracelet/bubbles v1.0.0
@@ -25,7 +25,7 @@ require (
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/spf13/cobra v1.10.2
 	github.com/yumaojun03/dmidecode v0.1.4
-	golang.org/x/crypto v0.48.0
+	golang.org/x/crypto v0.49.0
 )
 
 require (
@@ -61,9 +61,9 @@ require (
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225 // indirect
-	golang.org/x/net v0.50.0 // indirect
-	golang.org/x/sys v0.41.0 // indirect
-	golang.org/x/text v0.34.0 // indirect
+	golang.org/x/net v0.51.0 // indirect
+	golang.org/x/sys v0.42.0 // indirect
+	golang.org/x/text v0.35.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	howett.net/plist v1.0.2-0.20250314012144-ee69052608d9 // indirect
 )
