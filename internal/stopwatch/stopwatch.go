@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/stopwatch"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/key"
+	"charm.land/bubbles/v2/stopwatch"
+	tea "charm.land/bubbletea/v2"
 )
 
 type model struct {
@@ -29,7 +29,7 @@ func (m model) Init() tea.Cmd {
 	return m.stopwatch.Init()
 }
 
-func (m model) View() string {
+func (m model) View() tea.View {
 	// Note: you could further customize the time output by getting the
 	// duration from m.stopwatch.Elapsed(), which returns a time.Duration, and
 	// skip m.stopwatch.View() altogether.
@@ -38,7 +38,7 @@ func (m model) View() string {
 		s = "Elapsed: " + s
 		s += m.helpView()
 	}
-	return s
+	return tea.View{Content: s}
 }
 
 func (m model) helpView() string {
@@ -72,7 +72,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func Stopwatch() error {
 	m := model{
-		stopwatch: stopwatch.NewWithInterval(time.Millisecond),
+		stopwatch: stopwatch.New(stopwatch.WithInterval(time.Millisecond)),
 		keymap: keymap{
 			start: key.NewBinding(
 				key.WithKeys("s"),

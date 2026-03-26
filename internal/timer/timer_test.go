@@ -4,13 +4,14 @@ import (
 	"testing"
 	"time"
 
+	"charm.land/lipgloss/v2"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 func TestNewModel(t *testing.T) {
 	m := NewModel()
 
-	if m.progress.FullColor != titleColor {
+	if m.progress.FullColor != lipgloss.Color(titleColor) {
 		t.Errorf("NewModel() progress color = %v, want %v", m.progress.FullColor, titleColor)
 	}
 

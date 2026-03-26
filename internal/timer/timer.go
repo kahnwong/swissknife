@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/bubbles/progress"
+	"charm.land/bubbles/v2/progress"
 	"charm.land/lipgloss/v2"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -103,7 +103,7 @@ func (m Model) View() string {
 
 func NewModel() Model {
 	progressBar := progress.New()
-	progressBar.FullColor = titleColor
+	progressBar.FullColor = lipgloss.Color(titleColor)
 	progressBar.SetSpringOptions(1, 1)
 
 	return Model{
