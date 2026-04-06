@@ -9,7 +9,7 @@ require (
 	github.com/anatol/smart.go v0.0.0-20260314002218-4abf60ecc43c
 	github.com/atotto/clipboard v0.1.4
 	github.com/carlmjohnson/requests v0.25.1
-	github.com/charmbracelet/bubbletea v1.3.10
+	github.com/charmbracelet/bubbletea/v2 v2.0.2
 	github.com/distatus/battery v0.11.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/fatih/color v1.19.0
