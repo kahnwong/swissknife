@@ -1,4 +1,4 @@
-// from <https://github.com/charmbracelet/bubbletea/blob/master/examples/stopwatch/main.go>
+// from <https://github.com/charmbracelet/bubbletea/blob/main/examples/stopwatch/main.go>
 package stopwatch
 
 import (

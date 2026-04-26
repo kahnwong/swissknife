@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"charm.land/lipgloss/v2"
-	tea "github.com/charmbracelet/bubbletea"
+	tea "charm.land/bubbletea/v2"
 )
 
 func TestNewModel(t *testing.T) {
@@ -77,14 +77,14 @@ func TestModelUpdate(t *testing.T) {
 	})
 
 	t.Run("quit key", func(t *testing.T) {
-		newModel, _ := m.Update(tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune{'q'}})
+		newModel, _ := m.Update(tea.KeyPressMsg{Text: "q"})
 		if !newModel.(Model).quitting {
 			t.Error("Model should be quitting after 'q' key")
 		}
 	})
 
 	t.Run("ctrl+c", func(t *testing.T) {
-		newModel, _ := m.Update(tea.KeyMsg{Type: tea.KeyCtrlC})
+		newModel, _ := m.Update(tea.KeyPressMsg{Code: 'c', Mod: tea.ModCtrl})
 		if !newModel.(Model).quitting {
 			t.Error("Model should be quitting after ctrl+c")
 		}
@@ -98,7 +98,7 @@ func TestModelView(t *testing.T) {
 
 	t.Run("normal view", func(t *testing.T) {
 		view := m.View()
-		if view == "" {
+		if view.Content == "" {
 			t.Error("View() should return non-empty string when not quitting")
 		}
 	})
@@ -106,7 +106,7 @@ func TestModelView(t *testing.T) {
 	t.Run("quitting view", func(t *testing.T) {
 		m.quitting = true
 		view := m.View()
-		if view != "" {
+		if view.Content != "" {
 			t.Error("View() should return empty string when quitting")
 		}
 	})
