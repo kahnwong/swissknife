@@ -9,7 +9,7 @@ import (
 	"charm.land/bubbles/v2/progress"
 	"charm.land/lipgloss/v2"
 
-	tea "github.com/charmbracelet/bubbletea"
+	tea "charm.land/bubbletea/v2"
 )
 
 // init
@@ -81,9 +81,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, tea.Batch(cmds...)
 }
 
-func (m Model) View() string {
+func (m Model) View() tea.View {
 	if m.quitting {
-		return ""
+		return tea.View{}
 	}
 
 	var s strings.Builder
@@ -98,7 +98,7 @@ func (m Model) View() string {
 	s.WriteString(m.progress.ViewAs(percent))
 	s.WriteString(helpStyle.Render("Press 'q' to quit"))
 
-	return baseTimerStyle.Render(s.String())
+	return tea.View{Content: baseTimerStyle.Render(s.String())}
 }
 
 func NewModel() Model {
