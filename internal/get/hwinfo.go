@@ -16,6 +16,13 @@ func HwInfo() error {
 		return fmt.Errorf("need to run as sudo")
 	}
 
+	// hardware name
+	hardwareName, err := getHardwareName()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s: %s\n", color.Green("Name"), hardwareName)
+
 	// cpu
 	cpuModel, cpuThreads, err := getCpuInfo() // shared with `sysinfo.go`
 	if err != nil {
@@ -85,4 +92,13 @@ func HwInfo() error {
 	fmt.Printf("  - %s: %s\n", color.Blue("Manufacturer"), baseboard.Vendor)
 	fmt.Printf("    %s: %s\n", color.Blue("Model"), baseboard.Product)
 	return nil
+}
+
+func getHardwareName() (string, error) {
+	product, err := ghw.Product()
+	if err != nil {
+		return "", err
+	}
+
+	return product.Name, nil
 }
