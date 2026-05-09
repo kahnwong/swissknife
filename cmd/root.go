@@ -7,7 +7,7 @@ import (
 	"github.com/kahnwong/swissknife/cmd/generate"
 	"github.com/kahnwong/swissknife/cmd/get"
 	"github.com/rs/zerolog"
-	slogzerolog "github.com/samber/slog-zerolog"
+	slogzerolog "github.com/samber/slog-zerolog/v2"
 	"github.com/spf13/cobra"
 )
 
