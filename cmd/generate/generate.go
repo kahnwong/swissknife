@@ -1,9 +1,9 @@
 package generate
 
 import (
+	"log/slog"
 	"os"
 
-	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +15,8 @@ var Cmd = &cobra.Command{
 		if len(args) == 0 {
 			err := cmd.Help()
 			if err != nil {
-				log.Fatal().Msg("Failed to display help")
+				slog.Error("Failed to display help")
+				os.Exit(1)
 			}
 			os.Exit(0)
 		}

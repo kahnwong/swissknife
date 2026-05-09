@@ -1,12 +1,13 @@
 package cmd
 
 import (
+	"log/slog"
 	"os"
 
 	"github.com/kahnwong/swissknife/cmd/generate"
 	"github.com/kahnwong/swissknife/cmd/get"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
+	slogzerolog "github.com/samber/slog-zerolog"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +30,9 @@ func Execute() {
 }
 
 func init() {
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	output := zerolog.ConsoleWriter{Out: os.Stderr}
+	logger := zerolog.New(output).With().Timestamp().Logger()
+	slog.SetDefault(slog.New(slogzerolog.Option{Logger: &logger}.NewZerologHandler()))
 
 	rootCmd.AddCommand(get.Cmd)
 	rootCmd.AddCommand(generate.Cmd)

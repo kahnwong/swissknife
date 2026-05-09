@@ -8,7 +8,6 @@ import (
 
 	"github.com/carlmjohnson/requests"
 	"github.com/kahnwong/swissknife/configs/color"
-	"github.com/rs/zerolog/log"
 )
 
 type PublicIPResponse struct {
@@ -72,12 +71,11 @@ func getLocalIP() (string, error) {
 		return "", fmt.Errorf("error on net.Dial: %w", err)
 	}
 	defer func(conn net.Conn) {
-		err = conn.Close()
-		if err != nil {
-			log.Error().Err(err).Msg("error closing connection")
+		if cErr := conn.Close(); cErr != nil {
+			// This overwrites the return "err" with a wrapped error
+			err = fmt.Errorf("error closing connection: %w", cErr)
 		}
 	}(conn)
-
 	localAddr := conn.LocalAddr().(*net.UDPAddr)
 
 	// sanitize
