@@ -16,15 +16,17 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:     "swissknife",
-	Version: version,
-	Short:   "Various utils",
-	Long:    `Various utils`,
+	Use:           "swissknife",
+	Version:       version,
+	Short:         "Various utils",
+	Long:          `Various utils`,
+	SilenceErrors: true,
 }
 
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
+		slog.Error(err.Error())
 		os.Exit(1)
 	}
 }
