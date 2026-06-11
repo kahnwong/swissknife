@@ -1,5 +1,5 @@
-use battery;
 use log::error;
+use starship_battery as battery;
 
 #[repr(C)]
 #[derive(Debug)]
