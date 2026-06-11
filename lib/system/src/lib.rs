@@ -1,5 +1,5 @@
-extern crate battery;
 extern crate log;
+extern crate starship_battery;
 extern crate sysinfo;
 
 mod battery_cycle_count;

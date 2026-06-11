@@ -1,5 +1,5 @@
-use battery;
 use log::error;
+use starship_battery as battery;
 
 #[repr(C)]
 #[derive(Debug)]
@@ -25,21 +25,19 @@ pub extern "C" fn battery_cycle_count() -> BatteryResult {
                     // Get the first battery if available
                     if let Some(battery) = batteries.into_iter().next() {
                         match battery {
-                            Ok(bat) => {
-                                match bat.cycle_count() {
-                                    Some(count) => BatteryResult {
-                                        cycle_count: count,
-                                        error: BatteryError::Success,
-                                    },
-                                    None => {
-                                        error!("No cycle count available");
-                                        BatteryResult {
-                                            cycle_count: 0,
-                                            error: BatteryError::NoCycleCount,
-                                        }
+                            Ok(bat) => match bat.cycle_count() {
+                                Some(count) => BatteryResult {
+                                    cycle_count: count,
+                                    error: BatteryError::Success,
+                                },
+                                None => {
+                                    error!("No cycle count available");
+                                    BatteryResult {
+                                        cycle_count: 0,
+                                        error: BatteryError::NoCycleCount,
                                     }
                                 }
-                            }
+                            },
                             Err(e) => {
                                 error!("Battery error: {}", e);
                                 BatteryResult {
