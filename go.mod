@@ -6,7 +6,7 @@ require (
 	charm.land/bubbles/v2 v2.1.1
 	charm.land/bubbletea/v2 v2.0.8
 	charm.land/lipgloss/v2 v2.0.5
-	github.com/anatol/smart.go v0.0.0-20260706181715-5cd61760b880
+	github.com/anatol/smart.go v0.0.0-20260723175002-53b369c3973c
 	github.com/atotto/clipboard v0.1.4
 	github.com/carlmjohnson/requests v0.25.1
 	github.com/distatus/battery v0.11.0
