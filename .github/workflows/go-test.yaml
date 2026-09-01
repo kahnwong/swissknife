@@ -13,6 +13,19 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v7
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          cache: true
+          cache-workspaces: ./lib/system
+          cache-key: ${{ runner.os }}
+      - name: Setup cross toolchain
+        run: cargo install cross
+      - name: Build Rust static library
+        run: ./scripts/build-static-ci.sh
+        env:
+          TARGET: x86_64-unknown-linux-gnu
       - name: Setup Go
         uses: actions/setup-go@v7
         with:
