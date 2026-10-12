@@ -8,6 +8,9 @@ builds:
   - env:
       - CGO_ENABLED=1
       - CC=aarch64-linux-gnu-gcc
+    tags:
+      - netgo
+      - osusergo
     goos:
       - linux
     goarch:
