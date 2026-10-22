@@ -15,7 +15,7 @@ require (
 	github.com/jaypipes/ghw v0.26.0
 	github.com/jedib0t/go-pretty/v6 v6.8.3
 	github.com/libp2p/go-netroute v0.4.0
-	github.com/projectdiscovery/wappalyzergo v0.3.4
+	github.com/projectdiscovery/wappalyzergo v0.3.6
 	github.com/rs/zerolog v1.35.1
 	github.com/samber/slog-zerolog/v2 v2.9.2
 	github.com/sethvargo/go-diceware v0.6.0
