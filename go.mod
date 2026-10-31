@@ -4,7 +4,7 @@ go 1.27.2
 
 require (
 	charm.land/bubbles/v2 v2.2.1
-	charm.land/bubbletea/v2 v2.1.0
+	charm.land/bubbletea/v2 v2.1.1
 	charm.land/lipgloss/v2 v2.0.6
 	github.com/anatol/smart.go v0.0.0-20260913233941-486c28b93357
 	github.com/atotto/clipboard v0.1.4
@@ -15,7 +15,7 @@ require (
 	github.com/jaypipes/ghw v0.26.0
 	github.com/jedib0t/go-pretty/v6 v6.8.3
 	github.com/libp2p/go-netroute v0.4.0
-	github.com/projectdiscovery/wappalyzergo v0.3.4
+	github.com/projectdiscovery/wappalyzergo v0.3.7
 	github.com/rs/zerolog v1.35.1
 	github.com/samber/slog-zerolog/v2 v2.9.2
 	github.com/sethvargo/go-diceware v0.6.0
@@ -59,7 +59,7 @@ require (
 	github.com/tklauser/numcpus v0.12.0 // indirect
 	github.com/xo/terminfo v1.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
-	golang.org/x/net v0.60.0 // indirect
+	golang.org/x/net v0.61.0 // indirect
 	golang.org/x/sync v0.24.0 // indirect
 	golang.org/x/sys v0.49.0 // indirect
 	golang.org/x/text v0.43.0 // indirect
