@@ -1,5 +1,5 @@
 use log::error;
-use sysinfo::{Components, System};
+use sysinfo::Components;
 
 #[repr(C)]
 #[derive(Debug)]
@@ -17,9 +17,16 @@ pub struct SensorResult {
 
 #[no_mangle]
 pub extern "C" fn sensors() -> SensorResult {
-    let mut system = System::new_all();
-    system.refresh_all();
-    let components = Components::new_with_refreshed_list();
+    let components = match Components::new_with_refreshed_list() {
+        Ok(components) => components,
+        Err(err) => {
+            error!("Failed to initialize components: {}", err);
+            return SensorResult {
+                temperature: 0.0,
+                error: SensorError::NoComponents,
+            };
+        }
+    };
 
     if let Some(component) = (&components).into_iter().next() {
         if let Some(temp) = component.temperature() {
