@@ -23,7 +23,7 @@ jobs:
       - name: Setup cross toolchain
         run: cargo install cross
       - name: Build Rust static library
-        run: ./scripts/build-static-ci.sh
+        run: ./scripts/build-lib.sh
         env:
           TARGET: x86_64-unknown-linux-gnu
       - name: Setup Go
