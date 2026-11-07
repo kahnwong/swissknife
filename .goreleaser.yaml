@@ -12,8 +12,11 @@ builds:
     tags: [netgo, osusergo]
     hooks: &build-hooks
       pre:
-        - cmd: cross build --release --target {{ .Env.TARGET }}
+        # Windows uses the runner's MinGW toolchain instead of cross's Docker image.
+        - cmd: '{{ if eq .Env.RELEASE_GOOS "windows" }}cargo{{ else }}cross{{ end }} build --release --target {{ .Env.TARGET }}'
           dir: lib/system
+          env:
+            - CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER=x86_64-w64-mingw32-gcc
         - cmd: cp lib/system/target/{{ .Env.TARGET }}/release/libsystem.a lib/libsystem.a
     ldflags: &build-ldflags
       - >-

@@ -65,6 +65,7 @@ jobs:
           cache-key: ${{ matrix.target }}
           target: ${{ matrix.target }}
       - name: Setup cross toolchain
+        if: matrix.os != 'windows'
         run: cargo install cross
       # --------- setup go ---------
       - name: Set up Go
