@@ -2,46 +2,66 @@ version: 2
 # Each matrix job selects one build and supplies its matching Rust TARGET
 # and C compiler (CC). Separate workspaces keep lib/libsystem.a isolated.
 builds:
-  - &build
-    id: linux-amd64
+  - id: linux-amd64
     binary: swissknife
     skip: '{{ not (and (eq .Env.RELEASE_GOOS "linux") (eq .Env.RELEASE_GOARCH "amd64")) }}'
-    env:
+    env: &build-env
       - CGO_ENABLED=1
     goos: [linux]
     goarch: [amd64]
     tags: [netgo, osusergo]
-    hooks:
+    hooks: &build-hooks
       pre:
         - cmd: cross build --release --target {{ .Env.TARGET }}
           dir: lib/system
         - cmd: cp lib/system/target/{{ .Env.TARGET }}/release/libsystem.a lib/libsystem.a
-    ldflags:
+    ldflags: &build-ldflags
       - >-
         -linkmode external {{ if eq .Env.RELEASE_GOOS "linux" }}-extldflags '-static'{{ else if eq .Env.RELEASE_GOOS "windows" }}-extldflags '-static -lntdll -lsetupapi'{{ end }} -w -s -X github.com/kahnwong/swissknife/cmd.version={{ .Version }}
-  - !!merge <<: *build
-    id: linux-arm64
+  - id: linux-arm64
+    binary: swissknife
+    env: *build-env
+    hooks: *build-hooks
+    ldflags: *build-ldflags
+    goos: [linux]
+    tags: [netgo, osusergo]
     skip: '{{ not (and (eq .Env.RELEASE_GOOS "linux") (eq .Env.RELEASE_GOARCH "arm64")) }}'
     goarch: [arm64]
-  - !!merge <<: *build
-    id: linux-arm
+  - id: linux-arm
+    binary: swissknife
+    env: *build-env
+    hooks: *build-hooks
+    ldflags: *build-ldflags
+    goos: [linux]
     skip: '{{ not (and (eq .Env.RELEASE_GOOS "linux") (eq .Env.RELEASE_GOARCH "arm")) }}'
     goarch: [arm]
     goarm: ["7"]
     tags: []
-  - !!merge <<: *build
-    id: darwin-amd64
+  - id: darwin-amd64
+    binary: swissknife
+    env: *build-env
+    hooks: *build-hooks
+    ldflags: *build-ldflags
+    goarch: [amd64]
     skip: '{{ not (and (eq .Env.RELEASE_GOOS "darwin") (eq .Env.RELEASE_GOARCH "amd64")) }}'
     goos: [darwin]
     tags: []
-  - !!merge <<: *build
-    id: darwin-arm64
+  - id: darwin-arm64
+    binary: swissknife
+    env: *build-env
+    hooks: *build-hooks
+    ldflags: *build-ldflags
     skip: '{{ not (and (eq .Env.RELEASE_GOOS "darwin") (eq .Env.RELEASE_GOARCH "arm64")) }}'
     goos: [darwin]
     goarch: [arm64]
     tags: []
-  - !!merge <<: *build
-    id: windows-amd64
+  - id: windows-amd64
+    binary: swissknife
+    env: *build-env
+    hooks: *build-hooks
+    ldflags: *build-ldflags
+    goarch: [amd64]
+    tags: [netgo, osusergo]
     skip: '{{ not (and (eq .Env.RELEASE_GOOS "windows") (eq .Env.RELEASE_GOARCH "amd64")) }}'
     goos: [windows]
 checksum:
