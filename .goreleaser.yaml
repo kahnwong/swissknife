@@ -12,15 +12,12 @@ builds:
     tags: [netgo, osusergo]
     hooks: &build-hooks
       pre:
-        # Windows uses the runner's MinGW toolchain instead of cross's Docker image.
-        - cmd: '{{ if eq .Env.RELEASE_GOOS "windows" }}cargo{{ else }}cross{{ end }} build --release --target {{ .Env.TARGET }}'
+        - cmd: cross build --release --target {{ .Env.TARGET }}
           dir: lib/system
-          env:
-            - CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER=x86_64-w64-mingw32-gcc
         - cmd: cp lib/system/target/{{ .Env.TARGET }}/release/libsystem.a lib/libsystem.a
     ldflags: &build-ldflags
       - >-
-        -linkmode external {{ if eq .Env.RELEASE_GOOS "linux" }}-extldflags '-static'{{ else if eq .Env.RELEASE_GOOS "windows" }}-extldflags '-static -lntdll -lsetupapi'{{ end }} -w -s -X github.com/kahnwong/swissknife/cmd.version={{ .Version }}
+        -linkmode external {{ if eq .Env.RELEASE_GOOS "linux" }}-extldflags '-static'{{ end }} -w -s -X github.com/kahnwong/swissknife/cmd.version={{ .Version }}
   - id: linux-arm64
     binary: swissknife
     env: *build-env
@@ -58,14 +55,5 @@ builds:
     goos: [darwin]
     goarch: [arm64]
     tags: []
-  - id: windows-amd64
-    binary: swissknife
-    env: *build-env
-    hooks: *build-hooks
-    ldflags: *build-ldflags
-    goarch: [amd64]
-    tags: [netgo, osusergo]
-    skip: '{{ not (and (eq .Env.RELEASE_GOOS "windows") (eq .Env.RELEASE_GOARCH "amd64")) }}'
-    goos: [windows]
 checksum:
   disable: true

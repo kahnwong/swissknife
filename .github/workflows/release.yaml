@@ -30,10 +30,6 @@ jobs:
             arch: arm64
             target: aarch64-apple-darwin
             cc: clang
-          - os: windows
-            arch: amd64
-            target: x86_64-pc-windows-gnu
-            cc: x86_64-w64-mingw32-gcc
     runs-on: ${{ (matrix.os != 'darwin' && 'ubuntu-latest') || 'macos-latest' }}
     env:
       RELEASE_GOOS: ${{ matrix.os }}
@@ -51,9 +47,6 @@ jobs:
           if [ "${{ matrix.os }}" == "linux" ]; then
             sudo apt update
             sudo apt-get install gcc-aarch64-linux-gnu gcc-arm-linux-gnueabihf
-          elif [ "${{ matrix.os }}" == "windows" ]; then
-            sudo apt update
-            sudo apt-get install gcc-mingw-w64-x86-64
           fi
       # --------- setup rust ---------
       - name: Setup Rust
@@ -65,7 +58,6 @@ jobs:
           cache-key: ${{ matrix.target }}
           target: ${{ matrix.target }}
       - name: Setup cross toolchain
-        if: matrix.os != 'windows'
         run: cargo install cross
       # --------- setup go ---------
       - name: Set up Go
